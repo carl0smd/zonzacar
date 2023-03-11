@@ -11,7 +11,7 @@ class Logo extends StatelessWidget {
     return Center(
       child: Container(
         width: 170,
-        margin: const EdgeInsets.only(top: 50),
+        margin: const EdgeInsets.only(top: 10, bottom: 0),
         child: Column(
           children: [
             const Image(image: AssetImage('assets/logo.png'),),

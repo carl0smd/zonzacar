@@ -4,46 +4,52 @@ class CustomInput extends StatelessWidget {
 
   final IconData icon;
   final String placeholder;
-  final TextEditingController textController;
   final TextInputType keyboardType;
   final bool isPassword;
+  final void Function(String?) onChanged;
+  final String? Function(String?) validator;
 
   const CustomInput({
     super.key, 
     required this.icon, 
     required this.placeholder, 
-    required this.textController, 
     this.keyboardType = TextInputType.text, 
-    this.isPassword = false
+    this.isPassword = false, required this.onChanged, required this.validator
     });
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.only(top: 5, left: 5, bottom: 5, right: 20),
       margin: const EdgeInsets.only(bottom: 20),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(30),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.05),
-            offset: const Offset(0, 5),
-            blurRadius: 5
-          )
-        ]
-      ),
-      child: TextField(
-        controller: textController,
+      child: TextFormField(
         autocorrect: false,
         keyboardType: keyboardType,
         obscureText: isPassword,
         decoration: InputDecoration(
+          filled: true,
+          fillColor: Colors.white,
           prefixIcon: Icon(icon),
-          focusedBorder: InputBorder.none,
-          border: InputBorder.none,
-          hintText: placeholder
+          focusedBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(30),
+            borderSide: BorderSide(color: Colors.green)
+          ),
+          enabledBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(30),
+            borderSide: BorderSide(color: Colors.black38)
+          ),
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(30),
+            borderSide: BorderSide(color: Colors.transparent)
+          ),
+          hintText: placeholder,
+          errorBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(30),
+            borderSide: BorderSide(color: Colors.red)
+          ),
+          errorMaxLines: 3,
         ),
+        onChanged: onChanged,
+        validator: validator,
       )
     );
   }

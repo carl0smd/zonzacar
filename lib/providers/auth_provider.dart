@@ -1,0 +1,55 @@
+
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:zonzacar/helpers/helper_function.dart';
+import 'package:zonzacar/providers/database_provider.dart';
+
+class AuthProvider {
+  final FirebaseAuth firebaseAuth = FirebaseAuth.instance;
+
+
+
+  //login
+  Future loginUser(String email, String password) async {
+
+    try {
+      User user = (await firebaseAuth.signInWithEmailAndPassword(
+        email: email, password: password,)).user!;
+
+      if (user != null) {
+        return true;
+      }
+
+    } on FirebaseAuthException catch (errors) {
+      return errors.message;
+    }
+  }
+
+  //register
+  Future registerUser(String nombreCompleto, String email, String password) async {
+
+    try {
+      User user = (await firebaseAuth.createUserWithEmailAndPassword(
+        email: email, password: password,)).user!;
+
+      if (user != null) {
+        await DatabaseProvider(uid: user.uid).savingUserData(nombreCompleto, email);
+        return true;
+      }
+
+    } on FirebaseAuthException catch (errors) {
+      return errors.message;
+    }
+  }
+
+  //log out
+  Future logOut() async {
+    try {
+      await HelperFunctions.saveUserLoggedInStatus(false);
+      await HelperFunctions.saveUserEmailSF('');
+      await HelperFunctions.saveUserNameSF('');
+      await firebaseAuth.signOut();
+    } catch (errors) {
+      return null;
+    }
+  }
+}

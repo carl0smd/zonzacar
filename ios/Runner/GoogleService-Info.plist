@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CLIENT_ID</key>
+	<string>1068722437145-25vsk7ufks19j6lqdhkbh524bjiqvc3f.apps.googleusercontent.com</string>
+	<key>REVERSED_CLIENT_ID</key>
+	<string>com.googleusercontent.apps.1068722437145-25vsk7ufks19j6lqdhkbh524bjiqvc3f</string>
+	<key>ANDROID_CLIENT_ID</key>
+	<string>1068722437145-4ahbl6kvpc9h5d727dlj8e0r7e3u5cea.apps.googleusercontent.com</string>
+	<key>API_KEY</key>
+	<string>AIzaSyAJCZt9uG9ahZWj_K48oLcknRl9_7BKdEg</string>
+	<key>GCM_SENDER_ID</key>
+	<string>1068722437145</string>
+	<key>PLIST_VERSION</key>
+	<string>1</string>
+	<key>BUNDLE_ID</key>
+	<string>com.example.zonzacar</string>
+	<key>PROJECT_ID</key>
+	<string>zonzacar</string>
+	<key>STORAGE_BUCKET</key>
+	<string>zonzacar.appspot.com</string>
+	<key>IS_ADS_ENABLED</key>
+	<false></false>
+	<key>IS_ANALYTICS_ENABLED</key>
+	<false></false>
+	<key>IS_APPINVITE_ENABLED</key>
+	<true></true>
+	<key>IS_GCM_ENABLED</key>
+	<true></true>
+	<key>IS_SIGNIN_ENABLED</key>
+	<true></true>
+	<key>GOOGLE_APP_ID</key>
+	<string>1:1068722437145:ios:07bab495f3bbd8a97ffe88</string>
+</dict>
+</plist>

@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "1068722437145",
+    "project_id": "zonzacar",
+    "storage_bucket": "zonzacar.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1068722437145:android:422fab00e351a1c17ffe88",
+        "android_client_info": {
+          "package_name": "com.example.zonzacar"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1068722437145-4ahbl6kvpc9h5d727dlj8e0r7e3u5cea.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.zonzacar",
+            "certificate_hash": "a0e20041bd9ebaa5cc9ad096ce184f2361a09841"
+          }
+        },
+        {
+          "client_id": "1068722437145-uj8q3qbj6rncao9c67lsfltts09vsjbk.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBeMizknJjZbuTFGaewMO_26R1sCunSXXo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1068722437145-uj8q3qbj6rncao9c67lsfltts09vsjbk.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
