@@ -6,8 +6,6 @@ import 'package:zonzacar/providers/database_provider.dart';
 class AuthProvider {
   final FirebaseAuth firebaseAuth = FirebaseAuth.instance;
 
-
-
   //login
   Future loginUser(String email, String password) async {
 
@@ -51,5 +49,27 @@ class AuthProvider {
     } catch (errors) {
       return null;
     }
+  }
+
+  //send email verification
+  Future sendEmailVerification() async {
+    try {
+      User? user = firebaseAuth.currentUser;
+      if (user != null && !user.emailVerified) {
+        await user.sendEmailVerification();
+      }
+    } on FirebaseAuthException catch (errors) {
+      return errors.message;
+    }
+  }
+
+  //check if email is verified
+  Future<bool> isEmailVerified() async {
+    User? user = firebaseAuth.currentUser;
+    await user!.reload();
+    if (user.emailVerified) {
+      return true;
+    }
+    return false;
   }
 }

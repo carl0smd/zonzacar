@@ -57,9 +57,9 @@ class __FormState extends State<_Form> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: EdgeInsets.only(top: 40),
-      padding: EdgeInsets.symmetric(horizontal: 50),
-      child: _isLoading ? CircularProgressIndicator() : Form(
+      margin: const EdgeInsets.only(top: 40),
+      padding: const EdgeInsets.symmetric(horizontal: 50),
+      child: _isLoading ? const CircularProgressIndicator() : Form(
         key: formKey,
         child: Column(
           children: [
@@ -109,22 +109,28 @@ class __FormState extends State<_Form> {
     if (formKey.currentState!.validate()) {
       setState(() {});
       _isLoading = true;
+      
       await authProvider.loginUser(email, password)
       .then((value) async {
         if (value == true) {
-          QuerySnapshot snapshot =await DatabaseProvider(uid: FirebaseAuth.instance.currentUser!.uid).gettingUserData(email);
-
-          //saving shared preference state
-          await HelperFunctions.saveUserLoggedInStatus(true);
-          await HelperFunctions.saveUserNameSF(snapshot.docs[0]['nombreCompleto']);
-          await HelperFunctions.saveUserEmailSF(email);
-          if (context.mounted) Navigator.pushReplacementNamed(context, 'home');
+          if (await authProvider.isEmailVerified()) {
+            QuerySnapshot snapshot = await DatabaseProvider(uid: FirebaseAuth.instance.currentUser!.uid).gettingUserData(email);
+            //saving shared preference state
+            await HelperFunctions.saveUserLoggedInStatus(true);
+            await HelperFunctions.saveUserNameSF(snapshot.docs[0]['nombreCompleto']);
+            await HelperFunctions.saveUserEmailSF(email);
+            if (context.mounted) Navigator.pushReplacementNamed(context, 'home');
+          } else {
+            if (mounted) showSnackbar('Por favor verifique su correo', context);
+            setState(() {});
+            _isLoading = false;
+          }
         } else {
-          showSnackbar(value, context);
+          showSnackbar('Esta cuenta no existe o ha introducido algún dato erroneo', context);
           setState(() {});
           _isLoading = false; 
         }
-      });
+      });     
     }
   }
 }

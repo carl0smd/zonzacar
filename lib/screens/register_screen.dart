@@ -36,8 +36,6 @@ class RegisterScreen extends StatelessWidget {
   }
 }
 
-
-
 class _Form extends StatefulWidget {
 
   const _Form({super.key});
@@ -62,7 +60,9 @@ class __FormState extends State<_Form> {
     return Container(
       margin: EdgeInsets.only(top: 40),
       padding: EdgeInsets.symmetric(horizontal: 50),
-      child: _isLoading ? CircularProgressIndicator() : Form(
+      child: _isLoading ? 
+      const CircularProgressIndicator()
+      : Form(
         key: formKey,
         child: Column(
           children: [
@@ -78,7 +78,7 @@ class __FormState extends State<_Form> {
               },
               validator: (value) {
                 //regex for full name, the name and last name must be separated by a space and each name must have at least 2 characters
-                return RegExp(r"^[A-Za-z]{2,}(?:\s[A-Za-z]{2,})+$").hasMatch(value!)
+                return RegExp(r"^[A-Za-záéíóúüÁÉÍÓÚÜñÑ]{2,}(?:\s[A-Za-záéíóúüÁÉÍÓÚÜñÑ]{2,})+$").hasMatch(value!)
                 ? null
                 : 'Introduce al menos tu primer nombre y apellido';
               },
@@ -131,15 +131,39 @@ class __FormState extends State<_Form> {
       await authProvider.registerUser(nombreCompleto, email, password)
       .then((value) async {
         if (value == true) {
-          showSnackbar('Usuario creado correctamente', context);
-          if (context.mounted) Navigator.pushReplacementNamed(context, 'login');
+          await authProvider.sendEmailVerification();
+          if(mounted) await _verificarEmailDialog(context);
+          setState(() {});
+          _isLoading = false;
+          if(mounted) Navigator.pushReplacementNamed(context, 'login');
         } else {
-          showSnackbar(value, context);
+          showSnackbar('Esta cuenta de correo ya existe', context);
           setState(() {});
           _isLoading = false; 
         }
       });
     }
   }
+}
+
+Future _verificarEmailDialog(BuildContext context) async {
+  return showDialog(
+    context: context,
+    barrierDismissible: false,
+    builder: (context) {
+      return AlertDialog(
+        title: const Text('Verifica tu correo'),
+        content: const Text('Te hemos enviado un correo para verificar tu cuenta'),
+        actions: [
+          TextButton(
+            onPressed: () {
+              Navigator.pop(context, true);
+            }, 
+            child: const Text('Ok')
+          )
+        ],
+      );
+    }
+  );
 }
 
