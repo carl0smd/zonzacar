@@ -5,6 +5,7 @@ import 'package:persistent_bottom_nav_bar/persistent_tab_view.dart';
 import '../screens/screens.dart';
 
 class MenuScreen extends StatelessWidget {
+  
   const MenuScreen({super.key});
 
   @override

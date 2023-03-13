@@ -118,6 +118,8 @@ class __FormState extends State<_Form> {
           if (await authProvider.isEmailVerified()) {
             QuerySnapshot snapshot = await DatabaseProvider(uid: FirebaseAuth.instance.currentUser!.uid).gettingUserData(email);
             await helper.saveUserLoggedInStatus(true);
+            await helper.saveUserEmail(email);
+            await helper.saveUserName(snapshot.docs[0].get('nombreCompleto'));
             if (context.mounted) Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const MenuScreen()));
           } else {
             if (mounted) showSnackbar('Por favor verifique su correo', context);

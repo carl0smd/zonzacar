@@ -23,7 +23,7 @@ class DatabaseProvider {
       'email': email,
       'publicaciones': [],
       'reservas': [],
-      'fotoPerfil': '',
+      'imagenPerfil': '',
       'uid': uid,
     });
   }

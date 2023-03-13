@@ -8,6 +8,8 @@ class HelperFunctions {
 
   //keys
   final String userLoggedInKey = "LOGGEDINKEY";
+  final String userEmailKey    = "USEREMAILKEY";
+  final String userNameKey     = "USERNAMEKEY";
 
   //Guardar los datos en SS
   Future saveUserLoggedInStatus(isUserLoggedIn) async {
@@ -15,10 +17,30 @@ class HelperFunctions {
     return writeStatus;
   }
 
+  Future saveUserEmail(email) async {
+    final writeEmail = await _storage.write(key: userEmailKey, value: email);
+    return writeEmail;
+  }
+
+  Future saveUserName(name) async {
+    final writeName = await _storage.write(key: userNameKey, value: name);
+    return writeName;
+  }
+
   //Obtener los datos de SS
   Future getUserLoggedInStatus() async {
     final readStatus = await _storage.read(key: userLoggedInKey);
     return readStatus;
+  }
+
+  Future getUserEmail() async {
+    final readEmail = await _storage.read(key: userEmailKey);
+    return readEmail;
+  }
+
+  Future getUserName() async {
+    final readName = await _storage.read(key: userNameKey);
+    return readName;
   }
  
 }

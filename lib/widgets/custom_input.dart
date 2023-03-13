@@ -20,7 +20,7 @@ class CustomInput extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: const EdgeInsets.only(bottom: 20),
+      margin: const EdgeInsets.only(bottom: 10),
       child: TextFormField(
         autocorrect: false,
         keyboardType: keyboardType,
