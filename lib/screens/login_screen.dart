@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:zonzacar/providers/database_provider.dart';
+import 'package:zonzacar/screens/screens.dart';
 import 'package:zonzacar/widgets/widgets.dart';
 import 'package:flutter/material.dart';
 
@@ -48,6 +49,7 @@ class _Form extends StatefulWidget {
 class __FormState extends State<_Form> {
 
   final formKey = GlobalKey<FormState>();
+  final helper = HelperFunctions();
 
   bool _isLoading = false;
   String? email = '';
@@ -86,10 +88,10 @@ class __FormState extends State<_Form> {
                 setState(() {});
               },
               validator: (value) {
-                //la contraseña tener al menos  8 caracteres con al menos una letra mayúscula, una letra minúscula y un número y un caracter especial
-                return RegExp(r"^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[!@#\$&*~_+:.]).{8,}$").hasMatch(value!)
+                //la contraseña tener al menos  6 caracteres sin espacios
+                return RegExp(r"^\S{6,}$").hasMatch(value!)
                 ? null
-                : 'Mínimo 8 caracteres con una mayúscula, una minúscula, un número y un caracter especial';
+                : 'La contraseña debe tener al menos 6 caracteres sin espacios';
               },
             ),
             BotonVerde(
@@ -115,11 +117,8 @@ class __FormState extends State<_Form> {
         if (value == true) {
           if (await authProvider.isEmailVerified()) {
             QuerySnapshot snapshot = await DatabaseProvider(uid: FirebaseAuth.instance.currentUser!.uid).gettingUserData(email);
-            //saving shared preference state
-            await HelperFunctions.saveUserLoggedInStatus(true);
-            await HelperFunctions.saveUserNameSF(snapshot.docs[0]['nombreCompleto']);
-            await HelperFunctions.saveUserEmailSF(email);
-            if (context.mounted) Navigator.pushReplacementNamed(context, 'home');
+            await helper.saveUserLoggedInStatus(true);
+            if (context.mounted) Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const MenuScreen()));
           } else {
             if (mounted) showSnackbar('Por favor verifique su correo', context);
             setState(() {});

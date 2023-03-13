@@ -1,10 +1,9 @@
 
 import 'package:flutter/cupertino.dart';
-import 'package:zonzacar/helpers/helper_function.dart';
 import 'package:zonzacar/widgets/widgets.dart';
 import 'package:flutter/material.dart';
-
 import '../providers/auth_provider.dart';
+import 'dart:io' show Platform;
 
 class RegisterScreen extends StatelessWidget {
    
@@ -22,11 +21,11 @@ class RegisterScreen extends StatelessWidget {
             height: MediaQuery.of(context).size.height * 0.9,
             child: Column(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                const Logo(titulo: 'Registro'),
+              children: const [
+                Logo(titulo: 'Registro'),
                 _Form(),
-                const Labels(ruta: 'login', text: '¿Ya tienes cuenta?', gestureText: 'Accede desde aquí!'),
-                const Text('Términos y condiciones de uso', style: TextStyle(fontWeight: FontWeight.w200),),
+                Labels(ruta: 'login', text: '¿Ya tienes cuenta?', gestureText: 'Accede desde aquí!'),
+                Text('Términos y condiciones de uso', style: TextStyle(fontWeight: FontWeight.w200),),
               ],
             ),
           ),
@@ -70,17 +69,14 @@ class __FormState extends State<_Form> {
               icon: Icons.perm_identity,
               placeholder: 'Nombre completo',
               onChanged: (value) {
-
-                if (value != null) {
                   nombre = value;
                   setState(() {});
-                }
               },
               validator: (value) {
                 //regex for full name, the name and last name must be separated by a space and each name must have at least 2 characters
                 return RegExp(r"^[A-Za-záéíóúüÁÉÍÓÚÜñÑ]{2,}(?:\s[A-Za-záéíóúüÁÉÍÓÚÜñÑ]{2,})+$").hasMatch(value!)
                 ? null
-                : 'Introduce al menos tu primer nombre y apellido';
+                : 'Introduce al menos tu primer nombre y apellido correctamente';
               },
             ),
             CustomInput(
@@ -106,10 +102,10 @@ class __FormState extends State<_Form> {
                 setState(() {});
               },
               validator: (value) {
-                //la contraseña tener al menos  8 caracteres con al menos una letra mayúscula, una letra minúscula y un número y un caracter especial
-                return RegExp(r"^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[!@#\$&*~_+:.]).{8,}$").hasMatch(value!)
+                //la contraseña tener al menos 6 caracteres sin espacios
+                return RegExp(r"^\S{6,}$").hasMatch(value!)
                 ? null
-                : 'Mínimo 8 caracteres con una mayúscula, una minúscula, un número y un caracter especial';
+                : 'La contraseña debe tener al menos 6 caracteres sin espacios';
               },
             ),
             BotonVerde (
@@ -151,18 +147,33 @@ Future _verificarEmailDialog(BuildContext context) async {
     context: context,
     barrierDismissible: false,
     builder: (context) {
-      return AlertDialog(
-        title: const Text('Verifica tu correo'),
-        content: const Text('Te hemos enviado un correo para verificar tu cuenta'),
-        actions: [
-          TextButton(
-            onPressed: () {
-              Navigator.pop(context, true);
-            }, 
-            child: const Text('Ok')
-          )
-        ],
-      );
+      if (Platform.isAndroid) {
+        return AlertDialog(
+          title: const Text('Verifica tu correo'),
+          content: const Text('Te hemos enviado un correo para verificar tu cuenta'),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.pop(context, true);
+              }, 
+              child: const Text('Ok')
+            )
+          ],
+        );
+      } else {
+        return CupertinoAlertDialog(
+          title: const Text('Verifica tu correo'),
+          content: const Text('Te hemos enviado un correo para verificar tu cuenta'),
+          actions: [
+            CupertinoDialogAction(
+              onPressed: () {
+                Navigator.pop(context, true);
+              }, 
+              child: const Text('Ok')
+            )
+          ],
+        );
+      }
     }
   );
 }

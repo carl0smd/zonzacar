@@ -6,12 +6,14 @@ import 'package:zonzacar/providers/database_provider.dart';
 class AuthProvider {
   final FirebaseAuth firebaseAuth = FirebaseAuth.instance;
 
+  final helper = HelperFunctions();
+
   //login
   Future loginUser(String email, String password) async {
 
     try {
-      User user = (await firebaseAuth.signInWithEmailAndPassword(
-        email: email, password: password,)).user!;
+      User? user = (await firebaseAuth.signInWithEmailAndPassword(
+        email: email, password: password,)).user;
 
       if (user != null) {
         return true;
@@ -26,8 +28,8 @@ class AuthProvider {
   Future registerUser(String nombreCompleto, String email, String password) async {
 
     try {
-      User user = (await firebaseAuth.createUserWithEmailAndPassword(
-        email: email, password: password,)).user!;
+      User? user = (await firebaseAuth.createUserWithEmailAndPassword(
+        email: email, password: password,)).user;
 
       if (user != null) {
         await DatabaseProvider(uid: user.uid).savingUserData(nombreCompleto, email);
@@ -42,9 +44,7 @@ class AuthProvider {
   //log out
   Future logOut() async {
     try {
-      await HelperFunctions.saveUserLoggedInStatus(false);
-      await HelperFunctions.saveUserEmailSF('');
-      await HelperFunctions.saveUserNameSF('');
+      await helper.saveUserLoggedInStatus(false);
       await firebaseAuth.signOut();
     } catch (errors) {
       return null;

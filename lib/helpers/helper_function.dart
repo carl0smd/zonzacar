@@ -1,34 +1,24 @@
 
-import 'package:shared_preferences/shared_preferences.dart';
+
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 class HelperFunctions {
 
+  final _storage = const FlutterSecureStorage();
+
   //keys
-  static String userLoggedInKey = "LOGGEDINKEY";
-  static String userNameKey = "USERNAMEKEY";
-  static String userEmailKey = "USEREMAILKEY";
+  final String userLoggedInKey = "LOGGEDINKEY";
 
-  //Guardar los datos en SF
-  static Future<bool> saveUserLoggedInStatus(bool isUserLoggedIn) async {
-    SharedPreferences sf = await SharedPreferences.getInstance();
-    return await sf.setBool(userLoggedInKey, isUserLoggedIn);
+  //Guardar los datos en SS
+  Future saveUserLoggedInStatus(isUserLoggedIn) async {
+    final writeStatus = await _storage.write(key: userLoggedInKey, value: isUserLoggedIn.toString());
+    return writeStatus;
   }
 
-  static Future<bool> saveUserNameSF(String userName) async {
-    SharedPreferences sf = await SharedPreferences.getInstance();
-    return await sf.setString(userNameKey, userName);
+  //Obtener los datos de SS
+  Future getUserLoggedInStatus() async {
+    final readStatus = await _storage.read(key: userLoggedInKey);
+    return readStatus;
   }
-
-  static Future<bool> saveUserEmailSF(String userEmail) async {
-    SharedPreferences sf = await SharedPreferences.getInstance();
-    return await sf.setString(userEmailKey, userEmail);
-  }
-
-  //Recibir los datos de SF
-
-  static Future<bool?> getUserLoggedInStatus() async {
-    SharedPreferences sf = await SharedPreferences.getInstance();
-    return sf.getBool(userLoggedInKey);
-  }
-
+ 
 }

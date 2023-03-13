@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart';
@@ -6,6 +8,8 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:zonzacar/helpers/helper_function.dart';
 import 'package:zonzacar/routes/routes.dart';
 import 'package:zonzacar/shared/constants.dart';
+
+import 'screens/screens.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -31,37 +35,53 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  // bool _isSignedIn = false;
-  User? user = FirebaseAuth.instance.currentUser;
+  bool _isLoggedIn = false;
 
   @override
   void initState() {
-    // getUserLoggedInStatus();
     super.initState();
-    user = FirebaseAuth.instance.currentUser;
+    checkLoggedInStatus();
   }
 
-  // getUserLoggedInStatus() async {
-    // await HelperFunctions.getUserLoggedInStatus().then((value) {
-    //   if(value!=null) {
-    //     _isSignedIn = value;
-    //     setState(() {});
-    //   }
-    // });
-  // }
+  checkLoggedInStatus() async {
+    final helper = HelperFunctions();
+    return helper.getUserLoggedInStatus().then((value) {
+      if (value == 'true') {
+        setState(() {
+          _isLoggedIn = true;
+        });
+      } else {
+        setState(() {
+          _isLoggedIn = false;
+        });
+      }
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      localizationsDelegates: [
-        GlobalMaterialLocalizations.delegate
+      localizationsDelegates: const [
+        GlobalMaterialLocalizations.delegate,
+        GlobalCupertinoLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
       ],
-      supportedLocales: [
-        const Locale('es', 'ES')
+      supportedLocales: const [
+        Locale('es', 'ES')
       ],
       title: 'zonzaCar',
-      initialRoute: user != null ? 'home' : 'login',
+      home: StreamBuilder<User?>(
+        stream: FirebaseAuth.instance.userChanges(),
+        initialData: FirebaseAuth.instance.currentUser,
+        builder: (BuildContext context, AsyncSnapshot<User?> snapshot) {
+          if (snapshot.hasData && _isLoggedIn) {
+            return const MenuScreen();
+          } else {
+            return const LoginScreen();
+          } 
+        },
+      ),
       routes: appRoutes,
       theme: ThemeData(
         primarySwatch: Colors.green,
