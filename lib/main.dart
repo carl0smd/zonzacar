@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -30,22 +31,24 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  bool _isSignedIn = false;
+  // bool _isSignedIn = false;
+  User? user = FirebaseAuth.instance.currentUser;
 
   @override
   void initState() {
+    // getUserLoggedInStatus();
     super.initState();
-    getUserLoggedInStatus();
+    user = FirebaseAuth.instance.currentUser;
   }
 
-  getUserLoggedInStatus() async {
-    await HelperFunctions.getUserLoggedInStatus().then((value) {
-      if(value!=null) {
-        _isSignedIn = value;
-        setState(() {});
-      }
-    });
-  }
+  // getUserLoggedInStatus() async {
+    // await HelperFunctions.getUserLoggedInStatus().then((value) {
+    //   if(value!=null) {
+    //     _isSignedIn = value;
+    //     setState(() {});
+    //   }
+    // });
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -58,7 +61,7 @@ class _MyAppState extends State<MyApp> {
         const Locale('es', 'ES')
       ],
       title: 'zonzaCar',
-      initialRoute: _isSignedIn ? 'home' : 'login',
+      initialRoute: user != null ? 'home' : 'login',
       routes: appRoutes,
       theme: ThemeData(
         primarySwatch: Colors.green,
