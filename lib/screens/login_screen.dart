@@ -116,7 +116,7 @@ class __FormState extends State<_Form> {
       .then((value) async {
         if (value == true) {
           if (await authProvider.isEmailVerified()) {
-            QuerySnapshot snapshot = await DatabaseProvider(uid: FirebaseAuth.instance.currentUser!.uid).gettingUserData(email);
+            QuerySnapshot snapshot = await DatabaseProvider(uid: FirebaseAuth.instance.currentUser!.uid).gettingUserDataByEmail(email);
             await helper.saveUserLoggedInStatus(true);
             await helper.saveUserEmail(email);
             await helper.saveUserName(snapshot.docs[0].get('nombreCompleto'));

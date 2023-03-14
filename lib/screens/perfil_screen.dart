@@ -5,9 +5,10 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:zonzacar/helpers/helper_function.dart';
 import 'package:zonzacar/providers/auth_provider.dart';
+import 'package:zonzacar/providers/database_provider.dart';
 import 'package:zonzacar/screens/login_screen.dart';
+import 'package:zonzacar/widgets/widgets.dart';
 
 class PerfilScreen extends StatefulWidget {
    
@@ -48,6 +49,7 @@ class _PerfilScreenState extends State<PerfilScreen> {
   Widget build(BuildContext context) {
 
     AuthProvider authProvider = AuthProvider();
+    DatabaseProvider databaseProvider = DatabaseProvider();
 
     void uploadImage(camara) async {
       final image = await ImagePicker().pickImage(
@@ -64,11 +66,7 @@ class _PerfilScreenState extends State<PerfilScreen> {
       ref.getDownloadURL().then((value) {
         setState(() {
           userImage = value;
-          //save image to firestore
-          FirebaseFirestore.instance.collection('usuarios').doc(FirebaseAuth.instance.currentUser!.uid)
-          .set({
-            'imagenPerfil': userImage,
-          }, SetOptions(merge: true));
+          databaseProvider.storeProfileImage(userImage);
         });
       });
     }
@@ -98,7 +96,7 @@ class _PerfilScreenState extends State<PerfilScreen> {
         child: SingleChildScrollView(
           physics: const BouncingScrollPhysics(),
           child: Container(
-            margin: EdgeInsets.only(left: 20, right: 20),
+            margin: const EdgeInsets.only(left: 20, right: 20),
             height: MediaQuery.of(context).size.height * 0.8,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -133,65 +131,13 @@ class _PerfilScreenState extends State<PerfilScreen> {
                 TextButton(
                   child: const Text('Editar foto de perfil', style: TextStyle(fontSize: 16, color: Colors.green)),
                   onPressed: () async {
-                    return showDialog(
-                      context: context,
-                      builder: (context) {
-                        if (Platform.isAndroid) {
-                          return AlertDialog(
-                            title: const Text('Selecciona una opción', textAlign: TextAlign.center,),
-                            content: SingleChildScrollView(
-                              child: ListBody(
-                                children: [
-                                  TextButton(
-                                    child: const Text('Cámara'),
-                                    onPressed: () {
-                                      uploadImage(true);
-                                      Navigator.of(context).pop();
-                                    },
-                                  ),
-                                  TextButton(
-                                    child: const Text('Galería'),
-                                    onPressed: () {
-                                      uploadImage(false);
-                                      Navigator.of(context).pop();
-                                    },
-                                  ),
-                                ],
-                              ),
-                            ),
-                          );
-                        }
-                        return CupertinoAlertDialog(
-                          title: const Text('Selecciona una opción', textAlign: TextAlign.center,),
-                          content: SingleChildScrollView(
-                            child: ListBody(
-                              children: [
-                                TextButton(
-                                  child: const Text('Cámara'),
-                                  onPressed: () {
-                                    uploadImage(true);
-                                    Navigator.of(context).pop();
-                                  },
-                                ),
-                                TextButton(
-                                  child: const Text('Galería'),
-                                  onPressed: () {
-                                    uploadImage(false);
-                                    Navigator.of(context).pop();
-                                  },
-                                ),
-                              ],
-                            ),
-                          ),
-                        );
-                      }
-                    );
+                    return editarFotoDialog(context, uploadImage);
                   },
                 ),
                 TextButton(
-                  child: const Text('Editar datos', style: TextStyle(fontSize: 16, color: Colors.green)),
-                  onPressed: () {
-                    print('Editar datos');
+                  child: const Text('Editar nombre', style: TextStyle(fontSize: 16, color: Colors.green)),
+                  onPressed: () async {
+                    return _editarNombreDialog(context, databaseProvider);
                   },
                 ),
                 const Divider(thickness: 1,),
@@ -214,6 +160,108 @@ class _PerfilScreenState extends State<PerfilScreen> {
           ),
         ),
       )
+    );
+  }
+
+  Future<void> _editarNombreDialog(BuildContext context, DatabaseProvider databaseProvider) {
+    final formKey = GlobalKey<FormState>();
+    final nameController = TextEditingController();
+    return showDialog(
+      context: context,
+      builder: (context) {
+        if (Platform.isAndroid) {
+          return AlertDialog(
+            title: const Text('Editar nombre', textAlign: TextAlign.center,),
+            content: SingleChildScrollView(
+              child: ListBody(
+                children: [
+                  Form(
+                    key: formKey,
+                    child: TextFormField(
+                      controller: nameController,
+                      decoration: const InputDecoration(
+                        hintText: 'Nombre',
+                      ),
+                      validator: (value) {
+                        return RegExp(r"^[A-Za-záéíóúüÁÉÍÓÚÜñÑ]{2,}(?:\s[A-Za-záéíóúüÁÉÍÓÚÜñÑ]{2,})?$").hasMatch(value!.trim())
+                        ? null
+                        : 'Introduce un nombre válido';
+                      },
+                    ),
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      TextButton(
+                        child: const Text('Cancelar'),
+                        onPressed: () {
+                          Navigator.of(context).pop();
+                        },
+                      ),
+                      TextButton(
+                        child: const Text('Guardar'),
+                        onPressed: () {
+                          if (formKey.currentState!.validate()) {
+                            setState(() {});
+                            userName = nameController.text.trim();
+                            databaseProvider.updateUserName(userName);
+                            Navigator.of(context).pop();
+                          }
+                        },
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+          );
+        }
+        return CupertinoAlertDialog(
+          title: const Text('Editar nombre', textAlign: TextAlign.center,),
+          content: SingleChildScrollView(
+            child: ListBody(
+              children: [
+                Form(
+                  key: formKey,
+                  child: TextFormField(
+                    controller: nameController,
+                    decoration: const InputDecoration(
+                      hintText: 'Nombre',
+                    ),
+                    validator: (value) {
+                      return RegExp(r"^[A-Za-záéíóúüÁÉÍÓÚÜñÑ]{2,}(?:\s[A-Za-záéíóúüÁÉÍÓÚÜñÑ]{2,})?$").hasMatch(value!.trim())
+                      ? null
+                      : 'Introduce un nombre válido';
+                    },
+                  ),
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    TextButton(
+                      child: const Text('Cancelar'),
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                      },
+                    ),
+                    TextButton(
+                      child: const Text('Guardar'),
+                      onPressed: () {
+                        if (formKey.currentState!.validate()) {
+                          setState(() {});
+                          userName = nameController.text.trim();
+                          databaseProvider.updateUserName(userName);
+                          Navigator.of(context).pop();
+                        }
+                      },
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+        );
+      }
     );
   }
 }

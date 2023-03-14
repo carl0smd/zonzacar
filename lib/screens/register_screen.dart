@@ -67,16 +67,16 @@ class __FormState extends State<_Form> {
           children: [
             CustomInput(
               icon: Icons.perm_identity,
-              placeholder: 'Nombre completo',
+              placeholder: 'Nombre',
               onChanged: (value) {
                   nombre = value;
                   setState(() {});
               },
               validator: (value) {
                 //regex for full name, the name and last name must be separated by a space and each name must have at least 2 characters
-                return RegExp(r"^[A-Za-záéíóúüÁÉÍÓÚÜñÑ]{2,}(?:\s[A-Za-záéíóúüÁÉÍÓÚÜñÑ]{2,})+$").hasMatch(value!)
+                return RegExp(r"^[A-Za-záéíóúüÁÉÍÓÚÜñÑ]{2,}(?:\s[A-Za-záéíóúüÁÉÍÓÚÜñÑ]{2,})?$").hasMatch(value!)
                 ? null
-                : 'Introduce al menos tu primer nombre y apellido correctamente';
+                : 'Introduce un nombre válido, mínimo 2 caracteres';
               },
             ),
             CustomInput(
@@ -149,7 +149,7 @@ Future _verificarEmailDialog(BuildContext context) async {
     builder: (context) {
       if (Platform.isAndroid) {
         return AlertDialog(
-          title: const Text('Verifica tu correo'),
+          title: const Text('Comprueba tu correo', textAlign: TextAlign.center,),
           content: const Text('Te hemos enviado un correo para verificar tu cuenta'),
           actions: [
             TextButton(
@@ -162,7 +162,7 @@ Future _verificarEmailDialog(BuildContext context) async {
         );
       } else {
         return CupertinoAlertDialog(
-          title: const Text('Verifica tu correo'),
+          title: const Text('Comprueba tu correo', textAlign: TextAlign.center,),
           content: const Text('Te hemos enviado un correo para verificar tu cuenta'),
           actions: [
             CupertinoDialogAction(

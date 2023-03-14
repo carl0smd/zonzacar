@@ -32,7 +32,7 @@ class AuthProvider {
         email: email, password: password,)).user;
 
       if (user != null) {
-        await DatabaseProvider(uid: user.uid).savingUserData(nombreCompleto, email);
+        await DatabaseProvider(uid: user.uid).savingUserDataOnRegister(nombreCompleto, email);
         return true;
       }
 
