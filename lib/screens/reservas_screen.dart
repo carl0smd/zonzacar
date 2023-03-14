@@ -20,7 +20,7 @@ class ReservasScreen extends StatelessWidget {
                 height: size.height * 0.4,
                 decoration: const BoxDecoration(
                   image: DecorationImage(
-                    image: AssetImage('assets/logo.png'),
+                    image: AssetImage('assets/reservas-nobg.png'),
                     fit: BoxFit.contain,
                   ),
                 ),
