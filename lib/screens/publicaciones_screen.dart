@@ -1,61 +1,92 @@
 import 'package:flutter/material.dart';
 
-class PublicacionesScreen extends StatelessWidget {
+class PublicacionesScreen extends StatefulWidget {
    
   const PublicacionesScreen({Key? key}) : super(key: key);
-  
+
+  @override
+  State<PublicacionesScreen> createState() => _PublicacionesScreenState();
+}
+
+class _PublicacionesScreenState extends State<PublicacionesScreen> {
+
+  final _goToZonzamasSearchController = TextEditingController();
+  final _goFromZonzamasSearchController = TextEditingController();
+
+
   @override
   Widget build(BuildContext context) {
 
     final size = MediaQuery.of(context).size;
 
-    return Scaffold(
-      body: SafeArea(
-        child: Container(
-          margin: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 20.0),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Container(                 
-                height: size.height * 0.38,
-                width:  double.infinity,
-                decoration: const BoxDecoration(
-                  image: DecorationImage(
-                    image: AssetImage('assets/voy-al-centro.png'),
-                    fit: BoxFit.contain,
+    return DefaultTabController(
+      length: 2,
+      child: Scaffold(
+        body: SafeArea(
+          child: Container(
+            margin: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 20.0),
+            child: Column(
+              children: [
+                const TabBar(
+                  labelColor: Colors.green,
+                  unselectedLabelColor: Colors.grey,
+                  indicatorColor: Colors.green,
+                  tabs: [
+                    Tab(text: 'Voy a clase'),
+                    Tab(text: 'Salgo de clase'),
+                  ],
+                ),
+                Expanded(
+                  child: TabBarView(
+                    children: [
+                      Column(
+                        children: [
+                          Container(                 
+                            height: size.height * 0.38,
+                            width:  double.infinity,
+                            decoration: const BoxDecoration(
+                              image: DecorationImage(
+                                image: AssetImage('assets/voy-al-centro.png'),
+                                fit: BoxFit.contain,
+                              ),
+                            ),
+                          ),
+                          TextField(
+                            controller: _goToZonzamasSearchController,
+                            autofocus: false,
+                            showCursor: false,
+                            decoration: const InputDecoration(
+                              hintText: 'Indica el lugar de salida...',
+                              hintStyle: TextStyle(color: Colors.grey,),
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.all(Radius.circular(10.0)),
+                              ),
+
+                            ),
+
+                      
+                          )
+                        ],
+                      ),
+                      Column(
+                        children: [
+                          Container(                 
+                            height: size.height * 0.38,
+                            width:  double.infinity,
+                            decoration: const BoxDecoration(
+                              image: DecorationImage(
+                                image: AssetImage('assets/voy-al-centro.png'),
+                                fit: BoxFit.contain,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
                   ),
                 ),
-              ),
-              Container(
-                margin: const EdgeInsets.only(top: 20.0),
-                decoration: BoxDecoration(
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.black.withOpacity(0.1),
-                      spreadRadius: 2,
-                      blurRadius: 10,
-                      offset: const Offset(0, 0), // changes position of shadow
-                    ),
-                  ],
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(20.0),
-                ),
-                child: Column(
-                  children: [
-                    TextButton(
-                      onPressed: () {},
-                      child: const Text('Voy al centro'),
-                    ),
-                    const Divider( height: 20, thickness: 1,),
-                    TextButton(
-                      onPressed: () {},
-                      child: const Text('Salgo del centro'),
-                    ),
-                  ],
-                ),
-              )
-              
-            ],
+              ],
+            ),
           ),
         ),
       ),

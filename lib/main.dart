@@ -16,10 +16,10 @@ void main() async {
 
   if(kIsWeb) {
     await Firebase.initializeApp(options: FirebaseOptions(
-      apiKey: Constants.apiKey, 
-      appId: Constants.appId, 
-      messagingSenderId: Constants.messagingSenderId, 
-      projectId: Constants.projectId
+      apiKey: FirebaseConstants.apiKey, 
+      appId: FirebaseConstants.appId, 
+      messagingSenderId: FirebaseConstants.messagingSenderId, 
+      projectId: FirebaseConstants.projectId
     ));
   } else {
     await Firebase.initializeApp();
@@ -41,6 +41,11 @@ class _MyAppState extends State<MyApp> {
   void initState() {
     super.initState();
     checkLoggedInStatus();
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
   }
 
   checkLoggedInStatus() async {
