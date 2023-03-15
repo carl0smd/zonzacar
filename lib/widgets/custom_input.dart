@@ -31,20 +31,20 @@ class CustomInput extends StatelessWidget {
           prefixIcon: Icon(icon),
           focusedBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(30),
-            borderSide: BorderSide(color: Colors.green)
+            borderSide: const BorderSide(color: Colors.green)
           ),
           enabledBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(30),
-            borderSide: BorderSide(color: Colors.black38)
+            borderSide: const BorderSide(color: Colors.black38)
           ),
           border: OutlineInputBorder(
             borderRadius: BorderRadius.circular(30),
-            borderSide: BorderSide(color: Colors.transparent)
+            borderSide: const BorderSide(color: Colors.transparent)
           ),
           hintText: placeholder,
           errorBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(30),
-            borderSide: BorderSide(color: Colors.red)
+            borderSide: const BorderSide(color: Colors.red)
           ),
           errorMaxLines: 3,
         ),

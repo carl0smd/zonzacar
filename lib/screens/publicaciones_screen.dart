@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:zonzacar/screens/screens.dart';
 import '../providers/google_places_provider.dart';
 import 'package:uuid/uuid.dart';
 
@@ -84,13 +85,15 @@ class _PublicacionesScreenState extends State<PublicacionesScreen> {
                         placeList: goToPlaceList,
                         hintText: '¿Desde dónde sales?',
                         imagePath: 'assets/publicaciones1.png',
+                        isGoingToZonzamas: true,
                       ),
                       SearchBar(
                         size: size, 
                         goToZonzamasSearchController: _goFromZonzamasSearchController, 
                         placeList: goFromPlaceList, 
                         hintText: '¿Hacia dónde vas?', 
-                        imagePath: 'assets/publicaciones2.png'
+                        imagePath: 'assets/publicaciones2.png',
+                        isGoingToZonzamas: false,
                       )
                     ],
                   ),
@@ -109,7 +112,7 @@ class SearchBar extends StatelessWidget {
     super.key,
     required this.size,
     required TextEditingController goToZonzamasSearchController,
-    required this.placeList, required this.hintText, required this.imagePath,
+    required this.placeList, required this.hintText, required this.imagePath, required this.isGoingToZonzamas,
   }) : _goToZonzamasSearchController = goToZonzamasSearchController;
 
   final Size size;
@@ -117,6 +120,7 @@ class SearchBar extends StatelessWidget {
   final List placeList;
   final String hintText;
   final String imagePath;
+  final bool isGoingToZonzamas;
 
   @override
   Widget build(BuildContext context) {
@@ -132,39 +136,46 @@ class SearchBar extends StatelessWidget {
             ),
           ),
         ),
-        TextField(
-          controller: _goToZonzamasSearchController,
-          autofocus: false,
-          showCursor: false,
-          decoration: InputDecoration(
-            prefixIcon: const Icon(Icons.search),
-            suffixIcon: IconButton(
-              onPressed: () {
-                _goToZonzamasSearchController.clear();
-              }, 
-              icon: const Icon(Icons.clear)
-            ),
-            hintText: hintText,
-            hintStyle: const TextStyle(color: Colors.grey,),
-            border: const OutlineInputBorder(
-              borderRadius: BorderRadius.all(Radius.circular(10.0)),
+        Container(
+          margin: const EdgeInsets.symmetric(horizontal: 8.0),
+          child: TextField(
+            controller: _goToZonzamasSearchController,
+            autofocus: false,
+            showCursor: false,
+            decoration: InputDecoration(
+              prefixIcon: const Icon(Icons.search),
+              suffixIcon: IconButton(
+                onPressed: () {
+                  _goToZonzamasSearchController.clear();
+                }, 
+                icon: const Icon(Icons.clear)
+              ),
+              hintText: hintText,
+              hintStyle: const TextStyle(color: Colors.grey,),
+              border: const OutlineInputBorder(
+                borderRadius: BorderRadius.all(Radius.circular(10.0)),
+              ),
             ),
           ),
         ),
         const SizedBox(height: 10.0),
-        ListView.builder(
-          shrinkWrap: true,
-          itemCount: placeList.length,
-          itemBuilder: (context, index) {
-            return ListTile(
-              leading: const Icon(Icons.location_on),
-              title: Text(placeList[index].description),
-              trailing: const Icon(Icons.keyboard_arrow_right),
-              onTap: () {
-                print('Voy a air desde ${placeList[index].description} hasta el CIFP Zonzamas');
-              },
-            );
-          }
+        Flexible(
+          child: ListView.builder(
+            physics: const BouncingScrollPhysics(),
+            shrinkWrap: true,
+            itemCount: placeList.length,
+            itemBuilder: (context, index) {
+              return ListTile(
+                leading: const Icon(Icons.location_on),
+                title: Text(placeList[index].description),
+                trailing: const Icon(Icons.keyboard_arrow_right),
+                onTap: () {
+                  Navigator.push(context, MaterialPageRoute(builder: (context) => PublicarTrayectoScreen(isGoingToZonzamas: isGoingToZonzamas,)));
+                  print('Voy a air desde ${placeList[index].description} hasta el CIFP Zonzamas');
+                },
+              );
+            }
+          ),
         )
       ],
     );

@@ -8,7 +8,6 @@ final Map<String, Widget Function(BuildContext)> appRoutes = {
   // 'chat'    : ( _ ) => const ChatScreen(),
   'login'   : ( _ ) => const LoginScreen(),
   'register': ( _ ) => const RegisterScreen(),
-  'loading' : ( _ ) => const LoadingScreen(),
   'home'    : ( _ ) => const MenuScreen(),
 
 };

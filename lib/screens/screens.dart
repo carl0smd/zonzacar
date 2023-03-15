@@ -1,7 +1,8 @@
+export 'package:zonzacar/screens/publicar_trayecto.dart';
+
 export 'package:zonzacar/screens/menu_principal_screen.dart';
 
 export 'package:zonzacar/screens/chat_screen.dart';
-export 'package:zonzacar/screens/loading_screen.dart';
 export 'package:zonzacar/screens/login_screen.dart';
 export 'package:zonzacar/screens/perfil_screen.dart';
 export 'package:zonzacar/screens/publicaciones_screen.dart';

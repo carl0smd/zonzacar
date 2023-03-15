@@ -85,7 +85,7 @@ class _PerfilScreenState extends State<PerfilScreen> {
                   authProvider.logOut();
                   Navigator.of(context, rootNavigator: true).pushReplacement(MaterialPageRoute(builder: (context) => const LoginScreen()));
                 }, 
-                icon: const Icon(Icons.logout, color: Colors.green,)
+                icon: const Icon(Icons.logout)
               )
             ],
           ),
@@ -107,13 +107,13 @@ class _PerfilScreenState extends State<PerfilScreen> {
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(userName, style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold),),
+                        Text(userName, style: const TextStyle(fontSize: 28, fontWeight: FontWeight.bold),),
                         const SizedBox(height: 10,),
                         Text(userEmail),
                       ],
                     ),
                     CircleAvatar(
-                      backgroundColor: Colors.green,
+                      backgroundColor: Colors.black87,
                       radius: 52,
                       child: CircleAvatar(
                         backgroundColor: Colors.white,

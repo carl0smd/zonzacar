@@ -15,7 +15,7 @@ class Logo extends StatelessWidget {
         child: Column(
           children: [
             const Image(image: AssetImage('assets/logo.png'),),
-            Text(titulo, style: TextStyle(fontSize: 30,),)
+            Text(titulo, style: const TextStyle(fontSize: 30,),)
           ],
         ),
       ),

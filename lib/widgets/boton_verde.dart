@@ -13,13 +13,13 @@ class BotonVerde extends StatelessWidget {
 
       style: ButtonStyle(
         backgroundColor: MaterialStateProperty.all(Colors.green),
-        shape: MaterialStatePropertyAll(StadiumBorder())
+        shape: const MaterialStatePropertyAll(StadiumBorder())
       ),
       onPressed: onPressed,
       child: Container(
         height: 55,
         child: Center(
-          child: Text(text, style: TextStyle(fontSize: 17),)
+          child: Text(text, style: const TextStyle(fontSize: 17),)
         )
       ),
     );
