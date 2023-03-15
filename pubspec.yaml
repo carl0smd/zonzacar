@@ -40,9 +40,11 @@ dependencies:
   flutter_localizations:
     sdk: flutter
   flutter_secure_storage: ^8.0.0
+  http: ^0.13.5
   image_picker: ^0.8.7
   intl: ^0.17.0
   persistent_bottom_nav_bar: ^5.0.2
+  uuid: ^3.0.7
 
 dev_dependencies:
   flutter_launcher_icons: ^0.12.0

@@ -1,5 +1,3 @@
-import 'dart:async';
-
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart';
@@ -13,7 +11,6 @@ import 'screens/screens.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-
   if(kIsWeb) {
     await Firebase.initializeApp(options: FirebaseOptions(
       apiKey: FirebaseConstants.apiKey, 

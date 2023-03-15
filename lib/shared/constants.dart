@@ -4,7 +4,3 @@ class FirebaseConstants {
   static String messagingSenderId = "1068722437145";
   static String projectId = "zonzacar";
 }
-
-class GoogleConstants {
-  static String apiKey = "AIzaSyChq95jpxmwNComEH2yuE7E_RjES__r2JM";
-}

@@ -20,7 +20,7 @@ class ReservasScreen extends StatelessWidget {
                 height: size.height * 0.4,
                 decoration: const BoxDecoration(
                   image: DecorationImage(
-                    image: AssetImage('assets/reservas-nobg.png'),
+                    image: AssetImage('assets/reservas.png'),
                     fit: BoxFit.contain,
                   ),
                 ),
@@ -73,7 +73,7 @@ class _CajaDeBusqueda extends StatelessWidget {
       children: [
         TextField(
           controller: origenCtrl,
-          decoration: InputDecoration(
+          decoration: const InputDecoration(
             hintText: 'Origen',
             prefixIcon: Icon(Icons.fmd_good_outlined),                      
           ),
@@ -81,7 +81,7 @@ class _CajaDeBusqueda extends StatelessWidget {
 
         TextField(
           controller: destinoCtrl,
-          decoration: InputDecoration(              
+          decoration: const InputDecoration(              
             hintText: 'Destino',
             prefixIcon: Icon(Icons.fmd_good_outlined),
           ),
@@ -91,7 +91,7 @@ class _CajaDeBusqueda extends StatelessWidget {
           controller: fechaCtrl,
           maxLength: 10,
           readOnly: true,                   
-          decoration: InputDecoration(
+          decoration: const InputDecoration(
             hintText: 'Fecha',
             prefixIcon: Icon(Icons.calendar_month_outlined),
             counterText: '',
@@ -112,8 +112,7 @@ class _CajaDeBusqueda extends StatelessWidget {
         ),
 
         TextButton(
-          onPressed: (){}, 
-          child: Text('Buscar'),
+          onPressed: (){},
           style: TextButton.styleFrom(
             backgroundColor: Colors.green[400],
             foregroundColor: Colors.white,
@@ -121,7 +120,8 @@ class _CajaDeBusqueda extends StatelessWidget {
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(20.0),
             ),
-          ),
+          ), 
+          child: const Text('Buscar'),
         ),
 
         
