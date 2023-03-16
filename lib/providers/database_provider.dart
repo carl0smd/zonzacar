@@ -35,10 +35,10 @@ class DatabaseProvider {
 
   //actualizar nombre de usuario
   Future updateUserName(String nombreCompleto) async {
-    usuarioCollection.doc(FirebaseAuth.instance.currentUser!.uid)
-    .set({
+    await usuarioCollection.doc(FirebaseAuth.instance.currentUser!.uid)
+    .update({
       'nombreCompleto': nombreCompleto,
-    }, SetOptions(merge: true));
+    });
   }
 
   //buscar al usuario en la base de datos por email
@@ -47,30 +47,53 @@ class DatabaseProvider {
     return snapshot;
   }
 
+  //get usuario actual
+  Future getCurrentUser() async {
+    QuerySnapshot snapshot = await usuarioCollection.where('uid', isEqualTo: FirebaseAuth.instance.currentUser!.uid).get();
+    return snapshot;
+  }
+
   //guardar imagen de perfil
   Future storeProfileImage(String userImage) async {
-    usuarioCollection.doc(FirebaseAuth.instance.currentUser!.uid)
-    .set({
+    await usuarioCollection.doc(FirebaseAuth.instance.currentUser!.uid)
+    .update({
       'imagenPerfil': userImage,
-    }, SetOptions(merge: true));
+    });
   }
 
   //eliminar usuario de la base de datos
   Future deleteUser() async {
-    usuarioCollection.doc(FirebaseAuth.instance.currentUser!.uid).delete();
+    await usuarioCollection.doc(FirebaseAuth.instance.currentUser!.uid).delete();
   }
 
   //guardar vehiculos
   Future saveVehicle(String matricula, String marca, String modelo, String color) async {
-    return await vehiculosCollection.doc().set({
+    final id = vehiculosCollection.doc().id;
+    await vehiculosCollection.doc(id).set({
       'matricula': matricula,
       'marca': marca,
       'modelo': modelo,
       'color': color,
       'conductor': FirebaseAuth.instance.currentUser!.uid,
-      'uid' : ''
+      'uid' : id,
+    });
+
+    await usuarioCollection.doc(FirebaseAuth.instance.currentUser!.uid).update({
+      'vehiculos': FieldValue.arrayUnion([id]),
     });
   }
+
+  //get vehiculos de usuario
+  Future getVehicles() async {
+    QuerySnapshot snapshot = await vehiculosCollection.where('conductor', isEqualTo: FirebaseAuth.instance.currentUser!.uid).get();
+    return snapshot.docs;
+  }
+
+  //eliminar vehiculo
+  Future deleteVehicle(String uid) async {
+    await vehiculosCollection.doc(uid).delete();
+  }
+
 
   
 }

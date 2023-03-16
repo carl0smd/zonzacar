@@ -149,7 +149,7 @@ Future<void> editarFotoDialog(BuildContext context, void Function(dynamic camara
               child: const Text('Añadir', style: TextStyle(fontSize: 16, color: Colors.green)),
               onPressed: () async {
                 if (formKey.currentState!.validate()) {
-                  await databaseProvider.saveVehicle(matriculaController.text.trim(), modeloController.text.trim(), colorController.text.trim(), marcaController.text.trim());
+                  await databaseProvider.saveVehicle(matriculaController.text.trim(), marcaController.text.trim(), modeloController.text.trim(), colorController.text.trim());
                   Navigator.of(context).pop();
                 }
               },

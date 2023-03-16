@@ -23,33 +23,30 @@ class _PerfilScreenState extends State<PerfilScreen> {
   String userName = '';
   String userEmail = '';
   String userImage = '';
+  AuthProvider authProvider = AuthProvider();
+  DatabaseProvider databaseProvider = DatabaseProvider();
+  List vehicles = [];
 
-  Future _getCurrentUser() async {
-    await FirebaseFirestore.instance.collection('usuarios')
-    .doc(FirebaseAuth.instance.currentUser!.uid)
-    .get()
-    .then((snapshot) async {
-      if (snapshot.exists) {
-        setState(() {
-          userEmail = snapshot.data()!['email'];
-          userName = snapshot.data()!['nombreCompleto'];
-          userImage = snapshot.data()!['imagenPerfil'];
-        });
-      }
-    });
-  }
 
   @override
   void initState() {
     super.initState();
-    _getCurrentUser();
+    databaseProvider.getCurrentUser().then((value) {
+      setState(() {
+        userName = value.docs[0].data()['nombreCompleto'];
+        userEmail = value.docs[0].data()['email'];
+        userImage = value.docs[0].data()['imagenPerfil'];
+      });
+    });
+    databaseProvider.getVehicles().then((value) {
+      setState(() {
+        vehicles.addAll(value);
+      });
+    });
   }
 
   @override
   Widget build(BuildContext context) {
-
-    AuthProvider authProvider = AuthProvider();
-    DatabaseProvider databaseProvider = DatabaseProvider();
 
     void uploadImage(camara) async {
       final image = await ImagePicker().pickImage(
@@ -109,7 +106,7 @@ class _PerfilScreenState extends State<PerfilScreen> {
                       children: [
                         Text(userName, style: const TextStyle(fontSize: 28, fontWeight: FontWeight.bold),),
                         const SizedBox(height: 10,),
-                        Text(userEmail),
+                        Text(userEmail, style: const TextStyle(fontSize: 16, color: Colors.green),),
                       ],
                     ),
                     CircleAvatar(
@@ -128,6 +125,8 @@ class _PerfilScreenState extends State<PerfilScreen> {
                     ),
                   ],
                 ),
+                const Divider(thickness: 1,),
+                const Text('Datos', style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold),),
                 TextButton(
                   child: const Text('Editar foto de perfil', style: TextStyle(fontSize: 16, color: Colors.green)),
                   onPressed: () async {
@@ -145,8 +144,38 @@ class _PerfilScreenState extends State<PerfilScreen> {
                 TextButton(
                   child: const Text('Añadir vehículo', style: TextStyle(fontSize: 16, color: Colors.green)),
                   onPressed: () async {
-                    return addVehicleDialog(context, databaseProvider);
+                    await addVehicleDialog(context, databaseProvider);
+                    //after closing the dialog, refresh the list
+                    await databaseProvider.getVehicles().then((value) {
+                      setState(() {
+                        vehicles.clear();
+                        vehicles.addAll(value);
+                      });
+                    });
                   },
+                ),
+                Flexible(
+                  child: ListView.builder(
+                    itemCount: vehicles.length,
+                    shrinkWrap: true,
+                    physics: const BouncingScrollPhysics(),
+                    itemBuilder: (context, index) {
+                      return ListTile(
+                        leading: const Icon(Icons.directions_car, color: Colors.green),
+                        title: Text(vehicles[index]['marca'] + ' - ' + vehicles[index]['modelo'] + ' - '+ vehicles[index]['color']),
+                        subtitle: Text(vehicles[index]['matricula']),
+                        trailing: IconButton(
+                          onPressed: () async {
+                            await databaseProvider.deleteVehicle(vehicles[index]['uid']);
+                            setState(() {
+                              vehicles.removeAt(index);
+                            });
+                          }, 
+                          icon: const Icon(Icons.delete, color: Colors.red,)
+                        ),
+                      );
+                    },
+                  ),
                 ),
                 const Divider(thickness: 1,),
                 TextButton(
