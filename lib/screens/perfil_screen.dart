@@ -144,8 +144,8 @@ class _PerfilScreenState extends State<PerfilScreen> {
                 const Text('Vehículos', style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold),),
                 TextButton(
                   child: const Text('Añadir vehículo', style: TextStyle(fontSize: 16, color: Colors.green)),
-                  onPressed: () {
-                    print('Editar datos');
+                  onPressed: () async {
+                    return addVehicleDialog(context, databaseProvider);
                   },
                 ),
                 const Divider(thickness: 1,),

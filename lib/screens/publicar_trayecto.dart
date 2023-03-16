@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 
 class PublicarTrayectoScreen extends StatelessWidget {
-  
+
+  final String zona;
   final bool isGoingToZonzamas;
 
-  const PublicarTrayectoScreen({Key? key, required this.isGoingToZonzamas}) : super(key: key);
+  const PublicarTrayectoScreen({Key? key, required this.isGoingToZonzamas, required this.zona}) : super(key: key);
   
   @override
   Widget build(BuildContext context) {

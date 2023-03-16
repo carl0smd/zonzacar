@@ -174,7 +174,8 @@ class SearchBar extends StatelessWidget {
                 title: Text(placeList[index].description),
                 trailing: const Icon(Icons.keyboard_arrow_right),
                 onTap: () {
-                  Navigator.push(context, MaterialPageRoute(builder: (context) => PublicarTrayectoScreen(isGoingToZonzamas: isGoingToZonzamas,)));
+                  Navigator.push(context, MaterialPageRoute(builder: (context) => PublicarTrayectoScreen(isGoingToZonzamas: isGoingToZonzamas, zona: placeList[index].description,)));
+                  FocusScope.of(context).unfocus();
                   print('Voy a air desde ${placeList[index].description} hasta el CIFP Zonzamas');
                   _zonzamasSearchController.clear();
                 },

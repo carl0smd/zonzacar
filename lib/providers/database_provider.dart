@@ -55,18 +55,22 @@ class DatabaseProvider {
     }, SetOptions(merge: true));
   }
 
+  //eliminar usuario de la base de datos
+  Future deleteUser() async {
+    usuarioCollection.doc(FirebaseAuth.instance.currentUser!.uid).delete();
+  }
+
   //guardar vehiculos
-  Future storeVehicle(String matricula, String marca, String modelo, String color) async {
-    vehiculosCollection.doc(matricula).set({
+  Future saveVehicle(String matricula, String marca, String modelo, String color) async {
+    return await vehiculosCollection.doc().set({
       'matricula': matricula,
       'marca': marca,
       'modelo': modelo,
       'color': color,
       'conductor': FirebaseAuth.instance.currentUser!.uid,
-    });
-    usuarioCollection.doc(FirebaseAuth.instance.currentUser!.uid)
-    .set({
-      'vehiculos': FieldValue.arrayUnion([matricula]),
+      'uid' : ''
     });
   }
+
+  
 }
