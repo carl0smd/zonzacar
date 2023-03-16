@@ -10,17 +10,19 @@ class PublicarTrayectoScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-         title: const Text('Trayecto'),
          elevation: 0,
          backgroundColor: Colors.transparent,
          foregroundColor: Colors.black,
-         centerTitle: true,
+         automaticallyImplyLeading: false,
          actions: [
-            IconButton(
-               onPressed: () {
-                  Navigator.pop(context);
-               },
-               icon: const Icon(Icons.clear),
+            Container(
+              margin: const EdgeInsets.only(right: 5.0),
+              child: IconButton(
+                 onPressed: () {
+                    Navigator.of(context).pop();               
+                 },
+                 icon: const Icon(Icons.clear, size: 40, color: Colors.green),
+              ),
             ),
          ],
       ),

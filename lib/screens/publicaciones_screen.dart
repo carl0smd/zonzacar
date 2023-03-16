@@ -21,20 +21,20 @@ class _PublicacionesScreenState extends State<PublicacionesScreen> {
   List<dynamic> goToPlaceList = [];
   List<dynamic> goFromPlaceList = [];
 
-  var _sessionToken;
+  dynamic _sessionToken;
 
   @override
   void initState() {
     super.initState();
     _goToZonzamasSearchController.addListener(() {
-      _onChangedGoToController();
+      _onChangedGoZonzamasToController();
     });
     _goFromZonzamasSearchController.addListener(() {
-      _onChangedGoFromController();
+      _onChangedGoFromZonzamasController();
     });
   }
 
-  _onChangedGoToController() async {
+  _onChangedGoZonzamasToController() async {
     if (_sessionToken == null) {
       setState(() {
         _sessionToken = const Uuid().v4();
@@ -44,7 +44,7 @@ class _PublicacionesScreenState extends State<PublicacionesScreen> {
     setState(() {});
   }
 
-  _onChangedGoFromController() async {
+  _onChangedGoFromZonzamasController() async {
     if (_sessionToken == null) {
       setState(() {
         _sessionToken = const Uuid().v4();
@@ -81,7 +81,7 @@ class _PublicacionesScreenState extends State<PublicacionesScreen> {
                     children: [
                       SearchBar(
                         size: size, 
-                        goToZonzamasSearchController: _goToZonzamasSearchController, 
+                        zonzamasSearchController: _goToZonzamasSearchController, 
                         placeList: goToPlaceList,
                         hintText: '¿Desde dónde sales?',
                         imagePath: 'assets/publicaciones1.png',
@@ -89,7 +89,7 @@ class _PublicacionesScreenState extends State<PublicacionesScreen> {
                       ),
                       SearchBar(
                         size: size, 
-                        goToZonzamasSearchController: _goFromZonzamasSearchController, 
+                        zonzamasSearchController: _goFromZonzamasSearchController, 
                         placeList: goFromPlaceList, 
                         hintText: '¿Hacia dónde vas?', 
                         imagePath: 'assets/publicaciones2.png',
@@ -111,12 +111,12 @@ class SearchBar extends StatelessWidget {
   const SearchBar({
     super.key,
     required this.size,
-    required TextEditingController goToZonzamasSearchController,
+    required TextEditingController zonzamasSearchController,
     required this.placeList, required this.hintText, required this.imagePath, required this.isGoingToZonzamas,
-  }) : _goToZonzamasSearchController = goToZonzamasSearchController;
+  }) : _zonzamasSearchController = zonzamasSearchController;
 
   final Size size;
-  final TextEditingController _goToZonzamasSearchController;
+  final TextEditingController _zonzamasSearchController;
   final List placeList;
   final String hintText;
   final String imagePath;
@@ -126,6 +126,7 @@ class SearchBar extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       children: [
+        const SizedBox(height: 10.0),
         Container(                 
           height: size.height * 0.38,
           width:  double.infinity,
@@ -139,17 +140,20 @@ class SearchBar extends StatelessWidget {
         Container(
           margin: const EdgeInsets.symmetric(horizontal: 8.0),
           child: TextField(
-            controller: _goToZonzamasSearchController,
+            controller: _zonzamasSearchController,
             autofocus: false,
             showCursor: false,
             decoration: InputDecoration(
+              filled: true,
+              fillColor: Colors.white,
               prefixIcon: const Icon(Icons.search),
               suffixIcon: IconButton(
                 onPressed: () {
-                  _goToZonzamasSearchController.clear();
+                  _zonzamasSearchController.clear();
                 }, 
                 icon: const Icon(Icons.clear)
               ),
+              
               hintText: hintText,
               hintStyle: const TextStyle(color: Colors.grey,),
               border: const OutlineInputBorder(
@@ -172,6 +176,7 @@ class SearchBar extends StatelessWidget {
                 onTap: () {
                   Navigator.push(context, MaterialPageRoute(builder: (context) => PublicarTrayectoScreen(isGoingToZonzamas: isGoingToZonzamas,)));
                   print('Voy a air desde ${placeList[index].description} hasta el CIFP Zonzamas');
+                  _zonzamasSearchController.clear();
                 },
               );
             }
