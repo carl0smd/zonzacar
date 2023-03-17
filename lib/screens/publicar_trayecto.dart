@@ -1,14 +1,45 @@
-import 'package:flutter/material.dart';
+import 'dart:async';
 
-class PublicarTrayectoScreen extends StatelessWidget {
+import 'package:flutter/material.dart';
+import 'package:zonzacar/providers/database_provider.dart';
+
+class PublicarTrayectoScreen extends StatefulWidget {
 
   final String zona;
   final bool isGoingToZonzamas;
 
   const PublicarTrayectoScreen({Key? key, required this.isGoingToZonzamas, required this.zona}) : super(key: key);
+
+  @override
+  State<PublicarTrayectoScreen> createState() => _PublicarTrayectoScreenState();
+}
+
+class _PublicarTrayectoScreenState extends State<PublicarTrayectoScreen> {
   
+  DatabaseProvider databaseProvider = DatabaseProvider();
+  bool _userHasCar = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _checkIfUserHasCar();
+  }
+
+
+
+  void _checkIfUserHasCar() async {
+    await databaseProvider.getVehicles().then((value) {
+      if (value.isNotEmpty) {
+        setState(() {
+          _userHasCar = true;
+        });
+      }
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
+    
     return Scaffold(
       appBar: AppBar(
          elevation: 0,
@@ -27,8 +58,19 @@ class PublicarTrayectoScreen extends StatelessWidget {
             ),
          ],
       ),
-      body: Center(
-         child: Text('PublicarTrayectoScreen'),
+      body: _userHasCar ? Center(
+         child: Text('Tienes coche'),
+      )
+      : Container(
+        child: Center(
+           child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                 const Text('Añade un coche a tu perfil para poder publicar trayectos'),
+                 IconButton(onPressed: (){}, icon: Icon(Icons.directions_car))
+              ],
+           ),
+        ),
       ),
     );
   }

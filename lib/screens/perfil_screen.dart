@@ -1,6 +1,4 @@
 import 'dart:io';
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -162,7 +160,7 @@ class _PerfilScreenState extends State<PerfilScreen> {
                     itemBuilder: (context, index) {
                       return ListTile(
                         leading: const Icon(Icons.directions_car, color: Colors.green),
-                        title: Text(vehicles[index]['marca'] + ' - ' + vehicles[index]['modelo'] + ' - '+ vehicles[index]['color']),
+                        title: Text(vehicles[index]['marca'] + ' ' + vehicles[index]['modelo'] + ' - '+ vehicles[index]['color']),
                         subtitle: Text(vehicles[index]['matricula']),
                         trailing: IconButton(
                           onPressed: () async {
@@ -268,7 +266,7 @@ class _PerfilScreenState extends State<PerfilScreen> {
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
                     TextButton(
-                      child: const Text('Cancelar'),
+                      child: const Text('Cancelar', style: TextStyle(color: Colors.red),),
                       onPressed: () {
                         Navigator.of(context).pop();
                       },

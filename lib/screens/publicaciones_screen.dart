@@ -1,4 +1,7 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
+import 'package:persistent_bottom_nav_bar/persistent_tab_view.dart';
 import 'package:zonzacar/screens/screens.dart';
 import '../providers/google_places_provider.dart';
 import 'package:uuid/uuid.dart';
@@ -17,6 +20,8 @@ class _PublicacionesScreenState extends State<PublicacionesScreen> {
   final _goFromZonzamasSearchController = TextEditingController();
 
   final googlePlaceProvider = GooglePlacesProvider();
+
+  Timer? _debounce;
 
   List<dynamic> goToPlaceList = [];
   List<dynamic> goFromPlaceList = [];
@@ -40,8 +45,11 @@ class _PublicacionesScreenState extends State<PublicacionesScreen> {
         _sessionToken = const Uuid().v4();
       });
     }
-    goToPlaceList = await googlePlaceProvider.placeAutocomplete(_goToZonzamasSearchController.text, _sessionToken);
-    setState(() {});
+    if (_debounce?.isActive ?? false) _debounce!.cancel();
+    _debounce = Timer(const Duration(milliseconds: 250), () async {
+      goToPlaceList = await googlePlaceProvider.placeAutocomplete(_goToZonzamasSearchController.text, _sessionToken);
+      setState(() {});
+    });
   }
 
   _onChangedGoFromZonzamasController() async {
@@ -50,8 +58,11 @@ class _PublicacionesScreenState extends State<PublicacionesScreen> {
         _sessionToken = const Uuid().v4();
       });
     }
-    goFromPlaceList = await googlePlaceProvider.placeAutocomplete(_goFromZonzamasSearchController.text, _sessionToken);
-    setState(() {});
+    if (_debounce?.isActive ?? false) _debounce!.cancel();
+    _debounce = Timer(const Duration(milliseconds: 250), () async {
+      goFromPlaceList = await googlePlaceProvider.placeAutocomplete(_goFromZonzamasSearchController.text, _sessionToken);
+      setState(() {});
+    });
   }
 
   @override
@@ -174,9 +185,15 @@ class SearchBar extends StatelessWidget {
                 title: Text(placeList[index].description),
                 trailing: const Icon(Icons.keyboard_arrow_right),
                 onTap: () {
-                  Navigator.push(context, MaterialPageRoute(builder: (context) => PublicarTrayectoScreen(isGoingToZonzamas: isGoingToZonzamas, zona: placeList[index].description,)));
+                  PersistentNavBarNavigator.pushNewScreen(
+                    withNavBar: false,
+                    context, 
+                    screen: PublicarTrayectoScreen(
+                    isGoingToZonzamas: isGoingToZonzamas, 
+                    zona: placeList[index].description,
+                    )
+                  );
                   FocusScope.of(context).unfocus();
-                  print('Voy a air desde ${placeList[index].description} hasta el CIFP Zonzamas');
                   _zonzamasSearchController.clear();
                 },
               );

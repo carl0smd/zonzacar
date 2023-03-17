@@ -67,12 +67,13 @@ class DatabaseProvider {
   }
 
   //guardar vehiculos
-  Future saveVehicle(String matricula, String marca, String modelo, String color) async {
+  Future saveVehicle(String matricula, String marca, String modelo, String plazas, String color) async {
     final id = vehiculosCollection.doc().id;
     await vehiculosCollection.doc(id).set({
       'matricula': matricula,
       'marca': marca,
       'modelo': modelo,
+      'plazas' : plazas,
       'color': color,
       'conductor': FirebaseAuth.instance.currentUser!.uid,
       'uid' : id,
@@ -92,6 +93,9 @@ class DatabaseProvider {
   //eliminar vehiculo
   Future deleteVehicle(String uid) async {
     await vehiculosCollection.doc(uid).delete();
+    await usuarioCollection.doc(FirebaseAuth.instance.currentUser!.uid).update({
+      'vehiculos': FieldValue.arrayRemove([uid]),
+    });
   }
 
 

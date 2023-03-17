@@ -4,6 +4,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:zonzacar/providers/database_provider.dart';
+import 'package:zonzacar/shared/constants.dart';
 
 Future<void> editarFotoDialog(BuildContext context, void Function(dynamic camara) uploadImage) {
     return showDialog(
@@ -67,7 +68,8 @@ Future<void> editarFotoDialog(BuildContext context, void Function(dynamic camara
     final formKey = GlobalKey<FormState>();
     final matriculaController = TextEditingController();
     final modeloController = TextEditingController();
-    final colorController = TextEditingController();
+    String color = '';
+    String plazas = '';
     final marcaController = TextEditingController();
 
     return showDialog(
@@ -80,59 +82,100 @@ Future<void> editarFotoDialog(BuildContext context, void Function(dynamic camara
           content: SingleChildScrollView(
             child: ListBody(
               children: [
-                Form(
-                  key: formKey,
-                  child: Column(
-                    children: [
-                      TextFormField(
-                        controller: matriculaController,
-                        decoration: const InputDecoration(
-                          hintText: 'Matrícula',
+                Container(
+                  width: MediaQuery.of(context).size.width * 0.8,
+                  child: Form(
+                    key: formKey,
+                    child: Column(
+                      children: [
+                        TextFormField(
+                          controller: matriculaController,
+                          decoration: const InputDecoration(
+                            hintText: 'Matrícula',
+                          ),
+                          validator: (value) {
+                            if (value!.trim().isEmpty) {
+                              return 'Introduce una matrícula';
+                            }
+                            return null;
+                          },
                         ),
-                        validator: (value) {
-                          if (value == null || value.isEmpty) {
-                            return 'Introduce una matrícula';
-                          }
-                          return null;
-                        },
-                      ),
-                      TextFormField(
-                        controller: marcaController,
-                        decoration: const InputDecoration(
-                          hintText: 'Marca',
+                        const SizedBox(height: 10.0),
+                        TextFormField(
+                          controller: marcaController,
+                          decoration: const InputDecoration(
+                            hintText: 'Marca',
+                          ),
+                          validator: (value) {
+                            if (value!.trim().isEmpty) {
+                              return 'Introduce una marca';
+                            }
+                            return null;
+                          },
                         ),
-                        validator: (value) {
-                          if (value == null || value.isEmpty) {
-                            return 'Introduce una marca';
-                          }
-                          return null;
-                        },
-                      ),
-                      TextFormField(
-                        controller: modeloController,
-                        decoration: const InputDecoration(
-                          hintText: 'Modelo',
+                        const SizedBox(height: 10.0),
+                        TextFormField(
+                          controller: modeloController,
+                          decoration: const InputDecoration(
+                            hintText: 'Modelo',
+                          ),
+                          validator: (value) {
+                            if (value!.trim().isEmpty) {
+                              return 'Introduce un modelo';
+                            }
+                            return null;
+                          },
                         ),
-                        validator: (value) {
-                          if (value == null || value.isEmpty) {
-                            return 'Introduce un modelo';
+                        const SizedBox(height: 10.0),
+                        DropdownButtonFormField(
+                          items: CochesConstants.plazas.map((value) {
+                            return DropdownMenuItem<String>(
+                              value: value.toString(),
+                              child: Text(value.toString()),
+                            );
+                          }).toList(),
+                          onChanged: (value) {
+                            plazas = value.toString();
+                          },
+                          decoration: const InputDecoration(
+                            hintText: 'Plazas',
+                            border:  OutlineInputBorder(
+                              borderRadius: BorderRadius.all(Radius.circular(10.0)),
+                            ),
+                          ),
+                          validator: (value) {
+                            if (value == null || value.isEmpty) {
+                              return 'Elije un número de plazas';
+                            }
+                            return null;
                           }
-                          return null;
-                        },
-                      ),
-                      TextFormField(
-                        controller: colorController,
-                        decoration: const InputDecoration(
-                          hintText: 'Color',
                         ),
-                        validator: (value) {
-                          if (value == null || value.isEmpty) {
-                            return 'Introduce un color';
+                        const SizedBox(height: 10.0),
+                        DropdownButtonFormField(
+                          items: ColoresConstants.colores.map((String value) {
+                            return DropdownMenuItem<String>(
+                              value: value,
+                              child: Text(value),
+                            );
+                          }).toList(),
+                          onChanged: (value) {
+                            color = value.toString();
+                          },
+                          decoration: const InputDecoration(
+                            hintText: 'Color',
+                            border:  OutlineInputBorder(
+                              borderRadius: BorderRadius.all(Radius.circular(10.0)),
+                            ),
+                          ),
+                          validator: (value) {
+                            if (value == null || value.isEmpty) {
+                              return 'Elije un color';
+                            }
+                            return null;
                           }
-                          return null;
-                        },
-                      ),
-                    ],
+                        )
+                      ],
+                    ),
                   ),
                 ),
               ],
@@ -149,7 +192,13 @@ Future<void> editarFotoDialog(BuildContext context, void Function(dynamic camara
               child: const Text('Añadir', style: TextStyle(fontSize: 16, color: Colors.green)),
               onPressed: () async {
                 if (formKey.currentState!.validate()) {
-                  await databaseProvider.saveVehicle(matriculaController.text.trim(), marcaController.text.trim(), modeloController.text.trim(), colorController.text.trim());
+                  await databaseProvider.saveVehicle(
+                    matriculaController.text.trim(), 
+                    marcaController.text.trim(), 
+                    modeloController.text.trim(), 
+                    plazas,
+                    color
+                  );
                   Navigator.of(context).pop();
                 }
               },
@@ -163,59 +212,100 @@ Future<void> editarFotoDialog(BuildContext context, void Function(dynamic camara
             content: SingleChildScrollView(
               child: ListBody(
                 children: [
-                  Form(
-                    key: formKey,
-                    child: Column(
-                      children: [
-                        TextFormField(
-                          controller: matriculaController,
-                          decoration: const InputDecoration(
-                            hintText: 'Matrícula',
+                  Container(
+                    width: MediaQuery.of(context).size.width * 0.8,
+                    child: Form(
+                      key: formKey,
+                      child: Column(
+                        children: [
+                          TextFormField(
+                            controller: matriculaController,
+                            decoration: const InputDecoration(
+                              hintText: 'Matrícula',
+                            ),
+                            validator: (value) {
+                              if (value!.trim().isEmpty) {
+                                return 'Introduce una matrícula';
+                              }
+                              return null;
+                            },
                           ),
-                          validator: (value) {
-                            if (value == null || value.isEmpty) {
-                              return 'Introduce una matrícula';
-                            }
-                            return null;
-                          },
-                        ),
-                        TextFormField(
-                          controller: marcaController,
-                          decoration: const InputDecoration(
-                            hintText: 'Marca',
+                          const SizedBox(height: 10.0),
+                          TextFormField(
+                            controller: marcaController,
+                            decoration: const InputDecoration(
+                              hintText: 'Marca',
+                            ),
+                            validator: (value) {
+                              if (value!.trim().isEmpty) {
+                                return 'Introduce una marca';
+                              }
+                              return null;
+                            },
                           ),
-                          validator: (value) {
-                            if (value == null || value.isEmpty) {
-                              return 'Introduce una marca';
-                            }
-                            return null;
-                          },
-                        ),
-                        TextFormField(
-                          controller: modeloController,
-                          decoration: const InputDecoration(
-                            hintText: 'Modelo',
+                          const SizedBox(height: 10.0),
+                          TextFormField(
+                            controller: modeloController,
+                            decoration: const InputDecoration(
+                              hintText: 'Modelo',
+                            ),
+                            validator: (value) {
+                              if (value!.trim().isEmpty) {
+                                return 'Introduce un modelo';
+                              }
+                              return null;
+                            },
                           ),
-                          validator: (value) {
-                            if (value == null || value.isEmpty) {
-                              return 'Introduce un modelo';
+                          const SizedBox(height: 10.0),
+                          DropdownButtonFormField(
+                            items: CochesConstants.plazas.map((value) {
+                              return DropdownMenuItem<String>(
+                                value: value.toString(),
+                                child: Text(value.toString()),
+                              );
+                            }).toList(),
+                            onChanged: (value) {
+                              plazas = value.toString();
+                            },
+                            decoration: const InputDecoration(
+                              hintText: 'Plazas',
+                              border:  OutlineInputBorder(
+                                borderRadius: BorderRadius.all(Radius.circular(10.0)),
+                              ),
+                            ),
+                            validator: (value) {
+                              if (value == null || value.isEmpty) {
+                                return 'Elije un número de plazas';
+                              }
+                              return null;
                             }
-                            return null;
-                          },
-                        ),
-                        TextFormField(
-                          controller: colorController,
-                          decoration: const InputDecoration(
-                            hintText: 'Color',
                           ),
-                          validator: (value) {
-                            if (value == null || value.isEmpty) {
-                              return 'Introduce un color';
+                          const SizedBox(height: 10.0),
+                          DropdownButtonFormField(
+                            items: ColoresConstants.colores.map((String value) {
+                              return DropdownMenuItem<String>(
+                                value: value,
+                                child: Text(value),
+                              );
+                            }).toList(),
+                            onChanged: (value) {
+                              color = value.toString();
+                            },
+                            decoration: const InputDecoration(
+                              hintText: 'Color',
+                              border:  OutlineInputBorder(
+                                borderRadius: BorderRadius.all(Radius.circular(10.0)),
+                              ),
+                            ),
+                            validator: (value) {
+                              if (value == null || value.isEmpty) {
+                                return 'Elije un color';
+                              }
+                              return null;
                             }
-                            return null;
-                          },
-                        ),
-                      ],
+                          )
+                        ],
+                      ),
                     ),
                   ),
                 ],
@@ -232,7 +322,13 @@ Future<void> editarFotoDialog(BuildContext context, void Function(dynamic camara
                 child: const Text('Añadir', style: TextStyle(fontSize: 16, color: Colors.green)),
                 onPressed: () async {
                   if (formKey.currentState!.validate()) {
-                    await databaseProvider.saveVehicle(matriculaController.text.trim(), modeloController.text.trim(), colorController.text.trim(), marcaController.text.trim());
+                    await databaseProvider.saveVehicle(
+                      matriculaController.text.trim(), 
+                      marcaController.text.trim(), 
+                      modeloController.text.trim(), 
+                      plazas, 
+                      color
+                    );
                     Navigator.of(context).pop();
                   }
                 },

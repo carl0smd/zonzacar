@@ -4,3 +4,26 @@ class FirebaseConstants {
   static String messagingSenderId = "1068722437145";
   static String projectId = "zonzacar";
 }
+
+class ColoresConstants {
+  static List<String> colores = [
+    'Amarillo',
+    'Azul',
+    'Beige',
+    'Blanco',
+    'Dorado',
+    'Gris',
+    'Marrón',
+    'Morado',
+    'Naranja',
+    'Negro',
+    'Plateado',
+    'Rojo',
+    'Rosa',
+    'Verde',
+  ];
+}
+
+class CochesConstants {
+  static List<int> plazas = [2, 5, 7, 9];
+}
