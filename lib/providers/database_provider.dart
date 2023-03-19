@@ -98,6 +98,26 @@ class DatabaseProvider {
     });
   }
 
+  //guardar publicacion
+  Future savePublication(String zona, String fecha, String hora, String origen, String destino, String plazas, String precio, String descripcion, String uidVehiculo) async {
+    final id = vehiculosCollection.doc().id;
+    await publicacionesCollection.doc(id).set({
+      'zona': zona,
+      'fecha': fecha,
+      'horaSalida': hora,
+      'origen': origen,
+      'destino': destino,
+      'plazas': plazas,
+      'precio': precio,
+      'vehiculo': uidVehiculo,
+      'conductor': FirebaseAuth.instance.currentUser!.uid,
+      'uid': id,
+    });
+
+    await usuarioCollection.doc(FirebaseAuth.instance.currentUser!.uid).update({
+      'publicaciones': FieldValue.arrayUnion([id]),
+    });
+  }
 
   
 }

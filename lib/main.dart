@@ -16,8 +16,10 @@ void main() async {
     await Firebase.initializeApp(options: FirebaseOptions(
       apiKey: FirebaseConstants.apiKey, 
       appId: FirebaseConstants.appId, 
+      authDomain: FirebaseConstants.authDomain,
       messagingSenderId: FirebaseConstants.messagingSenderId, 
-      projectId: FirebaseConstants.projectId
+      projectId: FirebaseConstants.projectId,
+      storageBucket: FirebaseConstants.storageBucket,
     ));
   } else {
     await Firebase.initializeApp();
