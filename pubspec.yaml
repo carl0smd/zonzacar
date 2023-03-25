@@ -28,7 +28,6 @@ environment:
 # the latest version available on pub.dev. To see which dependencies have newer
 # versions available, run `flutter pub outdated`.
 dependencies:
-  animate_do: ^3.0.2
   cloud_firestore: ^4.4.4
   cupertino_icons: ^1.0.2
   firebase_auth: ^4.2.10
@@ -39,7 +38,9 @@ dependencies:
   flutter_google_places: ^0.3.0
   flutter_localizations:
     sdk: flutter
+  flutter_polyline_points: ^1.0.0
   flutter_secure_storage: ^8.0.0
+  google_maps_flutter: ^2.2.5
   http: ^0.13.5
   image_picker: ^0.8.7
   intl: ^0.17.0

@@ -3,7 +3,8 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:persistent_bottom_nav_bar/persistent_tab_view.dart';
 import 'package:zonzacar/screens/screens.dart';
-import '../providers/google_places_provider.dart';
+import '../models/models.dart';
+import '../providers/google_services_provider.dart';
 import 'package:uuid/uuid.dart';
 
 class PublicacionesScreen extends StatefulWidget {
@@ -19,7 +20,7 @@ class _PublicacionesScreenState extends State<PublicacionesScreen> {
   final _goToZonzamasSearchController = TextEditingController();
   final _goFromZonzamasSearchController = TextEditingController();
 
-  final googlePlaceProvider = GooglePlacesProvider();
+  final googlePlaceProvider = GoogleServicesProvider();
 
   Timer? _debounce;
 
@@ -118,7 +119,7 @@ class _PublicacionesScreenState extends State<PublicacionesScreen> {
   }
 }
 
-class SearchBar extends StatelessWidget {
+class SearchBar extends StatefulWidget {
   const SearchBar({
     super.key,
     required this.size,
@@ -134,16 +135,25 @@ class SearchBar extends StatelessWidget {
   final bool isGoingToZonzamas;
 
   @override
+  State<SearchBar> createState() => _SearchBarState();
+}
+
+class _SearchBarState extends State<SearchBar> {
+  @override
   Widget build(BuildContext context) {
+
+    final GoogleServicesProvider googlePlaceProvider = GoogleServicesProvider();
+    Location? coords;
+
     return Column(
       children: [
         const SizedBox(height: 10.0),
         Container(                 
-          height: size.height * 0.38,
+          height: widget.size.height * 0.38,
           width:  double.infinity,
           decoration: BoxDecoration(
             image: DecorationImage(
-              image: AssetImage(imagePath),
+              image: AssetImage(widget.imagePath),
               fit: BoxFit.contain,
             ),
           ),
@@ -151,7 +161,7 @@ class SearchBar extends StatelessWidget {
         Container(
           margin: const EdgeInsets.symmetric(horizontal: 8.0),
           child: TextField(
-            controller: _zonzamasSearchController,
+            controller: widget._zonzamasSearchController,
             autofocus: false,
             showCursor: false,
             decoration: InputDecoration(
@@ -160,12 +170,12 @@ class SearchBar extends StatelessWidget {
               prefixIcon: const Icon(Icons.search),
               suffixIcon: IconButton(
                 onPressed: () {
-                  _zonzamasSearchController.clear();
+                  widget._zonzamasSearchController.clear();
                 }, 
                 icon: const Icon(Icons.clear)
               ),
               
-              hintText: hintText,
+              hintText: widget.hintText,
               hintStyle: const TextStyle(color: Colors.grey,),
               border: const OutlineInputBorder(
                 borderRadius: BorderRadius.all(Radius.circular(10.0)),
@@ -178,23 +188,30 @@ class SearchBar extends StatelessWidget {
           child: ListView.builder(
             physics: const BouncingScrollPhysics(),
             shrinkWrap: true,
-            itemCount: placeList.length,
+            itemCount: widget.placeList.length,
             itemBuilder: (context, index) {
               return ListTile(
                 leading: const Icon(Icons.location_on),
-                title: Text(placeList[index].description),
+                title: Text(widget.placeList[index].description),
                 trailing: const Icon(Icons.keyboard_arrow_right),
-                onTap: () {
-                  PersistentNavBarNavigator.pushNewScreen(
-                    withNavBar: false,
-                    context, 
-                    screen: PublicarTrayectoScreen(
-                    isGoingToZonzamas: isGoingToZonzamas, 
-                    zona: placeList[index].description,
-                    )
-                  );
-                  FocusScope.of(context).unfocus();
-                  _zonzamasSearchController.clear();
+                onTap: () async {
+                  await googlePlaceProvider.placeCoordinates(widget.placeList[index].placeId).then(((value) => {
+                    coords = value
+                  }));
+                  if (mounted) {
+                    PersistentNavBarNavigator.pushNewScreen(
+                      withNavBar: false,
+                      context, 
+                      screen: PublicarTrayectoScreen(
+                      isGoingToZonzamas: widget.isGoingToZonzamas, 
+                      zona: widget.placeList[index].description,
+                      zonaLat: coords!.lat,
+                      zonaLng: coords!.lng,
+                      )
+                    );
+                    FocusScope.of(context).unfocus();
+                    widget._zonzamasSearchController.clear();
+                  }
                 },
               );
             }
