@@ -6,6 +6,7 @@ import 'package:persistent_bottom_nav_bar/persistent_tab_view.dart';
 import 'package:zonzacar/providers/database_provider.dart';
 import 'package:zonzacar/providers/google_services_provider.dart';
 import 'package:zonzacar/screens/screens.dart';
+import 'package:zonzacar/widgets/dialogos_para_editar.dart';
 
 class PublicarTrayectoScreen extends StatefulWidget {
 
@@ -86,7 +87,7 @@ class _PublicarTrayectoScreenState extends State<PublicarTrayectoScreen> {
                 backgroundColor: Colors.transparent,
                 foregroundColor: Colors.black,
                 centerTitle: true,
-                leading: Container(
+                leading: _userHasCar ? Container(
                   margin: const EdgeInsets.only(left: 5.0),
                   child: IconButton(
                     onPressed: () {
@@ -98,8 +99,9 @@ class _PublicarTrayectoScreenState extends State<PublicarTrayectoScreen> {
                     },
                     icon: const Icon(Icons.check, size: 40, color: Colors.green),
                   ),
-                ),
-                title: const Text('¿Esta es la ruta?'),
+                )
+                : Container(),
+                title: _userHasCar ? const Text('¿Esta es la ruta?') : null,
                 actions: [
                     Container(
                       margin: const EdgeInsets.only(right: 5.0),
@@ -138,9 +140,11 @@ class _PublicarTrayectoScreenState extends State<PublicarTrayectoScreen> {
                 child: Center(
                   child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        const Text('Añade un coche a tu perfil para poder publicar trayectos'),
-                        ElevatedButton(onPressed: (){}, child: Icon(Icons.directions_car))
+                      children: const [
+                        Text('Para publicar trayectos debes añadir un vehículo a tu perfil', 
+                        style: TextStyle(fontSize: 20.0, color: Colors.green), 
+                        overflow: TextOverflow.clip, 
+                        textAlign: TextAlign.center,),
                       ],
                   ),
                 ),
@@ -148,7 +152,7 @@ class _PublicarTrayectoScreenState extends State<PublicarTrayectoScreen> {
             );
             
           } else {
-            return Scaffold(
+            return const Scaffold(
               body: Center(
                 child: CircularProgressIndicator(),
               ),
