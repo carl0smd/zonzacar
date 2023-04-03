@@ -59,8 +59,25 @@ class _PublicarTrayectoScreenState extends State<PublicarTrayectoScreen> {
       position: LatLng(double.parse(origin.split(',')[0]), double.parse(origin.split(',')[1])),
       infoWindow: const InfoWindow(title: 'Origen'),
       draggable: true,
+      consumeTapEvents: true,
+      onTap: () {
+        _controller.future.then((value) {
+          value.animateCamera(CameraUpdate.newCameraPosition(CameraPosition(
+            target: LatLng(double.parse(origin.split(',')[0]), double.parse(origin.split(',')[1])),
+            zoom: 14,
+          )));
+        });
+      },
       icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueGreen),
-      onTap: null
+      onDragEnd: (newPosition) async {
+        await googleServicesProvider.getPolylineAndDistance('${newPosition.latitude},${newPosition.longitude}', destination).then((value) {
+          setState(() {
+            origin = '${newPosition.latitude},${newPosition.longitude}';
+            result.clear();
+            result.addAll(PolylinePoints().decodePolyline(value[0]));
+          });
+        });
+      },
     );
 
     Marker destinationMarker = Marker(
@@ -76,11 +93,11 @@ class _PublicarTrayectoScreenState extends State<PublicarTrayectoScreen> {
     );
    
       return FutureBuilder(
-        future: googleServicesProvider.getPolyline(origin, destination),
+        future: googleServicesProvider.getPolylineAndDistance(origin, destination),
         builder: (BuildContext context, AsyncSnapshot snapshot) {
           if (snapshot.hasData) {
             result.clear();
-            result.addAll(PolylinePoints().decodePolyline(snapshot.data));
+            result.addAll(PolylinePoints().decodePolyline(snapshot.data[0]));
             return Scaffold(
               appBar: AppBar(
                 elevation: 0,
@@ -94,7 +111,7 @@ class _PublicarTrayectoScreenState extends State<PublicarTrayectoScreen> {
                       PersistentNavBarNavigator.pushNewScreen(
                         context, 
                         withNavBar: false,
-                        screen: const FormularioTrayectoScreen(),
+                        screen: FormularioTrayectoScreen(distancia: snapshot.data[1],),
                       );
                     },
                     icon: const Icon(Icons.check, size: 40, color: Colors.green),

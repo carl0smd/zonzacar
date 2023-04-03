@@ -1,3 +1,4 @@
+
 class FirebaseConstants {
   static String apiKey = "AIzaSyCEFUhH1gsvZk9C-8w4Qjb6X0SR7FoG-C8";
   static String appId = "1:1068722437145:web:fa9379baa6d9bc007ffe88";
@@ -28,4 +29,12 @@ class ColoresConstants {
 
 class CochesConstants {
   static List<int> plazas = [2, 5, 7, 9];
+}
+
+class PrecioConstants{
+  //Precio medio de gasolina por kilómetro España 2023
+  static double precioPorKm = 0.20;
+
+  //10% de comisión para zonzaCar
+  static double porcentajeZonzaCar = 1.10;
 }

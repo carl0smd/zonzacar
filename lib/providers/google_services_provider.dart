@@ -50,7 +50,7 @@ class GoogleServicesProvider{
     }
   }
 
-  Future<String> getPolyline(String origin, String destination) async {
+  Future<List<String>> getPolylineAndDistance(String origin, String destination) async {
     Uri request = Uri.https(authority, '/maps/api/directions/json', {
       'origin': origin,
       'destination': destination,
@@ -59,10 +59,9 @@ class GoogleServicesProvider{
     final response = await http.get(request);
     if (response.statusCode == 200) {
       final directionsResponse = DirectionsResponse.fromRawJson(response.body);
-      return directionsResponse.routes[0].overviewPolyline.points;
+      return [directionsResponse.routes[0].overviewPolyline.points, directionsResponse.routes[0].legs[0].distance.text];
     } else {
       throw Exception('Failed to load predictions');
     }
-    
   }
 }

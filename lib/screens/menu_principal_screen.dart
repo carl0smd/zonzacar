@@ -55,6 +55,7 @@ class MenuScreen extends StatelessWidget {
 List<Widget> _buildScreens() {
   return [
     const ReservasScreen(),
+    // const FormularioTrayectoScreen(distancia: 'hola',),
     const PublicacionesScreen(),
     const ChatScreen(),
     const PerfilScreen(),

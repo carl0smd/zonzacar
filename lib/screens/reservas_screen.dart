@@ -101,6 +101,11 @@ class _CajaDeBusqueda extends StatelessWidget {
             DateFormat dateFormat = DateFormat('dd/MM/yyyy');
             DateTime? nuevaFecha = await showDatePicker(
               context: context, 
+              selectableDayPredicate: (DateTime val) {
+                if (val.weekday == 6 || val.weekday == 7) return false;
+                if (val.month == 7 || val.month == 8) return false;
+                return true;
+              },
               initialDate: DateTime.now(), 
               firstDate: DateTime.now(), 
               lastDate: DateTime.now().add(const Duration(days: 30)) 
