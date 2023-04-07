@@ -35,6 +35,6 @@ class PrecioConstants{
   //Precio medio de gasolina por kilómetro España 2023
   static double precioPorKm = 0.20;
 
-  //10% de comisión para zonzaCar
-  static double porcentajeZonzaCar = 1.10;
+  //15% de gastos de gestión para zonzaCar (costos de la api)
+  static double porcentajeZonzaCar = 1.15;
 }

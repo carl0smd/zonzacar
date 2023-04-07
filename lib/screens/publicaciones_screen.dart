@@ -47,8 +47,9 @@ class _PublicacionesScreenState extends State<PublicacionesScreen> {
       });
     }
     if (_debounce?.isActive ?? false) _debounce!.cancel();
-    _debounce = Timer(const Duration(milliseconds: 250), () async {
+    _debounce = Timer(const Duration(milliseconds: 350), () async {
       goToPlaceList = await googlePlaceProvider.placeAutocomplete(_goToZonzamasSearchController.text, _sessionToken);
+      print('Estoy llamando a la API');
       setState(() {});
     });
   }
@@ -60,8 +61,9 @@ class _PublicacionesScreenState extends State<PublicacionesScreen> {
       });
     }
     if (_debounce?.isActive ?? false) _debounce!.cancel();
-    _debounce = Timer(const Duration(milliseconds: 250), () async {
+    _debounce = Timer(const Duration(milliseconds: 350), () async {
       goFromPlaceList = await googlePlaceProvider.placeAutocomplete(_goFromZonzamasSearchController.text, _sessionToken);
+      print('Estoy llamando a la API');
       setState(() {});
     });
   }

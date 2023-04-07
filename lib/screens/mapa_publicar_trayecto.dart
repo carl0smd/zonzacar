@@ -27,11 +27,15 @@ class _PublicarTrayectoScreenState extends State<PublicarTrayectoScreen> {
   
   DatabaseProvider databaseProvider = DatabaseProvider();
   bool _userHasCar = false;
+  String _mapTheme = '';
 
   @override
   void initState() {
     super.initState();
     _checkIfUserHasCar();
+    DefaultAssetBundle.of(context).loadString('assets/map_theme/classic_no_labels.json').then((string) {
+      _mapTheme = string;
+    });
   }
 
   void _checkIfUserHasCar() async {
@@ -58,24 +62,14 @@ class _PublicarTrayectoScreenState extends State<PublicarTrayectoScreen> {
       markerId: const MarkerId('origin'),
       position: LatLng(double.parse(origin.split(',')[0]), double.parse(origin.split(',')[1])),
       infoWindow: const InfoWindow(title: 'Origen'),
-      draggable: true,
       consumeTapEvents: true,
+      icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueGreen),
       onTap: () {
         _controller.future.then((value) {
           value.animateCamera(CameraUpdate.newCameraPosition(CameraPosition(
             target: LatLng(double.parse(origin.split(',')[0]), double.parse(origin.split(',')[1])),
-            zoom: 14,
+            zoom: 18,
           )));
-        });
-      },
-      icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueGreen),
-      onDragEnd: (newPosition) async {
-        await googleServicesProvider.getPolylineAndDistance('${newPosition.latitude},${newPosition.longitude}', destination).then((value) {
-          setState(() {
-            origin = '${newPosition.latitude},${newPosition.longitude}';
-            result.clear();
-            result.addAll(PolylinePoints().decodePolyline(value[0]));
-          });
         });
       },
     );
@@ -85,17 +79,27 @@ class _PublicarTrayectoScreenState extends State<PublicarTrayectoScreen> {
       position: LatLng(double.parse(destination.split(',')[0]), double.parse(destination.split(',')[1])),
       infoWindow: const InfoWindow(title: 'Destino'),
       icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueRed),
+      consumeTapEvents: true,
+      onTap: () {
+        _controller.future.then((value) {
+          value.animateCamera(CameraUpdate.newCameraPosition(CameraPosition(
+            target: LatLng(double.parse(destination.split(',')[0]), double.parse(destination.split(',')[1])),
+            zoom: 18,
+          )));
+        });
+      },
     );
 
     CameraPosition kGooglePlex = CameraPosition(
       target: LatLng(double.parse(origin.split(',')[0]), double.parse(origin.split(',')[1])),
-      zoom: 14,
+      zoom: 16,
     );
    
       return FutureBuilder(
         future: googleServicesProvider.getPolylineAndDistance(origin, destination),
         builder: (BuildContext context, AsyncSnapshot snapshot) {
           if (snapshot.hasData) {
+            print('Estoy llamando a la API directions en el builder');
             result.clear();
             result.addAll(PolylinePoints().decodePolyline(snapshot.data[0]));
             return Scaffold(
@@ -111,7 +115,13 @@ class _PublicarTrayectoScreenState extends State<PublicarTrayectoScreen> {
                       PersistentNavBarNavigator.pushNewScreen(
                         context, 
                         withNavBar: false,
-                        screen: FormularioTrayectoScreen(distancia: snapshot.data[1],),
+                        screen: FormularioTrayectoScreen(
+                          distancia: snapshot.data[1],
+                          origen: widget.isGoingToZonzamas ? widget.zona : 'Zonzamas',
+                          destino: widget.isGoingToZonzamas ? 'Zonzamas' : widget.zona,
+                          coordenadasOrigen: origin,
+                          coordenadasDestino: destination,
+                        ),
                       );
                     },
                     icon: const Icon(Icons.check, size: 40, color: Colors.green),
@@ -150,6 +160,7 @@ class _PublicarTrayectoScreenState extends State<PublicarTrayectoScreen> {
                   ),
                 },
                 onMapCreated: (GoogleMapController controller) {
+                  controller.setMapStyle(_mapTheme);
                   _controller.complete(controller);
                 },
               )

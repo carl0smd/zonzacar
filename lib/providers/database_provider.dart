@@ -99,15 +99,17 @@ class DatabaseProvider {
   }
 
   //guardar publicacion
-  Future savePublication(String zona, String fecha, String hora, String origen, String destino, String plazas, String precio, String descripcion, String uidVehiculo) async {
+  Future savePublication(String fecha, String hora, String origen, String destino, String coordenadasOrigen, String coordenadasDestino, String plazas, String precio, String descripcion, String uidVehiculo) async {
     final id = vehiculosCollection.doc().id;
     await publicacionesCollection.doc(id).set({
-      'zona': zona,
+      'pasajeros': [],
       'fecha': fecha,
       'horaSalida': hora,
       'origen': origen,
       'destino': destino,
-      'plazas': plazas,
+      'coordenadasOrigen': coordenadasOrigen,
+      'coordenadasDestino': coordenadasDestino,
+      'plazasDisponibles': plazas,
       'precio': precio,
       'vehiculo': uidVehiculo,
       'conductor': FirebaseAuth.instance.currentUser!.uid,
@@ -116,6 +118,25 @@ class DatabaseProvider {
 
     await usuarioCollection.doc(FirebaseAuth.instance.currentUser!.uid).update({
       'publicaciones': FieldValue.arrayUnion([id]),
+    });
+  }
+
+  //guardar reserva
+  Future saveReservation(String uidPublicacion, String uidPasajero) async {
+    final id = reservasCollection.doc().id;
+    await reservasCollection.doc(id).set({
+      'publicacion': uidPublicacion,
+      'pasajero': FirebaseAuth.instance.currentUser!.uid,
+      'uid': id,
+    });
+
+    await usuarioCollection.doc(FirebaseAuth.instance.currentUser!.uid).update({
+      'reservas': FieldValue.arrayUnion([id]),
+    });
+
+    await publicacionesCollection.doc(uidPublicacion).update({
+      'pasajeros': FieldValue.arrayUnion([uidPasajero]),
+      'plazasDisponibles': FieldValue.increment(-1),
     });
   }
 

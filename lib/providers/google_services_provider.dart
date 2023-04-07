@@ -27,6 +27,7 @@ class GoogleServicesProvider{
     });
     final response = await http.get(request);
     if (response.statusCode == 200) {
+      print('Place Autocomplete');
       final predictionsResponse = PredictionsResponse.fromRawJson(response.body);
       return predictionsResponse.predictions;
     } else {
@@ -43,6 +44,7 @@ class GoogleServicesProvider{
     });
     final response = await http.get(request);
     if (response.statusCode == 200) {
+      print('Place Coordinates');
       final predictionDetailsResponse = PredictionDetailsResponse.fromRawJson(response.body);
       return predictionDetailsResponse.result.geometry.location;
     } else {
@@ -58,6 +60,7 @@ class GoogleServicesProvider{
     });
     final response = await http.get(request);
     if (response.statusCode == 200) {
+      print('Polyline and Distance');
       final directionsResponse = DirectionsResponse.fromRawJson(response.body);
       return [directionsResponse.routes[0].overviewPolyline.points, directionsResponse.routes[0].legs[0].distance.text];
     } else {
