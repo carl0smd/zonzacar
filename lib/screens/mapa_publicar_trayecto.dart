@@ -117,8 +117,8 @@ class _PublicarTrayectoScreenState extends State<PublicarTrayectoScreen> {
                         withNavBar: false,
                         screen: FormularioTrayectoScreen(
                           distancia: snapshot.data[1],
-                          origen: widget.isGoingToZonzamas ? widget.zona : 'Zonzamas',
-                          destino: widget.isGoingToZonzamas ? 'Zonzamas' : widget.zona,
+                          origen: widget.isGoingToZonzamas ? widget.zona : 'CIFP Zonzamas',
+                          destino: widget.isGoingToZonzamas ? 'CIFP Zonzamas' : widget.zona,
                           coordenadasOrigen: origin,
                           coordenadasDestino: destination,
                         ),

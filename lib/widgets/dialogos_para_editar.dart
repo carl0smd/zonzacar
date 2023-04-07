@@ -69,7 +69,6 @@ Future<void> editarFotoDialog(BuildContext context, void Function(dynamic camara
     final matriculaController = TextEditingController();
     final modeloController = TextEditingController();
     String color = '';
-    String plazas = '';
     final marcaController = TextEditingController();
 
     return showDialog(
@@ -128,30 +127,6 @@ Future<void> editarFotoDialog(BuildContext context, void Function(dynamic camara
                         ),
                         const SizedBox(height: 10.0),
                         DropdownButtonFormField(
-                          items: CochesConstants.plazas.map((value) {
-                            return DropdownMenuItem<String>(
-                              value: value.toString(),
-                              child: Text(value.toString()),
-                            );
-                          }).toList(),
-                          onChanged: (value) {
-                            plazas = value.toString();
-                          },
-                          decoration: const InputDecoration(
-                            hintText: 'Plazas',
-                            border:  OutlineInputBorder(
-                              borderRadius: BorderRadius.all(Radius.circular(10.0)),
-                            ),
-                          ),
-                          validator: (value) {
-                            if (value == null || value.isEmpty) {
-                              return 'Elije un número de plazas';
-                            }
-                            return null;
-                          }
-                        ),
-                        const SizedBox(height: 10.0),
-                        DropdownButtonFormField(
                           items: ColoresConstants.colores.map((String value) {
                             return DropdownMenuItem<String>(
                               value: value,
@@ -196,7 +171,6 @@ Future<void> editarFotoDialog(BuildContext context, void Function(dynamic camara
                     matriculaController.text.trim(), 
                     marcaController.text.trim(), 
                     modeloController.text.trim(), 
-                    plazas,
                     color
                   );
                   Navigator.of(context).pop();
@@ -258,30 +232,6 @@ Future<void> editarFotoDialog(BuildContext context, void Function(dynamic camara
                           ),
                           const SizedBox(height: 10.0),
                           DropdownButtonFormField(
-                            items: CochesConstants.plazas.map((value) {
-                              return DropdownMenuItem<String>(
-                                value: value.toString(),
-                                child: Text(value.toString()),
-                              );
-                            }).toList(),
-                            onChanged: (value) {
-                              plazas = value.toString();
-                            },
-                            decoration: const InputDecoration(
-                              hintText: 'Plazas',
-                              border:  OutlineInputBorder(
-                                borderRadius: BorderRadius.all(Radius.circular(10.0)),
-                              ),
-                            ),
-                            validator: (value) {
-                              if (value == null || value.isEmpty) {
-                                return 'Elije un número de plazas';
-                              }
-                              return null;
-                            }
-                          ),
-                          const SizedBox(height: 10.0),
-                          DropdownButtonFormField(
                             items: ColoresConstants.colores.map((String value) {
                               return DropdownMenuItem<String>(
                                 value: value,
@@ -326,7 +276,6 @@ Future<void> editarFotoDialog(BuildContext context, void Function(dynamic camara
                       matriculaController.text.trim(), 
                       marcaController.text.trim(), 
                       modeloController.text.trim(), 
-                      plazas, 
                       color
                     );
                     Navigator.of(context).pop();

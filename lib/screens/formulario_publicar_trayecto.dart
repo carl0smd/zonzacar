@@ -1,25 +1,33 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:persistent_bottom_nav_bar/persistent_tab_view.dart';
+import 'package:zonzacar/screens/menu_principal_screen.dart';
 
 import '../providers/database_provider.dart';
 import '../shared/constants.dart';
 
 class FormularioTrayectoScreen extends StatefulWidget {
-
   final String distancia;
   final String origen;
   final String destino;
   final String coordenadasOrigen;
   final String coordenadasDestino;
 
-  const FormularioTrayectoScreen({Key? key, required this.distancia, required this.origen, required this.destino, required this.coordenadasOrigen, required this.coordenadasDestino}) : super(key: key);
+  const FormularioTrayectoScreen(
+      {Key? key,
+      required this.distancia,
+      required this.origen,
+      required this.destino,
+      required this.coordenadasOrigen,
+      required this.coordenadasDestino})
+      : super(key: key);
 
   @override
-  State<FormularioTrayectoScreen> createState() => _FormularioTrayectoScreenState();
+  State<FormularioTrayectoScreen> createState() =>
+      _FormularioTrayectoScreenState();
 }
 
 class _FormularioTrayectoScreenState extends State<FormularioTrayectoScreen> {
-  
   final databaseProvider = DatabaseProvider();
   final List vehicles = [];
 
@@ -35,53 +43,59 @@ class _FormularioTrayectoScreenState extends State<FormularioTrayectoScreen> {
 
   @override
   Widget build(BuildContext context) {
-
     final size = MediaQuery.of(context).size;
+    final formKey = GlobalKey<FormState>();
     final fechaCtrl = TextEditingController();
     final horaCtrl = TextEditingController();
     final precioCtrl = TextEditingController();
-    final plazasCtrl = TextEditingController();
-    final precio = (
-      double.parse(widget.distancia.split(" ")[0]) 
-      * PrecioConstants.precioPorKm 
-    ).toStringAsFixed(2);
-    dynamic vehicle;
+    final asientosCtrl = TextEditingController();
+    final precio = (double.parse(widget.distancia.split(" ")[0]) *
+            PrecioConstants.precioPorKm)
+        .toStringAsFixed(2);
+    dynamic vehiculo;
     String plazas = '4';
-    plazasCtrl.text = plazas;
+    asientosCtrl.text = plazas;
+    precioCtrl.text = precio;
     return Scaffold(
       body: SafeArea(
         child: Center(
-           child: Container(
+          child: Container(
             margin: const EdgeInsets.all(20.0),
-             child: Column(
+            child: Form(
+              key: formKey,
+              child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Text(
                     'Distancia: ${widget.distancia}',
-                    style: const TextStyle(fontSize: 20.0, color: Colors.green, ), textAlign: TextAlign.center,
+                    style: const TextStyle(
+                      fontSize: 20.0,
+                      color: Colors.green,
+                    ),
+                    textAlign: TextAlign.center,
                   ),
 
                   const SizedBox(height: 20.0),
 
-                  TextField(
+                  TextFormField(
                     controller: fechaCtrl,
                     maxLength: 10,
                     readOnly: true,
-                    
                     decoration: InputDecoration(
-                      filled: true,
-                      border: OutlineInputBorder(),
-                      labelText: 'Fecha',
-                      counterText: '',
-                      fillColor: Colors.white
-                    ),
+                        filled: true,
+                        border: OutlineInputBorder(),
+                        labelText: 'Fecha',
+                        counterText: '',
+                        fillColor: Colors.white),
                     onTap: () async {
                       DateFormat dateFormat = DateFormat('dd/MM/yyyy');
                       DateTime? nuevaFecha = await showDatePicker(
-                        context: context,  
+                        context: context,
                         //not on july and august and weekends
                         selectableDayPredicate: (DateTime val) {
-                          if (val.weekday == 6 || val.weekday == 7) return false;
+                          if (val.weekday == 6 || val.weekday == 7) {
+                            return false;
+                          }
                           if (val.month == 7 || val.month == 8) return false;
                           return true;
                         },
@@ -89,31 +103,42 @@ class _FormularioTrayectoScreenState extends State<FormularioTrayectoScreen> {
                         firstDate: DateTime.now(),
                         lastDate: DateTime.now().add(const Duration(days: 365)),
                       );
-                 
+
                       if (nuevaFecha == null) return;
                       fechaCtrl.text = dateFormat.format(nuevaFecha);
                     },
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Por favor, introduce una fecha';
+                      }
+                      return null;
+                    },
                   ),
                   const SizedBox(height: 20.0),
-                  //TextField to pick time
-                  TextField(
+                  //TextFormField to pick time
+                  TextFormField(
                     controller: horaCtrl,
                     maxLength: 5,
                     readOnly: true,
-                    decoration: InputDecoration(
-                      filled: true,
-                      border: OutlineInputBorder(),
-                      labelText: 'Hora',
-                      counterText: '',
-                      fillColor: Colors.white
-                    ),
+                    decoration: const InputDecoration(
+                        filled: true,
+                        border: OutlineInputBorder(),
+                        labelText: 'Hora',
+                        counterText: '',
+                        fillColor: Colors.white),
                     onTap: () async {
                       TimeOfDay? nuevaHora = await showTimePicker(
-                        context: context, 
+                        context: context,
                         initialTime: TimeOfDay.now(),
                       );
                       if (nuevaHora == null) return;
                       horaCtrl.text = nuevaHora.format(context);
+                    },
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Por favor, introduce una hora';
+                      }
+                      return null;
                     },
                   ),
 
@@ -123,116 +148,130 @@ class _FormularioTrayectoScreenState extends State<FormularioTrayectoScreen> {
                     items: vehicles.map((e) {
                       return DropdownMenuItem(
                         value: e['uid'],
-                        child: Text(e['marca'] + ' ' + e['modelo'] + ' ' + e['matricula']),
+                        child: Text(e['marca'] +
+                            ' ' +
+                            e['modelo'] +
+                            ' ' +
+                            e['matricula']),
                       );
                     }).toList(),
                     decoration: const InputDecoration(
-                      filled: true,
-                      border: OutlineInputBorder(),
-                      labelText: 'Vehiculo',
-                      fillColor: Colors.white
-                    ),
-                    
+                        filled: true,
+                        border: OutlineInputBorder(),
+                        labelText: 'Vehiculo',
+                        fillColor: Colors.white),
                     onChanged: (value) {
-                      print(value);
-                      setState(() {
-                        vehicle = vehicles.firstWhere((element) => element['uid'] == value);
-                        print(vehicle);
-                        plazas = vehicle['plazas'].toString();
-                        print(plazas);
-                        plazasCtrl.text = plazas;
-                      });
-                      
+                      vehiculo = value;
+                    },
+                    validator: (value) {
+                      if (value == null) {
+                        return 'Por favor, selecciona un vehiculo';
+                      }
+                      return null;
                     },
                   ),
-                  
+
                   const SizedBox(height: 20.0),
 
-                  //TextField to pick seats
-                  TextField(                    
-                    controller: plazasCtrl,
+                  //TextFormField to pick seats
+                  TextFormField(
+                    controller: asientosCtrl,
                     maxLength: 1,
                     readOnly: true,
-                    
                     decoration: InputDecoration(
-                      filled: true,
-                      border: OutlineInputBorder(),
-                      labelText: 'Plazas',
-                      counterText: '',
-                      prefixIcon: IconButton(
-                        onPressed: () {
-                          if (int.parse(plazasCtrl.text) <= 1) return;
-                          plazasCtrl.text = (int.parse(plazasCtrl.text) - 1).toString();
-                        }, 
-                        icon: const Icon(Icons.remove_circle_outline)
-                      ),
-                      suffixIcon: IconButton(
-                        onPressed: () {
-                          if (int.parse(plazasCtrl.text) >= int.parse(plazas)) return;
-                          plazasCtrl.text = (int.parse(plazasCtrl.text) + 1).toString();
-                        }, 
-                        icon: const Icon(Icons.add_circle_outline)
-                      ),
-                      fillColor: Colors.white
-                    ),
-                    onTap: () {
-                      print(plazasCtrl.text);
+                        filled: true,
+                        border: const OutlineInputBorder(),
+                        labelText: 'Asientos disponibles',
+                        counterText: '',
+                        prefixIcon: IconButton(
+                            onPressed: () {
+                              if (int.parse(asientosCtrl.text) <= 1) return;
+                              asientosCtrl.text =
+                                  (int.parse(asientosCtrl.text) - 1).toString();
+                            },
+                            icon: const Icon(Icons.remove_circle_outline)),
+                        suffixIcon: IconButton(
+                            onPressed: () {
+                              if (int.parse(asientosCtrl.text) >=
+                                  int.parse(plazas)) return;
+                              asientosCtrl.text =
+                                  (int.parse(asientosCtrl.text) + 1).toString();
+                            },
+                            icon: const Icon(Icons.add_circle_outline)),
+                        fillColor: Colors.white),
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Por favor, introduce el número de asientos';
+                      }
+                      return null;
                     },
                   ),
-                  
+                  const SizedBox(height: 20.0),
 
-                  //TextField to pick price
-                  vehicle != null ? TextField(
+                  //TextFormField to pick price
+                  TextFormField(
                     controller: precioCtrl,
                     maxLength: 5,
                     readOnly: true,
-                    
                     decoration: InputDecoration(
-                      filled: true,
-                      border: OutlineInputBorder(),
-                      labelText: 'Precio total',
-                      counterText: '',
-                      prefixIcon: IconButton(
-                        onPressed: () {
-                          if (double.parse(precioCtrl.text) <= double.parse(precio) - 2 || double.parse(precioCtrl.text) - 0.5 <= 0) return;
-                          precioCtrl.text = (double.parse(precioCtrl.text) - 0.5).toStringAsFixed(2);
-                        }, 
-                        icon: const Icon(Icons.remove_circle_outline)
-                      ),
-                      suffixIcon: IconButton(
-                        onPressed: () {
-                          if (double.parse(precioCtrl.text) >= double.parse(precio) + 2) return;
-                          precioCtrl.text = (double.parse(precioCtrl.text) + 0.5).toStringAsFixed(2);
-                        }, 
-                        icon: const Icon(Icons.add_circle_outline)
-                      ),
-                      fillColor: Colors.white
-                    ),
-                    onTap: () async {
-                      TimeOfDay? nuevaHora = await showTimePicker(
-                        context: context, 
-                        initialTime: TimeOfDay.now(),
-                      );
-                      if (nuevaHora == null) return;
-                      horaCtrl.text = nuevaHora.format(context);
+                        filled: true,
+                        border: OutlineInputBorder(),
+                        labelText: 'Precio total',
+                        counterText: '',
+                        prefixIcon: IconButton(
+                            onPressed: () {
+                              if (double.parse(precioCtrl.text) <=
+                                      double.parse(precio) - 2 ||
+                                  double.parse(precioCtrl.text) - 0.5 <= 0)
+                                return;
+                              precioCtrl.text =
+                                  (double.parse(precioCtrl.text) - 0.5)
+                                      .toStringAsFixed(2);
+                            },
+                            icon: const Icon(Icons.remove_circle_outline)),
+                        suffixIcon: IconButton(
+                            onPressed: () {
+                              if (double.parse(precioCtrl.text) >=
+                                  double.parse(precio) + 2) return;
+                              precioCtrl.text =
+                                  (double.parse(precioCtrl.text) + 0.5)
+                                      .toStringAsFixed(2);
+                            },
+                            icon: const Icon(Icons.add_circle_outline)),
+                        fillColor: Colors.white),
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Por favor, introduce el precio';
+                      }
+                      return null;
                     },
-                  ) : Container(),
+                  ),
 
                   const SizedBox(height: 20.0),
 
-                  
-
-
                   ElevatedButton(
-                    onPressed: () {
-                      Navigator.of(context).pop();
-                    }, 
+                    onPressed: () async {
+                      if (formKey.currentState!.validate()) {
+                        await databaseProvider.savePublication(
+                          fechaCtrl.text,
+                          horaCtrl.text,
+                          widget.origen,
+                          widget.destino,
+                          widget.coordenadasOrigen,
+                          widget.coordenadasDestino,
+                          asientosCtrl.text,
+                          precioCtrl.text,
+                          vehiculo,
+                        );
+                        if (mounted) Navigator.pushReplacementNamed(context, 'home');
+                      }
+                    },
                     child: const Text('Publicar'),
                   ),
-                 
                 ],
-             ),
-           ),
+              ),
+            ),
+          ),
         ),
       ),
     );

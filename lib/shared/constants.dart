@@ -27,10 +27,6 @@ class ColoresConstants {
   ];
 }
 
-class CochesConstants {
-  static List<int> plazas = [2, 5, 7, 9];
-}
-
 class PrecioConstants{
   //Precio medio de gasolina por kilómetro España 2023
   static double precioPorKm = 0.20;

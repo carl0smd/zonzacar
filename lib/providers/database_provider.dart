@@ -67,13 +67,12 @@ class DatabaseProvider {
   }
 
   //guardar vehiculos
-  Future saveVehicle(String matricula, String marca, String modelo, String plazas, String color) async {
+  Future saveVehicle(String matricula, String marca, String modelo, String color) async {
     final id = vehiculosCollection.doc().id;
     await vehiculosCollection.doc(id).set({
       'matricula': matricula,
       'marca': marca,
       'modelo': modelo,
-      'plazas' : plazas,
       'color': color,
       'conductor': FirebaseAuth.instance.currentUser!.uid,
       'uid' : id,
@@ -99,7 +98,7 @@ class DatabaseProvider {
   }
 
   //guardar publicacion
-  Future savePublication(String fecha, String hora, String origen, String destino, String coordenadasOrigen, String coordenadasDestino, String plazas, String precio, String descripcion, String uidVehiculo) async {
+  Future savePublication(String fecha, String hora, String origen, String destino, String coordenadasOrigen, String coordenadasDestino, String asientos, String precio, String uidVehiculo) async {
     final id = vehiculosCollection.doc().id;
     await publicacionesCollection.doc(id).set({
       'pasajeros': [],
@@ -109,7 +108,7 @@ class DatabaseProvider {
       'destino': destino,
       'coordenadasOrigen': coordenadasOrigen,
       'coordenadasDestino': coordenadasDestino,
-      'plazasDisponibles': plazas,
+      'asientosDisponibles': asientos,
       'precio': precio,
       'vehiculo': uidVehiculo,
       'conductor': FirebaseAuth.instance.currentUser!.uid,
