@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
+import '../shared/constants.dart';
+
 class ReservasScreen extends StatelessWidget {
    
   const ReservasScreen({Key? key}) : super(key: key);
@@ -27,15 +29,14 @@ class ReservasScreen extends StatelessWidget {
               ),
               Container(
                 margin:  const EdgeInsets.all(20.0),
-                padding: const EdgeInsets.all(20.0),
-                height: size.height * 0.35,
+                padding: const EdgeInsets.all(10.0),
+                height: size.height * 0.40,
                 decoration: BoxDecoration(
                   boxShadow: [
                     BoxShadow(
                       color: Colors.black.withOpacity(0.1),
                       spreadRadius: 2,
                       blurRadius: 10,
-                      
                       offset: const Offset(0, 0), // changes position of shadow
                     ),
                   ],
@@ -57,7 +58,6 @@ class _CajaDeBusqueda extends StatelessWidget {
   final Size size;
 
   const _CajaDeBusqueda({
-    super.key,
     required this.size,
   });
 
@@ -67,70 +67,104 @@ class _CajaDeBusqueda extends StatelessWidget {
     final origenCtrl = TextEditingController();
     final destinoCtrl = TextEditingController();
     final fechaCtrl = TextEditingController();
+    final formKey = GlobalKey<FormState>();
 
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        TextField(
-          controller: origenCtrl,
-          decoration: const InputDecoration(
-            hintText: 'Origen',
-            prefixIcon: Icon(Icons.fmd_good_outlined),                      
-          ),
-        ),
+    return DefaultTabController(
+      length: 2,
+      child: Scaffold(
 
-        TextField(
-          controller: destinoCtrl,
-          decoration: const InputDecoration(              
-            hintText: 'Destino',
-            prefixIcon: Icon(Icons.fmd_good_outlined),
-          ),
-        ),
+        backgroundColor: Colors.white,
+        body: Form(
+          key: formKey,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              const TabBar(
+                labelColor: Colors.green,
+                unselectedLabelColor: Colors.grey,
+                indicatorColor: Colors.green,
+                tabs: [
+                  Tab(text: 'Voy a clase'),
+                  Tab(text: 'Salgo de clase'),
+                ],
+              ),
+              const SizedBox(height: 30,),
+              Expanded(
+                child: TabBarView(
+                  children: [
+                    TextFormField(
+                      controller: origenCtrl,
+                      decoration: const InputDecoration(
+                        hintText: '¿Desde dónde sales?',
+                        prefixIcon: Icon(Icons.fmd_good_outlined),                      
+                      ),
+                    ),
+                    TextFormField(
+                      controller: destinoCtrl,
+                      decoration: const InputDecoration(              
+                        hintText: '¿Hacia dónde vas?',
+                        prefixIcon: Icon(Icons.fmd_good_outlined),
+                      ),
+                    ),
+                  ]
+                )
+              ),
+              Expanded(
+                child: TextFormField(
+                  controller: fechaCtrl,
+                  maxLength: 10,
+                  readOnly: true,                   
+                  decoration: const InputDecoration(
+                    hintText: 'Fecha',
+                    prefixIcon: Icon(Icons.calendar_month_outlined),
+                    counterText: '',
+                  ),
+                      
+                  onTap: () async {
+                    DateFormat dateFormat = DateFormat('dd/MM/yyyy');
+                    DateTime? nuevaFecha = await showDatePicker(
+                      context: context, 
+                      initialDate: FechaConstants.initialDate, 
+                      firstDate: FechaConstants.initialDate, 
+                      lastDate: FechaConstants.initialDate.add(const Duration(days: 365)),
+                      selectableDayPredicate: (DateTime val) {
+                        if (val.weekday == 6 || val.weekday == 7) return false;
+                        if (val.month == 7 || val.month == 8) return false;
+                        return true;
+                      },
+                    );
+                      
+                    if (nuevaFecha == null) return;
+                    fechaCtrl.text = dateFormat.format(nuevaFecha);
+                  },
+                    
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Por favor, ingrese una fecha';
+                    }
+                    return null;
+                  },
+                ),
+              ),
         
-        TextField(
-          controller: fechaCtrl,
-          maxLength: 10,
-          readOnly: true,                   
-          decoration: const InputDecoration(
-            hintText: 'Fecha',
-            prefixIcon: Icon(Icons.calendar_month_outlined),
-            counterText: '',
-          ),
-
-          onTap: () async {
-            DateFormat dateFormat = DateFormat('dd/MM/yyyy');
-            DateTime? nuevaFecha = await showDatePicker(
-              context: context, 
-              selectableDayPredicate: (DateTime val) {
-                if (val.weekday == 6 || val.weekday == 7) return false;
-                if (val.month == 7 || val.month == 8) return false;
-                return true;
-              },
-              initialDate: DateTime.now(), 
-              firstDate: DateTime.now(), 
-              lastDate: DateTime.now().add(const Duration(days: 30)) 
-            );
-
-            if (nuevaFecha == null) return;
-            fechaCtrl.text = dateFormat.format(nuevaFecha);
-          },
-        ),
-
-        TextButton(
-          onPressed: (){},
-          style: TextButton.styleFrom(
-            backgroundColor: Colors.green[400],
-            foregroundColor: Colors.white,
-            minimumSize: Size(size.width, 50.0),
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(20.0),
-            ),
-          ), 
-          child: const Text('Buscar'),
-        ),
-
+              TextButton(
+                onPressed: (){},
+                style: TextButton.styleFrom(
+                  backgroundColor: Colors.green[400],
+                  foregroundColor: Colors.white,
+                  minimumSize: Size(size.width, 50.0),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(20.0),
+                  ),
+                ), 
+                child: const Text('Buscar'),
+              ),
         
-      ],
+              
+            ],
+          ),
+        ),
+      ),
     );
   }
 }

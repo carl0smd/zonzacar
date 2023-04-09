@@ -6,7 +6,6 @@ import 'package:persistent_bottom_nav_bar/persistent_tab_view.dart';
 import 'package:zonzacar/providers/database_provider.dart';
 import 'package:zonzacar/providers/google_services_provider.dart';
 import 'package:zonzacar/screens/screens.dart';
-import 'package:zonzacar/widgets/dialogos_para_editar.dart';
 
 class PublicarTrayectoScreen extends StatefulWidget {
 
@@ -99,7 +98,6 @@ class _PublicarTrayectoScreenState extends State<PublicarTrayectoScreen> {
         future: googleServicesProvider.getPolylineAndDistance(origin, destination),
         builder: (BuildContext context, AsyncSnapshot snapshot) {
           if (snapshot.hasData) {
-            print('Estoy llamando a la API directions en el builder');
             result.clear();
             result.addAll(PolylinePoints().decodePolyline(snapshot.data[0]));
             return Scaffold(

@@ -17,7 +17,7 @@ class RegisterScreen extends StatelessWidget {
       body: SafeArea(
         child: SingleChildScrollView(
           physics: const BouncingScrollPhysics(),
-          child: Container(
+          child: SizedBox(
             height: MediaQuery.of(context).size.height * 0.9,
             child: Column(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -37,7 +37,7 @@ class RegisterScreen extends StatelessWidget {
 
 class _Form extends StatefulWidget {
 
-  const _Form({super.key});
+  const _Form();
 
   @override
   State<_Form> createState() => __FormState();
@@ -57,8 +57,8 @@ class __FormState extends State<_Form> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: EdgeInsets.only(top: 40),
-      padding: EdgeInsets.symmetric(horizontal: 50),
+      margin: const EdgeInsets.only(top: 40),
+      padding: const EdgeInsets.symmetric(horizontal: 50),
       child: _isLoading ? 
       const CircularProgressIndicator()
       : Form(

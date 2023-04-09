@@ -1,5 +1,4 @@
 
-import 'dart:io';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -81,7 +80,7 @@ Future<void> editarFotoDialog(BuildContext context, void Function(dynamic camara
           content: SingleChildScrollView(
             child: ListBody(
               children: [
-                Container(
+                SizedBox(
                   width: MediaQuery.of(context).size.width * 0.8,
                   child: Form(
                     key: formKey,
@@ -186,7 +185,7 @@ Future<void> editarFotoDialog(BuildContext context, void Function(dynamic camara
             content: SingleChildScrollView(
               child: ListBody(
                 children: [
-                  Container(
+                  SizedBox(
                     width: MediaQuery.of(context).size.width * 0.8,
                     child: Form(
                       key: formKey,

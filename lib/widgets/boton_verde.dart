@@ -16,7 +16,7 @@ class BotonVerde extends StatelessWidget {
         shape: const MaterialStatePropertyAll(StadiumBorder())
       ),
       onPressed: onPressed,
-      child: Container(
+      child: SizedBox(
         height: 55,
         child: Center(
           child: Text(text, style: const TextStyle(fontSize: 17),)

@@ -34,3 +34,9 @@ class PrecioConstants{
   //15% de gastos de gestión para zonzaCar (costos de la api)
   static double porcentajeZonzaCar = 1.15;
 }
+
+class FechaConstants{
+  static DateTime initialDate = DateTime.now().weekday == 6 
+  ? DateTime.now().add(const Duration(days: 2)) : DateTime.now().weekday == 7 
+  ? DateTime.now().add(const Duration(days: 1)) : DateTime.now();
+}

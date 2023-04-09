@@ -19,7 +19,7 @@ class LoginScreen extends StatelessWidget {
       body: SafeArea(
         child: SingleChildScrollView(
           physics: const BouncingScrollPhysics(),
-          child: Container(
+          child: SizedBox(
             height: MediaQuery.of(context).size.height * 0.9,
             child: Column(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -40,7 +40,7 @@ class LoginScreen extends StatelessWidget {
 
 
 class _Form extends StatefulWidget {
-  const _Form({super.key});
+  const _Form();
 
   @override
   State<_Form> createState() => __FormState();
