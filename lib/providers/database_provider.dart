@@ -1,8 +1,11 @@
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:intl/intl.dart';
 
 class DatabaseProvider {
+
+  final DateFormat dateFormat = DateFormat('dd/MM/yyyy');
 
   final String? uid;
   DatabaseProvider({this.uid});
@@ -120,6 +123,33 @@ class DatabaseProvider {
     });
   }
 
+  //get publicaciones hacia el Zonzamas
+  Future getPublicationsToZonzamas([dynamic fecha]) async {
+    if (fecha != null) {
+      QuerySnapshot snapshot = await publicacionesCollection.where('fecha', isEqualTo: fecha).where('destino', isEqualTo: 'CIFP Zonzamas').orderBy('horaSalida').orderBy('origen').get();
+      return snapshot.docs;
+    } else {
+      DateTime today = DateTime.now();
+      today = DateTime(today.year, today.month, today.day);
+      final dateToSearch = dateFormat.format(today);
+      QuerySnapshot snapshot = await publicacionesCollection.where('fecha', isGreaterThanOrEqualTo: dateToSearch).where('destino', isEqualTo: 'CIFP Zonzamas').orderBy('fecha').orderBy('horaSalida').orderBy('origen').get();
+      return snapshot.docs;
+    }
+  }
+
+  //get publicaciones desde el Zonzamas
+  Future getPublicationsFromZonzamas([dynamic fecha]) async {
+    if (fecha != null) {
+      QuerySnapshot snapshot = await publicacionesCollection.where('fecha', isEqualTo: fecha).where('origen', isEqualTo: 'CIFP Zonzamas').orderBy('horaSalida').orderBy('destino').get();
+      return snapshot.docs;
+    } else {
+      DateTime today = DateTime.now();
+      today = DateTime(today.year, today.month, today.day);
+      final dateToSearch = dateFormat.format(today);
+      QuerySnapshot snapshot = await publicacionesCollection.where('fecha', isGreaterThanOrEqualTo: dateToSearch).where('origen', isEqualTo: 'CIFP Zonzamas').orderBy('fecha').orderBy('horaSalida').orderBy('destino').get();
+      return snapshot.docs;
+    }
+  }
   //guardar reserva
   Future saveReservation(String uidPublicacion, String uidPasajero) async {
     final id = reservasCollection.doc().id;

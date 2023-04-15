@@ -60,7 +60,6 @@ class _FormularioTrayectoScreenState extends State<FormularioTrayectoScreen> {
         elevation: 0,
         foregroundColor: Colors.black,
         iconTheme: const IconThemeData(size: 40, color: Colors.green),
-
       ),
       body: SafeArea(
         child: Center(
@@ -97,6 +96,7 @@ class _FormularioTrayectoScreenState extends State<FormularioTrayectoScreen> {
                       DateFormat dateFormat = DateFormat('dd/MM/yyyy');
                       DateTime? nuevaFecha = await showDatePicker(
                         context: context,
+                        initialEntryMode: DatePickerEntryMode.calendarOnly,
                         //not on july and august and weekends
                         initialDate: FechaConstants.initialDate,
                         firstDate: FechaConstants.initialDate,
@@ -134,6 +134,7 @@ class _FormularioTrayectoScreenState extends State<FormularioTrayectoScreen> {
                     onTap: () async {
                       TimeOfDay? nuevaHora = await showTimePicker(
                         context: context,
+                        initialEntryMode: TimePickerEntryMode.dialOnly,
                         initialTime: TimeOfDay.now(),
                       );
                       if (nuevaHora == null) return;
