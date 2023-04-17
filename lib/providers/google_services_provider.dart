@@ -26,8 +26,11 @@ class GoogleServicesProvider{
       'sessiontoken': token,
     });
     final response = await http.get(request);
+    
     if (response.statusCode == 200) {
       final predictionsResponse = PredictionsResponse.fromRawJson(response.body);
+      print(response.body);
+      // predictionsResponse.predictions.removeWhere((element) => element.description.toLowerCase().contains('graciosa'));
       return predictionsResponse.predictions;
     } else {
       throw Exception('Failed to load predictions');
@@ -59,7 +62,12 @@ class GoogleServicesProvider{
     final response = await http.get(request);
     if (response.statusCode == 200) {
       final directionsResponse = DirectionsResponse.fromRawJson(response.body);
-      return [directionsResponse.routes[0].overviewPolyline.points, directionsResponse.routes[0].legs[0].distance.text];
+
+      if (directionsResponse.routes.isNotEmpty) {
+        return [directionsResponse.routes[0].overviewPolyline.points, directionsResponse.routes[0].legs[0].distance.text];
+      } else {
+        return ['',''];
+      }
     } else {
       throw Exception('Failed to load predictions');
     }

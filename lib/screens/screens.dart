@@ -7,4 +7,5 @@ export 'package:zonzacar/screens/menu_principal_screen.dart';
 export 'package:zonzacar/screens/perfil_screen.dart';
 export 'package:zonzacar/screens/publicaciones_screen.dart';
 export 'package:zonzacar/screens/register_screen.dart';
+export 'package:zonzacar/screens/reserva_details_screen.dart';
 export 'package:zonzacar/screens/reservas_screen.dart';

@@ -56,6 +56,12 @@ class DatabaseProvider {
     return snapshot;
   }
 
+  //get usuario por uid
+  Future getUserByUid(String uid) async {
+    QuerySnapshot snapshot = await usuarioCollection.where('uid', isEqualTo: uid).get();
+    return snapshot.docs;
+  }
+
   //guardar imagen de perfil
   Future storeProfileImage(String userImage) async {
     await usuarioCollection.doc(FirebaseAuth.instance.currentUser!.uid)
@@ -101,7 +107,7 @@ class DatabaseProvider {
   }
 
   //guardar publicacion
-  Future savePublication(String fecha, String hora, String origen, String destino, String coordenadasOrigen, String coordenadasDestino, String asientos, String precio, String uidVehiculo) async {
+  Future savePublication(int fecha, String hora, String origen, String destino, String coordenadasOrigen, String coordenadasDestino, String asientos, String precio, String uidVehiculo) async {
     final id = vehiculosCollection.doc().id;
     await publicacionesCollection.doc(id).set({
       'pasajeros': [],
@@ -130,8 +136,7 @@ class DatabaseProvider {
       return snapshot.docs;
     } else {
       DateTime today = DateTime.now();
-      today = DateTime(today.year, today.month, today.day);
-      final dateToSearch = dateFormat.format(today);
+      final dateToSearch = today.millisecondsSinceEpoch;
       QuerySnapshot snapshot = await publicacionesCollection.where('fecha', isGreaterThanOrEqualTo: dateToSearch).where('destino', isEqualTo: 'CIFP Zonzamas').orderBy('fecha').orderBy('horaSalida').orderBy('origen').get();
       return snapshot.docs;
     }
@@ -140,16 +145,17 @@ class DatabaseProvider {
   //get publicaciones desde el Zonzamas
   Future getPublicationsFromZonzamas([dynamic fecha]) async {
     if (fecha != null) {
+      
       QuerySnapshot snapshot = await publicacionesCollection.where('fecha', isEqualTo: fecha).where('origen', isEqualTo: 'CIFP Zonzamas').orderBy('horaSalida').orderBy('destino').get();
       return snapshot.docs;
     } else {
       DateTime today = DateTime.now();
-      today = DateTime(today.year, today.month, today.day);
-      final dateToSearch = dateFormat.format(today);
+      final dateToSearch = today.millisecondsSinceEpoch;
       QuerySnapshot snapshot = await publicacionesCollection.where('fecha', isGreaterThanOrEqualTo: dateToSearch).where('origen', isEqualTo: 'CIFP Zonzamas').orderBy('fecha').orderBy('horaSalida').orderBy('destino').get();
       return snapshot.docs;
     }
   }
+  
   //guardar reserva
   Future saveReservation(String uidPublicacion, String uidPasajero) async {
     final id = reservasCollection.doc().id;

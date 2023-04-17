@@ -75,6 +75,7 @@ class _CajaDeBusquedaState extends State<_CajaDeBusqueda> with SingleTickerProvi
     final origenCtrl = TextEditingController();
     final destinoCtrl = TextEditingController();
     final fechaCtrl = TextEditingController();
+    int fecha = 0;
     final formKey = GlobalKey<FormState>();
     return DefaultTabController(
       length: 2,
@@ -170,6 +171,7 @@ class _CajaDeBusquedaState extends State<_CajaDeBusqueda> with SingleTickerProvi
                           
                         if (nuevaFecha == null) return;
                         fechaCtrl.text = dateFormat.format(nuevaFecha);
+                        fecha = nuevaFecha.millisecondsSinceEpoch;
                       },
                     ),
                   ),
@@ -182,11 +184,11 @@ class _CajaDeBusquedaState extends State<_CajaDeBusqueda> with SingleTickerProvi
                         screen: DefaultTabController.of(context).index == 0 ? BusquedaScreen(
                           isGoingToZonzamas: true,
                           origen: origenCtrl.text.trim() == '' ? null : origenCtrl.text.trim(),
-                          fecha: fechaCtrl.text.trim() == '' ? null : fechaCtrl.text.trim(),
+                          fecha: fecha != 0 ? fecha : null,
                         ) : BusquedaScreen(
                           isGoingToZonzamas: false,
                           destino: destinoCtrl.text.trim() == '' ? null : destinoCtrl.text.trim(),
-                          fecha: fechaCtrl.text.trim() == '' ? null : fechaCtrl.text.trim(),
+                          fecha: fecha != 0 ? fecha : null,
                         )
                       );
 

@@ -36,19 +36,19 @@ class DirectionsResponse {
 
 class GeocodedWaypoint {
     GeocodedWaypoint({
-        required this.geocoderStatus,
-        required this.placeId,
+        this.geocoderStatus,
+        this.placeId,
         required this.types,
     });
 
-    String geocoderStatus;
-    String placeId;
-    List<String> types;
+    dynamic geocoderStatus;
+    dynamic placeId;
+    List<dynamic> types;
 
     factory GeocodedWaypoint.fromJson(Map<String, dynamic> json) => GeocodedWaypoint(
         geocoderStatus: json["geocoder_status"],
         placeId: json["place_id"],
-        types: List<String>.from(json["types"].map((x) => x)),
+        types: json["types"] != null ? List<dynamic>.from(json["types"].map((x) => x)) : [],
     );
 
     Map<String, dynamic> toJson() => {

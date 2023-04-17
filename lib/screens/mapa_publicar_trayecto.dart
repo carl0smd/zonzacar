@@ -97,7 +97,7 @@ class _PublicarTrayectoScreenState extends State<PublicarTrayectoScreen> {
       return FutureBuilder(
         future: googleServicesProvider.getPolylineAndDistance(origin, destination),
         builder: (BuildContext context, AsyncSnapshot snapshot) {
-          if (snapshot.hasData) {
+          if (snapshot.hasData && snapshot.data[0] != '') {
             result.clear();
             result.addAll(PolylinePoints().decodePolyline(snapshot.data[0]));
             return Scaffold(
@@ -177,6 +177,21 @@ class _PublicarTrayectoScreenState extends State<PublicarTrayectoScreen> {
               ),
             );
             
+          } else if (snapshot.hasData && snapshot.data[0] == '') {
+            return Scaffold(
+              appBar: AppBar(
+                elevation: 0,
+                backgroundColor: Colors.transparent,
+                foregroundColor: Colors.black,
+                iconTheme: const IconThemeData(color: Colors.green, size: 40),
+              ),
+              body: const Center(
+                child: Text('Lo sentimos actualmente no permitimos trayectos entre Lanzarote y La Graciosa', 
+                  style: TextStyle(fontSize: 20.0, color: Colors.green), 
+                  overflow: TextOverflow.clip, 
+                  textAlign: TextAlign.center,),
+              ),
+            );
           } else {
             return const Scaffold(
               body: Center(

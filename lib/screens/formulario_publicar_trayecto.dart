@@ -43,6 +43,7 @@ class _FormularioTrayectoScreenState extends State<FormularioTrayectoScreen> {
   Widget build(BuildContext context) {
     final formKey = GlobalKey<FormState>();
     final fechaCtrl = TextEditingController();
+    int fecha = 0;
     final horaCtrl = TextEditingController();
     final precioCtrl = TextEditingController();
     final asientosCtrl = TextEditingController();
@@ -110,6 +111,7 @@ class _FormularioTrayectoScreenState extends State<FormularioTrayectoScreen> {
 
                       if (nuevaFecha == null) return;
                       fechaCtrl.text = dateFormat.format(nuevaFecha);
+                      fecha = nuevaFecha.millisecondsSinceEpoch;
                     },
                     validator: (value) {
                       if (value == null || value.isEmpty) {
@@ -248,7 +250,7 @@ class _FormularioTrayectoScreenState extends State<FormularioTrayectoScreen> {
                     onPressed: () async {
                       if (formKey.currentState!.validate()) {
                         await databaseProvider.savePublication(
-                          fechaCtrl.text,
+                          fecha,
                           horaCtrl.text,
                           widget.origen,
                           widget.destino,
