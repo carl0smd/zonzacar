@@ -101,6 +101,8 @@ class BookingCard extends StatelessWidget {
         context, 
         screen: ReservaDetailsScreen(
           id: publication['uid'],
+          userImage: userImage,
+          userName: userName,
         )
       ),
       child: Card(
@@ -174,6 +176,8 @@ class BookingCard extends StatelessWidget {
                       context, 
                       screen: ReservaDetailsScreen(
                         id: publication['uid'],
+                        userImage: userImage,
+                        userName: userName,
                       )
                     );
                   },

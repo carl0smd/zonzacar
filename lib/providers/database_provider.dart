@@ -92,6 +92,12 @@ class DatabaseProvider {
     });
   }
 
+  //get vehiculo por uid
+  Future getVehicleByUid(String uid) async {
+    QuerySnapshot snapshot = await vehiculosCollection.where('uid', isEqualTo: uid).get();
+    return snapshot.docs;
+  }
+  
   //get vehiculos de usuario
   Future getVehicles() async {
     QuerySnapshot snapshot = await vehiculosCollection.where('conductor', isEqualTo: FirebaseAuth.instance.currentUser!.uid).get();
@@ -127,6 +133,12 @@ class DatabaseProvider {
     await usuarioCollection.doc(FirebaseAuth.instance.currentUser!.uid).update({
       'publicaciones': FieldValue.arrayUnion([id]),
     });
+  }
+
+  //get publicaciones
+  Future getPublications(String id) async {
+    QuerySnapshot snapshot = await publicacionesCollection.where('uid', isEqualTo: id).get();
+    return snapshot.docs;
   }
 
   //get publicaciones hacia el Zonzamas
