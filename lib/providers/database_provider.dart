@@ -167,6 +167,12 @@ class DatabaseProvider {
       return snapshot.docs;
     }
   }
+
+  //get publicaciones de usuario
+  Future getPublicationsByUser() async {
+    QuerySnapshot snapshot = await publicacionesCollection.where('conductor', isEqualTo: FirebaseAuth.instance.currentUser!.uid).get();
+    return snapshot.docs;
+  }
   
   //guardar reserva
   Future saveReservation(String uidPublicacion, String uidPasajero) async {
@@ -185,6 +191,12 @@ class DatabaseProvider {
       'pasajeros': FieldValue.arrayUnion([uidPasajero]),
       'plazasDisponibles': FieldValue.increment(-1),
     });
+  }
+
+  //get reservas de usuario
+  Future getReservationsByUser() async {
+    QuerySnapshot snapshot = await reservasCollection.where('pasajero', isEqualTo: FirebaseAuth.instance.currentUser!.uid).get();
+    return snapshot.docs;
   }
 
   

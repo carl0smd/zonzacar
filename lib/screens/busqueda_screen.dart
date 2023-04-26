@@ -35,7 +35,7 @@ class BusquedaScreen extends StatelessWidget {
           : fecha != null ? databaseProvider.getPublicationsFromZonzamas(fecha) 
           : databaseProvider.getPublicationsFromZonzamas(),
           builder: (BuildContext context, AsyncSnapshot snapshot) {
-            if (snapshot.hasData) {
+            if (snapshot.hasData && snapshot.data.length != 0) {
               final publications = snapshot.data;
               publications.removeWhere((element) => element['conductor'] == FirebaseAuth.instance.currentUser!.uid);
               origen != null ? publications.removeWhere((element) => element['origen'].toString().toLowerCase().contains(origen!.toLowerCase()) == false) 
@@ -59,25 +59,36 @@ class BusquedaScreen extends StatelessWidget {
                     );
                   },
                 ),
-              ) : Center(
-                child: Container(
-                  margin: const EdgeInsets.all(20.0),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: const [
-                      Icon(Icons.search_off, size: 80.0, color: Colors.green),
-                      SizedBox(height: 20.0),
-                      Text('No existen trayectos que coincidan con tu búsqueda', style: TextStyle(fontSize: 18.0, color: Colors.green), textAlign: TextAlign.justify,),
-                    ],
-                  ),
-                ),
-              );
+              ) : const NoResults();
+            } else if (snapshot.hasData && snapshot.data.length == 0) {
+              return const NoResults();
             } else {
-              return const Center(
-                child: CircularProgressIndicator(),
-              );
+              return const Center(child: CircularProgressIndicator());
             }
           },
+        ),
+      ),
+    );
+  }
+}
+
+class NoResults extends StatelessWidget {
+  const NoResults({
+    super.key,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: Container(
+        margin: const EdgeInsets.all(20.0),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: const [
+            Icon(Icons.search_off, size: 80.0, color: Colors.green),
+            SizedBox(height: 20.0),
+            Text('No existen trayectos que coincidan con tu búsqueda', style: TextStyle(fontSize: 18.0, color: Colors.green), textAlign: TextAlign.justify,),
+          ],
         ),
       ),
     );

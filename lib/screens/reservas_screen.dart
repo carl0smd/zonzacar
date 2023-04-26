@@ -100,6 +100,7 @@ class _CajaDeBusquedaState extends State<_CajaDeBusqueda> with SingleTickerProvi
                   const SizedBox(height: 30,),
                   Expanded(
                     child: TabBarView(
+                      physics: const NeverScrollableScrollPhysics(),
                       children: [
                         TextFormField(
                           controller: origenCtrl,

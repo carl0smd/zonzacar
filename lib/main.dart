@@ -1,29 +1,16 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/foundation.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:zonzacar/helpers/helper_function.dart';
 import 'package:zonzacar/routes/routes.dart';
-import 'package:zonzacar/shared/constants.dart';
 
 import 'screens/screens.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  if(kIsWeb) {
-    await Firebase.initializeApp(options: FirebaseOptions(
-      apiKey: FirebaseConstants.apiKey, 
-      appId: FirebaseConstants.appId, 
-      authDomain: FirebaseConstants.authDomain,
-      messagingSenderId: FirebaseConstants.messagingSenderId, 
-      projectId: FirebaseConstants.projectId,
-      storageBucket: FirebaseConstants.storageBucket,
-    ));
-  } else {
-    await Firebase.initializeApp();
-  }
+  await Firebase.initializeApp();
   SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual, overlays: []);
   SystemChrome.setPreferredOrientations([
     DeviceOrientation.portraitUp

@@ -102,9 +102,15 @@ class _PerfilScreenState extends State<PerfilScreen> {
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(userName, style: const TextStyle(fontSize: 28, fontWeight: FontWeight.bold),),
+                        SizedBox(
+                          width: 220,
+                          child: Text(userName, style: const TextStyle(fontSize: 28, fontWeight: FontWeight.bold), maxLines: 2, overflow: TextOverflow.ellipsis,)
+                        ),
                         const SizedBox(height: 10,),
-                        Text(userEmail, style: const TextStyle(fontSize: 16, color: Colors.green),),
+                        SizedBox(
+                          width: 220,
+                          child: Text(userEmail, style: const TextStyle(fontSize: 16, color: Colors.green), overflow: TextOverflow.ellipsis,)
+                        ),
                       ],
                     ),
                     CircleAvatar(

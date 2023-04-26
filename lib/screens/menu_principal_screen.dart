@@ -55,8 +55,8 @@ class MenuScreen extends StatelessWidget {
 List<Widget> _buildScreens() {
   return [
     const ReservasScreen(),
-    // const FormularioTrayectoScreen(distancia: 'hola',),
     const PublicacionesScreen(),
+    const MisTrayectosScreen(),
     const ChatScreen(),
     const PerfilScreen(),
   ];
@@ -73,6 +73,14 @@ List<PersistentBottomNavBarItem> _navBarsItems() {
     PersistentBottomNavBarItem(
       icon: const Icon(Icons.add),
       title: ("Publicar"),
+      activeColorPrimary: Colors.green,
+      inactiveColorPrimary: Colors.grey,
+    ),
+    PersistentBottomNavBarItem(      
+      icon: const CircleAvatar(
+        radius: 50,
+        backgroundImage: AssetImage('assets/logo.png'),
+      ),
       activeColorPrimary: Colors.green,
       inactiveColorPrimary: Colors.grey,
     ),
