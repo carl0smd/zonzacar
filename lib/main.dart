@@ -55,32 +55,41 @@ class _MyAppState extends State<MyApp> {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      localizationsDelegates: const [
-        GlobalMaterialLocalizations.delegate,
-        GlobalCupertinoLocalizations.delegate,
-        GlobalWidgetsLocalizations.delegate,
-      ],
-      supportedLocales: const [
-        Locale('es', 'ES')
-      ],
-      title: 'zonzaCar',
-      home: StreamBuilder<User?>(
-        stream: FirebaseAuth.instance.userChanges(),
-        initialData: FirebaseAuth.instance.currentUser,
-        builder: (BuildContext context, AsyncSnapshot<User?> snapshot) {
-          if (snapshot.hasData && _isLoggedIn) {
-            return const MenuScreen();
-          } else {
-            return const LoginScreen();
-          } 
-        },
+    return GestureDetector(
+      onTap: () {
+        FocusScopeNode currentFocus = FocusScope.of(context);
+
+        if (!currentFocus.hasPrimaryFocus && currentFocus.focusedChild != null) { 
+          currentFocus.focusedChild!.unfocus();
+        }
+      },
+      child: MaterialApp(
+        debugShowCheckedModeBanner: false,
+        localizationsDelegates: const [
+          GlobalMaterialLocalizations.delegate,
+          GlobalCupertinoLocalizations.delegate,
+          GlobalWidgetsLocalizations.delegate,
+        ],
+        supportedLocales: const [
+          Locale('es', 'ES')
+        ],
+        title: 'zonzaCar',
+        home: StreamBuilder<User?>(
+          stream: FirebaseAuth.instance.userChanges(),
+          initialData: FirebaseAuth.instance.currentUser,
+          builder: (BuildContext context, AsyncSnapshot<User?> snapshot) {
+            if (snapshot.hasData && _isLoggedIn) {
+              return const MenuScreen();
+            } else {
+              return const LoginScreen();
+            } 
+          },
+        ),
+        routes: appRoutes,
+        theme: ThemeData(
+          primarySwatch: Colors.green,
+        )
       ),
-      routes: appRoutes,
-      theme: ThemeData(
-        primarySwatch: Colors.green,
-      )
     );
   }
 }

@@ -104,6 +104,7 @@ class _CajaDeBusquedaState extends State<_CajaDeBusqueda> with SingleTickerProvi
                       children: [
                         TextFormField(
                           controller: origenCtrl,
+                          autofocus: false,
                           onChanged: (value) {
                             destinoCtrl.clear();
                           },
@@ -120,6 +121,7 @@ class _CajaDeBusquedaState extends State<_CajaDeBusqueda> with SingleTickerProvi
                         ),
                         TextFormField(
                           controller: destinoCtrl,
+                          autofocus: false,
                           onChanged: (value) {
                             origenCtrl.clear();
                           },
@@ -192,7 +194,9 @@ class _CajaDeBusquedaState extends State<_CajaDeBusqueda> with SingleTickerProvi
                           fecha: fecha != 0 ? fecha : null,
                         )
                       );
-
+                      origenCtrl.clear();
+                      destinoCtrl.clear();
+                      fechaCtrl.clear();
                     },
                     style: TextButton.styleFrom(
                       backgroundColor: Colors.green[400],
