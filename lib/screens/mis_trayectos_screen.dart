@@ -65,7 +65,11 @@ class MisReservasYPublicaciones extends StatelessWidget {
           return ListView.separated(
             itemCount: snapshot.data.length,
             itemBuilder: (context, index) {
-              return ListTile(
+              
+              return futureReservas != null ? ListTile(
+                title: Text(myList[index]['publicacion']),
+                subtitle: Text(myList[index]['pasajero']),
+              ) : ListTile(
                 title: Text(myList[index]['origen']),
                 subtitle: Text(myList[index]['destino']),
               );

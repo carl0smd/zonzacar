@@ -1,20 +1,27 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:zonzacar/providers/database_provider.dart';
+import 'package:zonzacar/widgets/snackbar.dart';
 
-class ReservaDetailsScreen extends StatelessWidget {
+class ReservaDetailsScreen extends StatefulWidget {
 
   final String id;
   final String userImage;
   final String userName;
    
   const ReservaDetailsScreen({Key? key, required this.id, required this.userName, required this.userImage}) : super(key: key);
-  
+
   @override
-  
+  State<ReservaDetailsScreen> createState() => _ReservaDetailsScreenState();
+}
+
+class _ReservaDetailsScreenState extends State<ReservaDetailsScreen> {
+
+  @override
   Widget build(BuildContext context) {
     DatabaseProvider databaseProvider = DatabaseProvider();
-   
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('Detalles del trayecto', style: TextStyle(color: Colors.black)),
@@ -26,7 +33,7 @@ class ReservaDetailsScreen extends StatelessWidget {
       ),
       body: SafeArea(
         child: FutureBuilder(
-          future: databaseProvider.getPublications(id),
+          future: databaseProvider.getPublications(widget.id),
           builder: (context, snapshot) {
             if (snapshot.hasData) {
               final publication = snapshot.data[0];
@@ -113,7 +120,7 @@ class ReservaDetailsScreen extends StatelessWidget {
                             Container(
                               width: 250,
                               child: Text(
-                                userName,
+                                widget.userName,
                                 style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                                 maxLines: 3,
                                 overflow: TextOverflow.ellipsis,
@@ -125,11 +132,11 @@ class ReservaDetailsScreen extends StatelessWidget {
                               child: CircleAvatar(
                                 backgroundColor: Colors.white,
                                 radius: 40,
-                                child: userImage == '' ? 
+                                child: widget.userImage == '' ? 
                                 const Icon(Icons.person, size: 40,)
                                 : ClipRRect(
                                   borderRadius: BorderRadius.circular(40),
-                                  child: Image.network(userImage, fit: BoxFit.cover, width: 100, height: 100,),
+                                  child: Image.network(widget.userImage, fit: BoxFit.cover, width: 100, height: 100,),
                                 ),
                               )
                             ),
@@ -181,14 +188,14 @@ class ReservaDetailsScreen extends StatelessWidget {
                           ),
                           child: ElevatedButton(
                             onPressed: () {
-                              
+                              showModalBottomSheet(
+                                context: context, 
+                                builder: (BuildContext context) => buildSheet(databaseProvider)
+                              );
                             },
                             child: const Text('Continuar', style: TextStyle(fontSize: 20),),
                           ),
-                      )
-                        
-                        
-                        
+                        )
                       ],
                     ),
                   ),
@@ -203,4 +210,70 @@ class ReservaDetailsScreen extends StatelessWidget {
       )
     );
   }
+  
+  buildSheet(DatabaseProvider databaseProvider) {
+    return Container(
+      //pay with card, cash or cancel
+      height: 300,
+      padding: const EdgeInsets.symmetric(vertical: 20),
+      color: Colors.white,
+      child: Column(
+        children: [
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 20),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                const Text('Método de pago', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),),
+                IconButton(
+                  onPressed: () {
+                    Navigator.pop(context);
+                  }, 
+                  icon: const Icon(Icons.close, color: Colors.red, size: 30,)
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(height: 20,),
+          const Divider( height: 1, thickness: 1,),
+          Flexible(
+            child: ListView.builder(
+              padding: const EdgeInsets.all(20),
+              itemCount: 2,
+              itemBuilder: (BuildContext context, int index) {
+                if (index == 0) {
+                  return ListTile(
+                    leading: const Icon(Icons.money, color: Colors.green, size: 30,),
+                    title: const Text('Efectivo', style: TextStyle(fontSize: 18),),
+                    trailing:  const Icon(Icons.arrow_forward_ios, color: Colors.green,),
+                    onTap: () async {
+                      try {
+                        await databaseProvider.saveReservation(widget.id, FirebaseAuth.instance.currentUser!.uid);
+                        await databaseProvider.addPassengerToPublication(widget.id, FirebaseAuth.instance.currentUser!.uid);
+                        if (mounted) {
+                          showSnackbar('Viaje reservado correctamente', context);
+                          Navigator.pushReplacementNamed(context, 'home');
+                        }
+                      } catch (e) {
+                        showSnackbar('Error al reservar el viaje', context);
+                      }
+
+                    },
+                  );
+                } else {
+                  return ListTile(
+                    leading: const Icon(Icons.credit_card, color: Colors.grey, size: 30,),
+                    title: const Text('Tarjeta de crédito/débito (Próximamente)', style: TextStyle(fontSize: 18, color: Colors.grey),),
+                    trailing:  const Icon(Icons.arrow_forward_ios, color: Colors.grey,),
+                    onTap: () {},
+                  );
+                }
+              },           
+            ),
+          ),
+        ],
+      )
+    );
+  }
 }
+

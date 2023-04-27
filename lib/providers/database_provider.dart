@@ -135,6 +135,13 @@ class DatabaseProvider {
     });
   }
 
+  //add pasajero a la publicacion
+  Future addPassengerToPublication(String uidPublicacion, String uidPasajero) async {
+    await publicacionesCollection.doc(uidPublicacion).update({
+      'pasajeros': FieldValue.arrayUnion([uidPasajero]),
+    });
+  }
+
   //get publicaciones
   Future getPublications(String id) async {
     QuerySnapshot snapshot = await publicacionesCollection.where('uid', isEqualTo: id).get();
