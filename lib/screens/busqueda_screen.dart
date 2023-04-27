@@ -51,7 +51,7 @@ class BusquedaScreen extends StatelessWidget {
                       builder: (context, snapshot) {
                         if (snapshot.hasData) {
                           final user = snapshot.data[0];
-                          return BookingCard(publication: publications[index], userName: user['nombreCompleto'], userImage: user['imagenPerfil'],);
+                          return BookingCard(publication: publications[index], userName: user['nombreCompleto'], userImage: user['imagenPerfil'], isGoingToZonzamas: isGoingToZonzamas);
                         } else {
                           return Container();
                         }
@@ -98,12 +98,13 @@ class NoResults extends StatelessWidget {
 class BookingCard extends StatelessWidget {
   const BookingCard({
     super.key,
-    required this.publication, required this.userName, required this.userImage,
+    required this.publication, required this.userName, required this.userImage, required this.isGoingToZonzamas,
   });
 
   final dynamic publication;
   final String userName;
   final String userImage;
+  final bool isGoingToZonzamas;
 
   @override
   Widget build(BuildContext context) {
@@ -114,6 +115,7 @@ class BookingCard extends StatelessWidget {
           id: publication['uid'],
           userImage: userImage,
           userName: userName,
+          isGoingToZonzamas: isGoingToZonzamas,
         )
       ),
       child: Card(
@@ -189,6 +191,7 @@ class BookingCard extends StatelessWidget {
                         id: publication['uid'],
                         userImage: userImage,
                         userName: userName,
+                        isGoingToZonzamas: isGoingToZonzamas,
                       )
                     );
                   },

@@ -128,15 +128,15 @@ class _PublicarTrayectoScreenState extends State<PublicarTrayectoScreen> {
                 : Container(),
                 title: _userHasCar ? const Text('¿Esta es la ruta?') : null,
                 actions: [
-                    Container(
-                      margin: const EdgeInsets.only(right: 5.0),
-                      child: IconButton(
-                        onPressed: () {
-                            Navigator.of(context).pop();               
-                        },
-                        icon: const Icon(Icons.clear, size: 40, color: Colors.green),
-                      ),
+                  Container(
+                    margin: const EdgeInsets.only(right: 5.0),
+                    child: IconButton(
+                      onPressed: () {
+                          Navigator.of(context).pop();               
+                      },
+                      icon: const Icon(Icons.clear, size: 40, color: Colors.green),
                     ),
+                  ),
                 ],
               ),
               body: _userHasCar ? GoogleMap(
