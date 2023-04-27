@@ -48,7 +48,7 @@ class _FormularioTrayectoScreenState extends State<FormularioTrayectoScreen> {
     final precioCtrl = TextEditingController();
     final asientosCtrl = TextEditingController();
     final precio = (double.parse(widget.distancia.split(" ")[0]) * 
-    PrecioConstants.precioPorKm).toStringAsFixed(2);
+    PrecioConstants.precioPorKm / 4).toStringAsFixed(2);
     dynamic vehiculo;
     String plazas = '4';
     asientosCtrl.text = plazas;
@@ -219,7 +219,7 @@ class _FormularioTrayectoScreenState extends State<FormularioTrayectoScreen> {
                     decoration: InputDecoration(
                       filled: true,
                       border: const OutlineInputBorder(),
-                      labelText: 'Precio total (a dividir entre todos los pasajeros)',
+                      labelText: 'Precio por pasajero',
                       helperText: 'Precio recomendado según coste medio de gasolina por km, podrás aumentarlo un máximo de 2€',
                       counterText: '',
                       helperMaxLines: 2,

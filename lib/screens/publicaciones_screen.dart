@@ -165,7 +165,6 @@ class _SearchBarState extends State<SearchBar> {
           child: TextField(
             controller: widget._zonzamasSearchController,
             autofocus: false,
-            showCursor: false,
             decoration: InputDecoration(
               filled: true,
               fillColor: Colors.white,
