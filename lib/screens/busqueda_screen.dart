@@ -28,6 +28,7 @@ class BusquedaScreen extends StatelessWidget {
         iconTheme: const IconThemeData(size: 40, color: Colors.green),
       ),
       body: SafeArea(
+        //FutureBuilder para obtener los trayectos de la base de datos
         child: FutureBuilder(
           future: isGoingToZonzamas ? fecha != null 
           ? databaseProvider.getPublicationsToZonzamas(fecha) 
@@ -42,13 +43,16 @@ class BusquedaScreen extends StatelessWidget {
               : destino != null ? publications.removeWhere((element) => element['destino'].toString().toLowerCase().contains(destino!.toLowerCase()) == false)
               : null;
               return publications.length != 0 ?
+              //ListView para mostrar los trayectos
               Center(
                 child: ListView.builder(
                   itemCount: publications.length,
                   itemBuilder: (BuildContext context, int index) {
+                    //FutureBuilder para obtener el usuario que ha publicado el trayecto
                     return FutureBuilder(
                       future: databaseProvider.getUserByUid(publications[index]['conductor']),
                       builder: (context, snapshot) {
+                        //Si se obtiene el usuario, se muestra el trayecto
                         if (snapshot.hasData) {
                           final user = snapshot.data[0];
                           return BookingCard(publication: publications[index], userName: user['nombreCompleto'], userImage: user['imagenPerfil'], isGoingToZonzamas: isGoingToZonzamas);
@@ -59,6 +63,7 @@ class BusquedaScreen extends StatelessWidget {
                     );
                   },
                 ),
+                //Si no hay trayectos que coincidan con la búsqueda, se muestra un mensaje
               ) : const NoResults();
             } else if (snapshot.hasData && snapshot.data.length == 0) {
               return const NoResults();
@@ -72,6 +77,7 @@ class BusquedaScreen extends StatelessWidget {
   }
 }
 
+//Widget que se muestra cuando no hay resultados
 class NoResults extends StatelessWidget {
   const NoResults({
     super.key,
@@ -95,6 +101,7 @@ class NoResults extends StatelessWidget {
   }
 }
 
+//Widget que muestra un trayecto
 class BookingCard extends StatelessWidget {
   const BookingCard({
     super.key,
@@ -109,6 +116,7 @@ class BookingCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
+      //Al pulsar en el trayecto, se muestra la pantalla de detalles del trayecto
       onTap: () => PersistentNavBarNavigator.pushNewScreen(
         context, 
         screen: ReservaDetailsScreen(
@@ -118,6 +126,7 @@ class BookingCard extends StatelessWidget {
           isGoingToZonzamas: isGoingToZonzamas,
         )
       ),
+      //Card que muestra el trayecto
       child: Card(
         margin: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 6.0),
         shape: RoundedRectangleBorder(
@@ -129,6 +138,7 @@ class BookingCard extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+              //Nombre del conductor y foto de perfil
               Row(
                 children: [
                   CircleAvatar(
@@ -152,21 +162,26 @@ class BookingCard extends StatelessWidget {
                 ],
               ),
               const SizedBox(height: 10.0),
+              //Origen
               Text(publication['origen'], style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16.0, color: Colors.grey[600])),
               const SizedBox(height: 10.0),
+              //Fecha, hora de salida y pasajeros permitidos
               Row(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
+                  //Linea vertical
                   Container(
                     margin: const EdgeInsets.symmetric(horizontal: 20.0),
                     width: 3.0,
                     height: 50.0,
                     color: Colors.green,
                   ),
+                  //fecha
                   const Icon(Icons.calendar_today, color: Colors.green),
                   const SizedBox(width: 10.0),
                   Text(DateFormat('dd/MM/yyyy').format(DateTime.fromMillisecondsSinceEpoch(publication['fecha'])), style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 14.0)),
                   const SizedBox(width: 10.0),
+                  //hora de salida
                   const Icon(Icons.access_time, color: Colors.green),
                   const SizedBox(width: 10.0),
                   Text(publication['horaSalida'], style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 14.0)),
@@ -177,9 +192,11 @@ class BookingCard extends StatelessWidget {
                   Text('${publication['asientosDisponibles']}', style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 14.0)),
                 ],
               ),
+              //Destino
               const SizedBox(height: 10.0),
               Text(publication['destino'], style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16.0, color: Colors.grey[600])),
               const SizedBox(height: 10.0),
+              //Botón para reservar
               Container(
                 margin: const EdgeInsets.symmetric(horizontal: 10.0),
                 width: double.infinity,

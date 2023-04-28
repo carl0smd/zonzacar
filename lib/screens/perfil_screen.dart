@@ -72,9 +72,9 @@ class _PerfilScreenState extends State<PerfilScreen> {
         elevation: 0,
         foregroundColor: Colors.black,
         actions: [
+          // Botón para salir de la sesión
           Row(
             children: [
-
               IconButton(
                 onPressed: () {
                   authProvider.logOut();
@@ -83,8 +83,7 @@ class _PerfilScreenState extends State<PerfilScreen> {
                 icon: const Icon(Icons.logout)
               )
             ],
-          ),
-          
+          ),  
         ],
       ),
       body: SafeArea(
@@ -96,23 +95,27 @@ class _PerfilScreenState extends State<PerfilScreen> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
+                // Nombre de usuario, email y foto de perfil
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
+                        // Nombre de usuario
                         SizedBox(
                           width: 220,
                           child: Text(userName, style: const TextStyle(fontSize: 28, fontWeight: FontWeight.bold), maxLines: 2, overflow: TextOverflow.ellipsis,)
                         ),
                         const SizedBox(height: 10,),
+                        // Email
                         SizedBox(
                           width: 220,
                           child: Text(userEmail, style: const TextStyle(fontSize: 16, color: Colors.green), overflow: TextOverflow.ellipsis,)
                         ),
                       ],
                     ),
+                    // Foto de perfil
                     CircleAvatar(
                       backgroundColor: Colors.black87,
                       radius: 52,
@@ -131,12 +134,14 @@ class _PerfilScreenState extends State<PerfilScreen> {
                 ),
                 const Divider(thickness: 1,),
                 const Text('Datos', style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold),),
+                // Botón para editar la foto de perfil
                 TextButton(
                   child: const Text('Editar foto de perfil', style: TextStyle(fontSize: 16, color: Colors.green)),
                   onPressed: () async {
                     return editarFotoDialog(context, uploadImage);
                   },
                 ),
+                // Botón para editar el nombre
                 TextButton(
                   child: const Text('Editar nombre', style: TextStyle(fontSize: 16, color: Colors.green)),
                   onPressed: () async {
@@ -145,11 +150,12 @@ class _PerfilScreenState extends State<PerfilScreen> {
                 ),
                 const Divider(thickness: 1,),
                 const Text('Vehículos', style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold),),
+                // Botón para añadir un vehículo
                 TextButton(
                   child: const Text('Añadir vehículo', style: TextStyle(fontSize: 16, color: Colors.green)),
                   onPressed: () async {
                     await addVehicleDialog(context, databaseProvider);
-                    //after closing the dialog, refresh the list
+                    // Actualizar la lista de vehículos después de añadir uno nuevo
                     await databaseProvider.getVehicles().then((value) {
                       setState(() {
                         vehicles.clear();
@@ -158,6 +164,7 @@ class _PerfilScreenState extends State<PerfilScreen> {
                     });
                   },
                 ),
+                // Lista de vehículos
                 Flexible(
                   child: ListView.builder(
                     itemCount: vehicles.length,
@@ -182,6 +189,7 @@ class _PerfilScreenState extends State<PerfilScreen> {
                   ),
                 ),
                 const Divider(thickness: 1,),
+                // Botón para eliminar la cuenta
                 TextButton(
                   child: const Text('Eliminar cuenta', style: TextStyle(fontSize: 16, color: Colors.red)),
                   onPressed: () {
@@ -196,6 +204,7 @@ class _PerfilScreenState extends State<PerfilScreen> {
     );
   }
 
+  // Dialog para editar nombre
   Future<void> _editarNombreDialog(BuildContext context, DatabaseProvider databaseProvider) {
     final formKey = GlobalKey<FormState>();
     final nameController = TextEditingController();

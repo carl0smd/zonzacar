@@ -68,6 +68,7 @@ class _FormularioTrayectoScreenState extends State<FormularioTrayectoScreen> {
             margin: const EdgeInsets.all(20.0),
             child: Column(
               children: [
+                //Info del trayecto
                 Container(
                   padding: const EdgeInsets.symmetric(vertical: 20.0, horizontal: 10.0),
                   width: double.infinity,
@@ -82,6 +83,27 @@ class _FormularioTrayectoScreenState extends State<FormularioTrayectoScreen> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
+                      //Origen
+                      Text(
+                        'Origen: ${widget.origen}',
+                        style: const TextStyle(
+                          fontSize: 20.0,
+                          color: Colors.green,
+                        ),
+                        textAlign: TextAlign.center,
+                      ),
+                      const SizedBox(height: 10.0),
+                      //Destino
+                      Text(
+                        'Destino: ${widget.destino}',
+                        style: const TextStyle(
+                          fontSize: 20.0,
+                          color: Colors.green,
+                        ),
+                        textAlign: TextAlign.center,
+                      ),
+                      const SizedBox(height: 10.0),
+                      //Distancia
                       Text(
                           'Distancia total: ${widget.distancia}',
                           style: const TextStyle(
@@ -93,13 +115,14 @@ class _FormularioTrayectoScreenState extends State<FormularioTrayectoScreen> {
                     ],
                   ),
                 ),
-
-                  const SizedBox(height: 20.0),
+                const SizedBox(height: 20.0),
+                //Formulario
                 Form(
                   key: formKey,
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
+                      //Campo fecha
                       TextFormField(
                         controller: fechaCtrl,
                         maxLength: 10,
@@ -126,7 +149,6 @@ class _FormularioTrayectoScreenState extends State<FormularioTrayectoScreen> {
                               return true;
                             },
                           );
-
                           if (nuevaFecha == null) return;
                           fechaCtrl.text = dateFormat.format(nuevaFecha);
                           fecha = nuevaFecha.millisecondsSinceEpoch;
@@ -139,7 +161,7 @@ class _FormularioTrayectoScreenState extends State<FormularioTrayectoScreen> {
                         },
                       ),
                       const SizedBox(height: 20.0),
-                      //TextFormField to pick time
+                      //Campo hora
                       TextFormField(
                         controller: horaCtrl,
                         maxLength: 5,
@@ -167,9 +189,8 @@ class _FormularioTrayectoScreenState extends State<FormularioTrayectoScreen> {
                           return null;
                         },
                       ),
-
                       const SizedBox(height: 20.0),
-
+                      //Campo vehiculo
                       DropdownButtonFormField(
                         items: vehicles.map((e) {
                           return DropdownMenuItem(
@@ -196,7 +217,7 @@ class _FormularioTrayectoScreenState extends State<FormularioTrayectoScreen> {
 
                       const SizedBox(height: 20.0),
 
-                      //TextFormField to pick seats
+                      //Campo asientos
                       TextFormField(
                         controller: asientosCtrl,
                         maxLength: 1,
@@ -229,7 +250,7 @@ class _FormularioTrayectoScreenState extends State<FormularioTrayectoScreen> {
                       ),
                       const SizedBox(height: 20.0),
 
-                      //TextFormField to pick price
+                      //Campo precio
                       TextFormField(
                         controller: precioCtrl,
                         maxLength: 5,
@@ -264,6 +285,7 @@ class _FormularioTrayectoScreenState extends State<FormularioTrayectoScreen> {
 
                       const SizedBox(height: 20.0),
 
+                      //Botón publicar
                       ElevatedButtonTheme(
                         data: ElevatedButtonThemeData(
                           style: ElevatedButton.styleFrom(

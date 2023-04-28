@@ -14,7 +14,7 @@ class MenuScreen extends StatelessWidget {
   PersistentTabController controller;
 
   controller = PersistentTabController(initialIndex: 0);
-
+  // BottomNavBar persitente
     return PersistentTabView(
         context,
         controller: controller,
@@ -53,6 +53,7 @@ class MenuScreen extends StatelessWidget {
 }
 
 List<Widget> _buildScreens() {
+  // Se agregan las pantallas a mostrar en el menu
   return [
     const ReservasScreen(),
     const PublicacionesScreen(),
@@ -62,6 +63,7 @@ List<Widget> _buildScreens() {
   ];
 }
 
+// Se agregan los items del menu
 List<PersistentBottomNavBarItem> _navBarsItems() {
   return [
     PersistentBottomNavBarItem(

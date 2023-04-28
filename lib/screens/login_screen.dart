@@ -36,7 +36,7 @@ class LoginScreen extends StatelessWidget {
 }
 
 
-
+//Formulario de login
 class _Form extends StatefulWidget {
   const _Form();
 
@@ -65,6 +65,7 @@ class __FormState extends State<_Form> {
           children: [
             Column(
               children: [
+                //Campo de correo
                 CustomInput(
                   icon: Icons.mail_outline,
                   placeholder: 'Correo',
@@ -79,6 +80,7 @@ class __FormState extends State<_Form> {
                     : 'Introduce un correo válido';
                   },
                 ),
+                //Campo de contraseña
                 CustomInput(
                   icon: Icons.lock_outline,
                   placeholder: 'Contraseña',
@@ -94,6 +96,7 @@ class __FormState extends State<_Form> {
                     : 'La contraseña debe tener al menos 6 caracteres sin espacios';
                   },
                 ),
+                //Botón de acceso
                 BotonVerde(
                   text: 'Acceder', 
                   onPressed: (){
@@ -104,6 +107,7 @@ class __FormState extends State<_Form> {
               ],
             ),
             const SizedBox(height: 40,),
+            //Botón de registro
             const Labels(ruta: 'register', text: '¿No tienes cuenta?', gestureText: 'Crea una ahora!'),
             // const SizedBox(height: 40,),
             // Text('Términos y condiciones de uso', style: TextStyle(fontWeight: FontWeight.w200),),
@@ -113,6 +117,7 @@ class __FormState extends State<_Form> {
     );
   }
 
+  //Función para iniciar sesión
   login(email, password) async {
     if (formKey.currentState!.validate()) {
       setState(() {});

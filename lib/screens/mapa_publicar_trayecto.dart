@@ -32,11 +32,13 @@ class _PublicarTrayectoScreenState extends State<PublicarTrayectoScreen> {
   void initState() {
     super.initState();
     _checkIfUserHasCar();
+    //Variable que contiene el tema del mapa
     DefaultAssetBundle.of(context).loadString('assets/map_theme/classic_no_labels.json').then((string) {
       _mapTheme = string;
     });
   }
 
+  //Función para comprobar si el usuario tiene un coche
   void _checkIfUserHasCar() async {
     await databaseProvider.getVehicles().then((value) {
       if (value.isNotEmpty) {
@@ -57,6 +59,7 @@ class _PublicarTrayectoScreenState extends State<PublicarTrayectoScreen> {
 
     List<PointLatLng> result = [];
 
+    //Marcador de origen
     Marker originMarker = Marker(
       markerId: const MarkerId('origin'),
       position: LatLng(double.parse(origin.split(',')[0]), double.parse(origin.split(',')[1])),
@@ -73,6 +76,7 @@ class _PublicarTrayectoScreenState extends State<PublicarTrayectoScreen> {
       },
     );
 
+    //Marcador de destino
     Marker destinationMarker = Marker(
       markerId: const MarkerId('destination'),
       position: LatLng(double.parse(destination.split(',')[0]), double.parse(destination.split(',')[1])),
@@ -89,11 +93,13 @@ class _PublicarTrayectoScreenState extends State<PublicarTrayectoScreen> {
       },
     );
 
+    //Posición de la cámara
     CameraPosition kGooglePlex = CameraPosition(
       target: LatLng(double.parse(origin.split(',')[0]), double.parse(origin.split(',')[1])),
       zoom: 16,
     );
    
+    //FutureBuilder para obtener la polyline y la distancia entre los dos puntos
       return FutureBuilder(
         future: googleServicesProvider.getPolylineAndDistance(origin, destination),
         builder: (BuildContext context, AsyncSnapshot snapshot) {
@@ -108,6 +114,7 @@ class _PublicarTrayectoScreenState extends State<PublicarTrayectoScreen> {
                 centerTitle: true,
                 leading: _userHasCar ? Container(
                   margin: const EdgeInsets.only(left: 5.0),
+                  // Botón para ir al formulario
                   child: IconButton(
                     onPressed: () {
                       PersistentNavBarNavigator.pushNewScreen(
@@ -128,6 +135,7 @@ class _PublicarTrayectoScreenState extends State<PublicarTrayectoScreen> {
                 : Container(),
                 title: _userHasCar ? const Text('¿Esta es la ruta?') : null,
                 actions: [
+                  // Botón para cerrar el mapa
                   Container(
                     margin: const EdgeInsets.only(right: 5.0),
                     child: IconButton(
@@ -139,6 +147,7 @@ class _PublicarTrayectoScreenState extends State<PublicarTrayectoScreen> {
                   ),
                 ],
               ),
+              // Si el usuario tiene un coche se muestra el mapa, si no se muestra un mensaje
               body: _userHasCar ? GoogleMap(
                 mapType: MapType.normal,
                 initialCameraPosition: kGooglePlex,
@@ -176,7 +185,7 @@ class _PublicarTrayectoScreenState extends State<PublicarTrayectoScreen> {
                 ),
               ),
             );
-            
+            // Si el origen o el destino es La Graciosa se muestra un mensaje
           } else if (snapshot.hasData && snapshot.data[0] == '') {
             return Scaffold(
               appBar: AppBar(

@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:zonzacar/providers/database_provider.dart';
 import 'package:zonzacar/shared/constants.dart';
 
+// Dialogos para editar datos
 Future<void> editarFotoDialog(BuildContext context, void Function(dynamic camara) uploadImage) {
     return showDialog(
       context: context,
@@ -63,6 +64,7 @@ Future<void> editarFotoDialog(BuildContext context, void Function(dynamic camara
     );
   }
 
+// Dialogos para añadir vehiculo
   Future<void> addVehicleDialog(BuildContext context, DatabaseProvider databaseProvider) {
     final formKey = GlobalKey<FormState>();
     final matriculaController = TextEditingController();
