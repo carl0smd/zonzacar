@@ -22,12 +22,10 @@ class LoginScreen extends StatelessWidget {
           child: SizedBox(
             height: MediaQuery.of(context).size.height * 0.9,
             child: Column(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: const [
                 Logo(titulo: 'Acceso'),
                 _Form(),
-                Labels(ruta: 'register', text: '¿No tienes cuenta?', gestureText: 'Crea una ahora!'),
-                Text('Términos y condiciones de uso', style: TextStyle(fontWeight: FontWeight.w200),),
               ],
             ),
           ),
@@ -65,42 +63,50 @@ class __FormState extends State<_Form> {
         key: formKey,
         child: Column(
           children: [
-            CustomInput(
-              icon: Icons.mail_outline,
-              placeholder: 'Correo',
-              keyboardType: TextInputType.emailAddress,
-              onChanged: (value) {
-                email = value;
-                setState(() {});
-              },
-              validator: (value) {
-                return RegExp(r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+").hasMatch(value!) 
-                ? null 
-                : 'Introduce un correo válido';
-              },
+            Column(
+              children: [
+                CustomInput(
+                  icon: Icons.mail_outline,
+                  placeholder: 'Correo',
+                  keyboardType: TextInputType.emailAddress,
+                  onChanged: (value) {
+                    email = value;
+                    setState(() {});
+                  },
+                  validator: (value) {
+                    return RegExp(r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+").hasMatch(value!) 
+                    ? null 
+                    : 'Introduce un correo válido';
+                  },
+                ),
+                CustomInput(
+                  icon: Icons.lock_outline,
+                  placeholder: 'Contraseña',
+                  isPassword: true,
+                  onChanged: (value) {
+                    password = value;
+                    setState(() {});
+                  },
+                  validator: (value) {
+                    //la contraseña tener al menos  6 caracteres sin espacios
+                    return RegExp(r"^\S{6,}$").hasMatch(value!)
+                    ? null
+                    : 'La contraseña debe tener al menos 6 caracteres sin espacios';
+                  },
+                ),
+                BotonVerde(
+                  text: 'Acceder', 
+                  onPressed: (){
+                    login(email, password);
+                    // Navigator.pushReplacementNamed(context, 'home');
+                  },
+                )
+              ],
             ),
-            CustomInput(
-              icon: Icons.lock_outline,
-              placeholder: 'Contraseña',
-              isPassword: true,
-              onChanged: (value) {
-                password = value;
-                setState(() {});
-              },
-              validator: (value) {
-                //la contraseña tener al menos  6 caracteres sin espacios
-                return RegExp(r"^\S{6,}$").hasMatch(value!)
-                ? null
-                : 'La contraseña debe tener al menos 6 caracteres sin espacios';
-              },
-            ),
-            BotonVerde(
-              text: 'Acceder', 
-              onPressed: () {
-                login(email, password);
-                // Navigator.pushReplacementNamed(context, 'home');
-              },
-            )
+            const SizedBox(height: 40,),
+            const Labels(ruta: 'register', text: '¿No tienes cuenta?', gestureText: 'Crea una ahora!'),
+            // const SizedBox(height: 40,),
+            // Text('Términos y condiciones de uso', style: TextStyle(fontWeight: FontWeight.w200),),
           ],
         ),
       ),

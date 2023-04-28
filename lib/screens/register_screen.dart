@@ -20,12 +20,10 @@ class RegisterScreen extends StatelessWidget {
           child: SizedBox(
             height: MediaQuery.of(context).size.height * 0.9,
             child: Column(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: const [
                 Logo(titulo: 'Registro'),
                 _Form(),
-                Labels(ruta: 'login', text: '¿Ya tienes cuenta?', gestureText: 'Accede desde aquí!'),
-                Text('Términos y condiciones de uso', style: TextStyle(fontWeight: FontWeight.w200),),
               ],
             ),
           ),
@@ -61,61 +59,69 @@ class __FormState extends State<_Form> {
       padding: const EdgeInsets.symmetric(horizontal: 50),
       child: _isLoading ? 
       const CircularProgressIndicator()
-      : Form(
-        key: formKey,
-        child: Column(
-          children: [
-            CustomInput(
-              icon: Icons.perm_identity,
-              placeholder: 'Nombre',
-              onChanged: (value) {
-                  nombre = value;
-                  setState(() {});
-              },
-              validator: (value) {
-                //regex for full name, the name and last name must be separated by a space and each name must have at least 2 characters
-                return RegExp(r"^[A-Za-záéíóúüÁÉÍÓÚÜñÑ]{2,}(?:\s[A-Za-záéíóúüÁÉÍÓÚÜñÑ]{2,})?$").hasMatch(value!)
-                ? null
-                : 'Introduce un nombre válido, mínimo 2 caracteres';
-              },
+      : Column(
+        children: [
+          Form(
+            key: formKey,
+            child: Column(
+              children: [
+                CustomInput(
+                  icon: Icons.perm_identity,
+                  placeholder: 'Nombre',
+                  onChanged: (value) {
+                      nombre = value;
+                      setState(() {});
+                  },
+                  validator: (value) {
+                    //regex for full name, the name and last name must be separated by a space and each name must have at least 2 characters
+                    return RegExp(r"^[A-Za-záéíóúüÁÉÍÓÚÜñÑ]{2,}(?:\s[A-Za-záéíóúüÁÉÍÓÚÜñÑ]{2,})?$").hasMatch(value!)
+                    ? null
+                    : 'Introduce un nombre válido, mínimo 2 caracteres';
+                  },
+                ),
+                CustomInput(
+                  icon: Icons.mail_outline,
+                  placeholder: 'Correo',
+                  keyboardType: TextInputType.emailAddress,
+                  onChanged: (value) {
+                    email = value;
+                    setState(() {});
+                  },
+                  validator: (value) {
+                    return RegExp(r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+").hasMatch(value!) 
+                    ? null 
+                    : 'Introduce un correo válido';
+                  },
+                ),
+                CustomInput(
+                  icon: Icons.lock_outline,
+                  placeholder: 'Contraseña',
+                  isPassword: true,
+                  onChanged: (value) {
+                    password = value;
+                    setState(() {});
+                  },
+                  validator: (value) {
+                    //la contraseña tener al menos 6 caracteres sin espacios
+                    return RegExp(r"^\S{6,}$").hasMatch(value!)
+                    ? null
+                    : 'La contraseña debe tener al menos 6 caracteres sin espacios';
+                  },
+                ),
+                BotonVerde (
+                  text: 'Crear cuenta', 
+                  onPressed: () {
+                    register(nombre, email, password);
+                  },
+                )
+              ],
             ),
-            CustomInput(
-              icon: Icons.mail_outline,
-              placeholder: 'Correo',
-              keyboardType: TextInputType.emailAddress,
-              onChanged: (value) {
-                email = value;
-                setState(() {});
-              },
-              validator: (value) {
-                return RegExp(r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+").hasMatch(value!) 
-                ? null 
-                : 'Introduce un correo válido';
-              },
-            ),
-            CustomInput(
-              icon: Icons.lock_outline,
-              placeholder: 'Contraseña',
-              isPassword: true,
-              onChanged: (value) {
-                password = value;
-                setState(() {});
-              },
-              validator: (value) {
-                //la contraseña tener al menos 6 caracteres sin espacios
-                return RegExp(r"^\S{6,}$").hasMatch(value!)
-                ? null
-                : 'La contraseña debe tener al menos 6 caracteres sin espacios';
-              },
-            ),
-            BotonVerde (
-              text: 'Crear cuenta', 
-              onPressed: () {
-                register(nombre, email, password);
-              },
-            )
-          ],
-        ),
+          ),
+          const SizedBox(height: 40,),
+          const Labels(ruta: 'login', text: '¿Ya tienes cuenta?', gestureText: 'Accede desde aquí!'),
+          // const SizedBox(height: 40,),
+          // const Text('Términos y condiciones de uso', style: TextStyle(fontWeight: FontWeight.w200),),
+        ],
       ),
     );
   }

@@ -24,6 +24,7 @@ class _ReservaDetailsScreenState extends State<ReservaDetailsScreen> {
 
   final Completer<GoogleMapController> _controller = Completer<GoogleMapController>();
   String _mapTheme = '';
+  bool _purchaseInProgress = false;
 
   @override
   void initState() {
@@ -73,38 +74,7 @@ class _ReservaDetailsScreenState extends State<ReservaDetailsScreen> {
                     infoConductor(databaseProvider, publication, context),
                     InfoMapa(widget: widget, kGooglePlex: kGooglePlex, marker: marker, mapTheme: _mapTheme, controller: _controller),
                     const SizedBox(height: 15,),
-                    Container(
-                      margin: const EdgeInsets.only(bottom: 20),
-                      decoration: const BoxDecoration(
-                        color: Colors.white,
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.black26,
-                            blurRadius: 5,
-                          ),
-                        ],
-                      ),
-                      padding: const EdgeInsets.all(20),
-                      child: ElevatedButtonTheme(
-                        data: ElevatedButtonThemeData(
-                          style: ElevatedButton.styleFrom(
-                            shape: const StadiumBorder(),
-                            elevation: 1,
-                            minimumSize: const Size(double.infinity, 50),
-                            padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 15),
-                          ),
-                        ),
-                        child: ElevatedButton(
-                          onPressed: () {
-                            showModalBottomSheet(
-                              context: context, 
-                              builder: (BuildContext context) => buildSheet(databaseProvider)
-                            );
-                          },
-                          child: const Text('Continuar', style: TextStyle(fontSize: 20),),
-                        ),
-                      ),
-                    )
+                    buyButton(context, databaseProvider)
                   ],
                 );
               } else {
@@ -114,6 +84,41 @@ class _ReservaDetailsScreenState extends State<ReservaDetailsScreen> {
           ),
         ),
       )
+    );
+  }
+
+  Container buyButton(BuildContext context, DatabaseProvider databaseProvider) {
+    return Container(
+      margin: const EdgeInsets.only(bottom: 20),
+      decoration: const BoxDecoration(
+        color: Colors.white,
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black26,
+            blurRadius: 5,
+          ),
+        ],
+      ),
+      padding: const EdgeInsets.all(20),
+      child: ElevatedButtonTheme(
+        data: ElevatedButtonThemeData(
+          style: ElevatedButton.styleFrom(
+            shape: const StadiumBorder(),
+            elevation: 1,
+            minimumSize: const Size(double.infinity, 50),
+            padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 15),
+          ),
+        ),
+        child: ElevatedButton(
+          onPressed: () {
+            showModalBottomSheet(
+              context: context, 
+              builder: (BuildContext context) => buildSheet(databaseProvider)
+            );
+          },
+          child: const Text('Continuar', style: TextStyle(fontSize: 20),),
+        ),
+      ),
     );
   }
 
@@ -216,7 +221,7 @@ class _ReservaDetailsScreenState extends State<ReservaDetailsScreen> {
               children: [
                 const Text('Método de pago', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),),
                 IconButton(
-                  onPressed: () {
+                  onPressed: _purchaseInProgress ? null : () {
                     Navigator.pop(context);
                   }, 
                   icon: const Icon(Icons.close, color: Colors.red, size: 30,)
@@ -236,26 +241,71 @@ class _ReservaDetailsScreenState extends State<ReservaDetailsScreen> {
                     leading: const Icon(Icons.money, color: Colors.green, size: 30,),
                     title: const Text('Efectivo', style: TextStyle(fontSize: 18),),
                     trailing:  const Icon(Icons.arrow_forward_ios, color: Colors.green,),
-                    onTap: () async {
-                      try {
-                        await databaseProvider.saveReservation(widget.id, FirebaseAuth.instance.currentUser!.uid);
-                        await databaseProvider.addPassengerToPublication(widget.id, FirebaseAuth.instance.currentUser!.uid);
-                        if (mounted) {
-                          showSnackbar('Viaje reservado correctamente', context);
-                          Navigator.pushReplacementNamed(context, 'home');
-                        }
-                      } catch (e) {
-                        showSnackbar('Error al reservar el viaje', context);
-                      }
+                    onTap: _purchaseInProgress ? null : () async {
+                      await showDialog(
+                        context: context, 
+                        barrierDismissible: false,
+                        builder: (BuildContext context) => AlertDialog(
+                          title: const Text('Confirmar reserva', style: TextStyle(fontSize: 20),),
+                          content: const Text('¿Estás seguro de reservar este trayecto?'),
+                          actions: [
+                            TextButton(
+                              onPressed: _purchaseInProgress ? null : () {
+                                setState(() {
+                                  _purchaseInProgress = false;
+                                });
+                                Navigator.pop(context);
+                              }, 
+                              child: const Text('Cancelar', style: TextStyle(fontSize: 18, color: Colors.red),),
+                            ),
+                            TextButton(
+                              onPressed: _purchaseInProgress ? null : () {
+                                setState(() {
+                                  _purchaseInProgress = true;
+                                });
+                                Navigator.pop(context);
+                              },
+                              child: const Text('Confirmar', style: TextStyle(fontSize: 18, color: Colors.green),),
+                            ),
+                          ],
+                        )                        
+                      ); 
 
-                    },
+                      if (_purchaseInProgress && mounted) {
+                        showDialog(
+                          context: context, 
+                          barrierDismissible: false,
+                          builder: (BuildContext context) => const Center(child: CircularProgressIndicator(),)
+                        );
+                      }
+                      if (_purchaseInProgress) {
+                        try {
+                          await databaseProvider.saveReservation(widget.id, FirebaseAuth.instance.currentUser!.uid).then(
+                            (value) {
+                              if (mounted) {
+                                Navigator.pushReplacementNamed(context, 'home');
+                                setState(() {
+                                  _purchaseInProgress = false;
+                                });
+                                showSnackbar('Reserva realizada con éxito', context);
+                              } 
+                            }
+                          );
+                      } catch (e) {
+                          setState(() {
+                            _purchaseInProgress = false;
+                          });
+                          showSnackbar('Error al reservar trayecto, inténtelo más tarde', context);
+                        }
+                      }
+                    },                          
                   );
                 } else {
                   return ListTile(
                     leading: const Icon(Icons.credit_card, color: Colors.grey, size: 30,),
                     title: const Text('Tarjeta de crédito/débito (Próximamente)', style: TextStyle(fontSize: 18, color: Colors.grey),),
                     trailing:  const Icon(Icons.arrow_forward_ios, color: Colors.grey,),
-                    onTap: () {},
+                    onTap: _purchaseInProgress ? null : () {},
                   );
                 }
               },           
@@ -351,7 +401,7 @@ class InfoPrecio extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
             const Text('Precio para un pasajero' , style: TextStyle(fontSize: 20),),
-            Text(publication['precio']+' €', style: const TextStyle(fontSize: 26, fontWeight: FontWeight.bold, color: Colors.green),),
+            Text('${publication['precio']} €', style: const TextStyle(fontSize: 26, fontWeight: FontWeight.bold, color: Colors.green),),
         ],
       )
     );

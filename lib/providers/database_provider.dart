@@ -113,7 +113,7 @@ class DatabaseProvider {
   }
 
   //guardar publicacion
-  Future savePublication(int fecha, String hora, String origen, String destino, String coordenadasOrigen, String coordenadasDestino, String asientos, String precio, String uidVehiculo) async {
+  Future savePublication(int fecha, String hora, String origen, String destino, String coordenadasOrigen, String coordenadasDestino, int asientos, double precio, String uidVehiculo) async {
     final id = vehiculosCollection.doc().id;
     await publicacionesCollection.doc(id).set({
       'pasajeros': [],
