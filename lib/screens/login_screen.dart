@@ -9,9 +9,8 @@ import '../helpers/helper_function.dart';
 import '../providers/auth_provider.dart';
 
 class LoginScreen extends StatelessWidget {
-   
   const LoginScreen({Key? key}) : super(key: key);
-  
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -30,11 +29,10 @@ class LoginScreen extends StatelessWidget {
             ),
           ),
         ),
-      )
+      ),
     );
   }
 }
-
 
 //Formulario de login
 class _Form extends StatefulWidget {
@@ -45,7 +43,6 @@ class _Form extends StatefulWidget {
 }
 
 class __FormState extends State<_Form> {
-
   final formKey = GlobalKey<FormState>();
   final helper = HelperFunctions();
 
@@ -53,67 +50,77 @@ class __FormState extends State<_Form> {
   String? email = '';
   String? password = '';
   AuthProvider authProvider = AuthProvider();
-  
+
   @override
   Widget build(BuildContext context) {
     return Container(
       margin: const EdgeInsets.only(top: 40),
       padding: const EdgeInsets.symmetric(horizontal: 50),
-      child: _isLoading ? const CircularProgressIndicator() : Form(
-        key: formKey,
-        child: Column(
-          children: [
-            Column(
-              children: [
-                //Campo de correo
-                CustomInput(
-                  icon: Icons.mail_outline,
-                  placeholder: 'Correo',
-                  keyboardType: TextInputType.emailAddress,
-                  onChanged: (value) {
-                    email = value;
-                    setState(() {});
-                  },
-                  validator: (value) {
-                    return RegExp(r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+").hasMatch(value!) 
-                    ? null 
-                    : 'Introduce un correo válido';
-                  },
-                ),
-                //Campo de contraseña
-                CustomInput(
-                  icon: Icons.lock_outline,
-                  placeholder: 'Contraseña',
-                  isPassword: true,
-                  onChanged: (value) {
-                    password = value;
-                    setState(() {});
-                  },
-                  validator: (value) {
-                    //la contraseña tener al menos  6 caracteres sin espacios
-                    return RegExp(r"^\S{6,}$").hasMatch(value!)
-                    ? null
-                    : 'La contraseña debe tener al menos 6 caracteres sin espacios';
-                  },
-                ),
-                //Botón de acceso
-                BotonVerde(
-                  text: 'Acceder', 
-                  onPressed: (){
-                    login(email, password);
-                    // Navigator.pushReplacementNamed(context, 'home');
-                  },
-                )
-              ],
+      child: _isLoading
+          ? const CircularProgressIndicator()
+          : Form(
+              key: formKey,
+              child: Column(
+                children: [
+                  Column(
+                    children: [
+                      //Campo de correo
+                      CustomInput(
+                        icon: Icons.mail_outline,
+                        placeholder: 'Correo',
+                        keyboardType: TextInputType.emailAddress,
+                        onChanged: (value) {
+                          email = value;
+                          setState(() {});
+                        },
+                        validator: (value) {
+                          return RegExp(
+                            r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+",
+                          ).hasMatch(value!)
+                              ? null
+                              : 'Introduce un correo válido';
+                        },
+                      ),
+                      //Campo de contraseña
+                      CustomInput(
+                        icon: Icons.lock_outline,
+                        placeholder: 'Contraseña',
+                        isPassword: true,
+                        onChanged: (value) {
+                          password = value;
+                          setState(() {});
+                        },
+                        validator: (value) {
+                          //la contraseña tener al menos  6 caracteres sin espacios
+                          return RegExp(r"^\S{6,}$").hasMatch(value!)
+                              ? null
+                              : 'La contraseña debe tener al menos 6 caracteres sin espacios';
+                        },
+                      ),
+                      //Botón de acceso
+                      BotonVerde(
+                        text: 'Acceder',
+                        onPressed: () {
+                          login(email, password);
+                          // Navigator.pushReplacementNamed(context, 'home');
+                        },
+                      ),
+                    ],
+                  ),
+                  const SizedBox(
+                    height: 40,
+                  ),
+                  //Botón de registro
+                  const Labels(
+                    ruta: 'register',
+                    text: '¿No tienes cuenta?',
+                    gestureText: 'Crea una ahora!',
+                  ),
+                  // const SizedBox(height: 40,),
+                  // Text('Términos y condiciones de uso', style: TextStyle(fontWeight: FontWeight.w200),),
+                ],
+              ),
             ),
-            const SizedBox(height: 40,),
-            //Botón de registro
-            const Labels(ruta: 'register', text: '¿No tienes cuenta?', gestureText: 'Crea una ahora!'),
-            // const SizedBox(height: 40,),
-            // Text('Términos y condiciones de uso', style: TextStyle(fontWeight: FontWeight.w200),),
-          ],
-        ),
-      ),
     );
   }
 
@@ -122,28 +129,36 @@ class __FormState extends State<_Form> {
     if (formKey.currentState!.validate()) {
       setState(() {});
       _isLoading = true;
-      
-      await authProvider.loginUser(email, password)
-      .then((value) async {
+
+      await authProvider.loginUser(email, password).then((value) async {
         if (value == true) {
           if (await authProvider.isEmailVerified()) {
-            QuerySnapshot snapshot = await DatabaseProvider(uid: FirebaseAuth.instance.currentUser!.uid).gettingUserDataByEmail(email);
+            QuerySnapshot snapshot = await DatabaseProvider(
+              uid: FirebaseAuth.instance.currentUser!.uid,
+            ).gettingUserDataByEmail(email);
             await helper.saveUserLoggedInStatus(true);
             await helper.saveUserEmail(email);
             await helper.saveUserName(snapshot.docs[0].get('nombreCompleto'));
-            if (context.mounted) Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const MenuScreen()));
+            if (context.mounted) {
+              Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(builder: (context) => const MenuScreen()),
+              );
+            }
           } else {
             if (mounted) showSnackbar('Por favor verifique su correo', context);
             setState(() {});
             _isLoading = false;
           }
         } else {
-          showSnackbar('Esta cuenta no existe o ha introducido algún dato erroneo', context);
+          showSnackbar(
+            'Esta cuenta no existe o ha introducido algún dato erroneo',
+            context,
+          );
           setState(() {});
-          _isLoading = false; 
+          _isLoading = false;
         }
-      });     
+      });
     }
   }
 }
-

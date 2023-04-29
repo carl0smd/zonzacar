@@ -11,14 +11,14 @@ class FormularioTrayectoScreen extends StatefulWidget {
   final String coordenadasOrigen;
   final String coordenadasDestino;
 
-  const FormularioTrayectoScreen(
-      {Key? key,
-      required this.distancia,
-      required this.origen,
-      required this.destino,
-      required this.coordenadasOrigen,
-      required this.coordenadasDestino})
-      : super(key: key);
+  const FormularioTrayectoScreen({
+    Key? key,
+    required this.distancia,
+    required this.origen,
+    required this.destino,
+    required this.coordenadasOrigen,
+    required this.coordenadasDestino,
+  }) : super(key: key);
 
   @override
   State<FormularioTrayectoScreen> createState() =>
@@ -47,15 +47,20 @@ class _FormularioTrayectoScreenState extends State<FormularioTrayectoScreen> {
     final horaCtrl = TextEditingController();
     final precioCtrl = TextEditingController();
     final asientosCtrl = TextEditingController();
-    final precio = (double.parse(widget.distancia.split(" ")[0]) * 
-    PrecioConstants.precioPorKm / 4).toStringAsFixed(2);
+    final precio = (double.parse(widget.distancia.split(" ")[0]) *
+            PrecioConstants.precioPorKm /
+            4)
+        .toStringAsFixed(2);
     dynamic vehiculo;
     int plazas = 4;
     asientosCtrl.text = plazas.toString();
     precioCtrl.text = precio;
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Publicar trayecto', style: TextStyle(color: Colors.black)),
+        title: const Text(
+          'Publicar trayecto',
+          style: TextStyle(color: Colors.black),
+        ),
         centerTitle: true,
         backgroundColor: Colors.white,
         elevation: 0,
@@ -72,7 +77,10 @@ class _FormularioTrayectoScreenState extends State<FormularioTrayectoScreen> {
                 children: [
                   //Info del trayecto
                   Container(
-                    padding: const EdgeInsets.symmetric(vertical: 20.0, horizontal: 10.0),
+                    padding: const EdgeInsets.symmetric(
+                      vertical: 20.0,
+                      horizontal: 10.0,
+                    ),
                     width: double.infinity,
                     decoration: BoxDecoration(
                       border: Border.all(
@@ -102,7 +110,8 @@ class _FormularioTrayectoScreenState extends State<FormularioTrayectoScreen> {
                           children: [
                             //Linea vertical
                             Container(
-                              margin: const EdgeInsets.symmetric(horizontal: 20.0),
+                              margin:
+                                  const EdgeInsets.symmetric(horizontal: 20.0),
                               width: 3.0,
                               height: 50.0,
                               color: Colors.green,
@@ -155,20 +164,26 @@ class _FormularioTrayectoScreenState extends State<FormularioTrayectoScreen> {
                             border: OutlineInputBorder(),
                             labelText: 'Fecha',
                             counterText: '',
-                            fillColor: Colors.white
+                            fillColor: Colors.white,
                           ),
                           onTap: () async {
                             DateFormat dateFormat = DateFormat('dd/MM/yyyy');
                             DateTime? nuevaFecha = await showDatePicker(
                               context: context,
-                              initialEntryMode: DatePickerEntryMode.calendarOnly,
+                              initialEntryMode:
+                                  DatePickerEntryMode.calendarOnly,
                               //not on july and august and weekends
                               initialDate: FechaConstants.initialDate,
                               firstDate: FechaConstants.initialDate,
-                              lastDate: FechaConstants.initialDate.add(const Duration(days: 365)),
+                              lastDate: FechaConstants.initialDate
+                                  .add(const Duration(days: 365)),
                               selectableDayPredicate: (DateTime val) {
-                                if (val.weekday == 6 || val.weekday == 7) return false;
-                                if (val.month == 7 || val.month == 8) return false;
+                                if (val.weekday == 6 || val.weekday == 7) {
+                                  return false;
+                                }
+                                if (val.month == 7 || val.month == 8) {
+                                  return false;
+                                }
                                 return true;
                               },
                             );
@@ -194,7 +209,7 @@ class _FormularioTrayectoScreenState extends State<FormularioTrayectoScreen> {
                             border: OutlineInputBorder(),
                             labelText: 'Hora',
                             counterText: '',
-                            fillColor: Colors.white
+                            fillColor: Colors.white,
                           ),
                           onTap: () async {
                             TimeOfDay? nuevaHora = await showTimePicker(
@@ -203,7 +218,9 @@ class _FormularioTrayectoScreenState extends State<FormularioTrayectoScreen> {
                               initialTime: TimeOfDay.now(),
                             );
                             if (nuevaHora == null) return;
-                            if (mounted) horaCtrl.text = nuevaHora.format(context);
+                            if (mounted) {
+                              horaCtrl.text = nuevaHora.format(context);
+                            }
                           },
                           validator: (value) {
                             if (value == null || value.isEmpty) {
@@ -218,14 +235,18 @@ class _FormularioTrayectoScreenState extends State<FormularioTrayectoScreen> {
                           items: vehicles.map((e) {
                             return DropdownMenuItem(
                               value: e['uid'],
-                              child: Text(e['marca'] + ' ' + e['modelo'] + ' ' + e['matricula']),
+                              child: Text(e['marca'] +
+                                  ' ' +
+                                  e['modelo'] +
+                                  ' ' +
+                                  e['matricula']),
                             );
                           }).toList(),
                           decoration: const InputDecoration(
                             filled: true,
                             border: OutlineInputBorder(),
                             labelText: 'Vehiculo',
-                            fillColor: Colors.white
+                            fillColor: Colors.white,
                           ),
                           onChanged: (value) {
                             vehiculo = value;
@@ -237,9 +258,9 @@ class _FormularioTrayectoScreenState extends State<FormularioTrayectoScreen> {
                             return null;
                           },
                         ),
-        
+
                         const SizedBox(height: 20.0),
-        
+
                         //Campo asientos
                         TextFormField(
                           controller: asientosCtrl,
@@ -254,16 +275,25 @@ class _FormularioTrayectoScreenState extends State<FormularioTrayectoScreen> {
                             prefixIcon: IconButton(
                               onPressed: () {
                                 if (int.parse(asientosCtrl.text) <= 1) return;
-                                asientosCtrl.text = (int.parse(asientosCtrl.text) - 1).toString();
+                                asientosCtrl.text =
+                                    (int.parse(asientosCtrl.text) - 1)
+                                        .toString();
                               },
-                              icon: const Icon(Icons.remove_circle_outline)),
+                              icon: const Icon(Icons.remove_circle_outline),
+                            ),
                             suffixIcon: IconButton(
                               onPressed: () {
-                                if (int.parse(asientosCtrl.text) >= plazas) return;
-                                asientosCtrl.text = (int.parse(asientosCtrl.text) + 1).toString();
+                                if (int.parse(asientosCtrl.text) >= plazas) {
+                                  return;
+                                }
+                                asientosCtrl.text =
+                                    (int.parse(asientosCtrl.text) + 1)
+                                        .toString();
                               },
-                              icon: const Icon(Icons.add_circle_outline)),
-                            fillColor: Colors.white),
+                              icon: const Icon(Icons.add_circle_outline),
+                            ),
+                            fillColor: Colors.white,
+                          ),
                           validator: (value) {
                             if (value == null || value.isEmpty) {
                               return 'Por favor, introduce el número de asientos';
@@ -272,7 +302,7 @@ class _FormularioTrayectoScreenState extends State<FormularioTrayectoScreen> {
                           },
                         ),
                         const SizedBox(height: 20.0),
-        
+
                         //Campo precio
                         TextFormField(
                           controller: precioCtrl,
@@ -282,22 +312,34 @@ class _FormularioTrayectoScreenState extends State<FormularioTrayectoScreen> {
                             filled: true,
                             border: const OutlineInputBorder(),
                             labelText: 'Precio por pasajero',
-                            helperText: 'Precio recomendado según coste medio de gasolina por km, podrás aumentarlo un máximo de 1€',
+                            helperText:
+                                'Precio recomendado según coste medio de gasolina por km, podrás aumentarlo un máximo de 1€',
                             counterText: '',
                             helperMaxLines: 2,
                             prefixIcon: IconButton(
                               onPressed: () {
-                                if (double.parse(precioCtrl.text) <= double.parse(precio) - 1 || double.parse(precioCtrl.text) - 0.1 <= 0) return;
-                                precioCtrl.text = (double.parse(precioCtrl.text) - 0.1).toStringAsFixed(2);
+                                if (double.parse(precioCtrl.text) <=
+                                        double.parse(precio) - 1 ||
+                                    double.parse(precioCtrl.text) - 0.1 <= 0)
+                                  return;
+                                precioCtrl.text =
+                                    (double.parse(precioCtrl.text) - 0.1)
+                                        .toStringAsFixed(2);
                               },
-                              icon: const Icon(Icons.remove_circle_outline)),
+                              icon: const Icon(Icons.remove_circle_outline),
+                            ),
                             suffixIcon: IconButton(
                               onPressed: () {
-                                if (double.parse(precioCtrl.text) >= double.parse(precio) + 1) return;
-                                precioCtrl.text = (double.parse(precioCtrl.text) + 0.1).toStringAsFixed(2);
+                                if (double.parse(precioCtrl.text) >=
+                                    double.parse(precio) + 1) return;
+                                precioCtrl.text =
+                                    (double.parse(precioCtrl.text) + 0.1)
+                                        .toStringAsFixed(2);
                               },
-                              icon: const Icon(Icons.add_circle_outline)),
-                            fillColor: Colors.white),
+                              icon: const Icon(Icons.add_circle_outline),
+                            ),
+                            fillColor: Colors.white,
+                          ),
                           validator: (value) {
                             if (value == null || value.isEmpty) {
                               return 'Por favor, introduce el precio';
@@ -305,9 +347,9 @@ class _FormularioTrayectoScreenState extends State<FormularioTrayectoScreen> {
                             return null;
                           },
                         ),
-        
+
                         const SizedBox(height: 20.0),
-        
+
                         //Botón publicar
                         ElevatedButtonTheme(
                           data: ElevatedButtonThemeData(
@@ -315,7 +357,10 @@ class _FormularioTrayectoScreenState extends State<FormularioTrayectoScreen> {
                               shape: const StadiumBorder(),
                               elevation: 1,
                               minimumSize: const Size(double.infinity, 50),
-                              padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 15),
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 30,
+                                vertical: 15,
+                              ),
                             ),
                           ),
                           child: ElevatedButton(
@@ -332,10 +377,19 @@ class _FormularioTrayectoScreenState extends State<FormularioTrayectoScreen> {
                                   double.parse(precioCtrl.text),
                                   vehiculo,
                                 );
-                                if (mounted) Navigator.pushReplacementNamed(context, 'home');
+                                if (mounted) {
+                                  Navigator.pushNamedAndRemoveUntil(
+                                    context,
+                                    'home',
+                                    (route) => false,
+                                  );
+                                }
                               }
                             },
-                            child: const Text('Publicar', style: TextStyle(fontSize: 20)),
+                            child: const Text(
+                              'Publicar',
+                              style: TextStyle(fontSize: 20),
+                            ),
                           ),
                         ),
                       ],

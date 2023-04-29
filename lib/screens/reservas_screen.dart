@@ -6,12 +6,10 @@ import 'package:zonzacar/screens/screens.dart';
 import '../shared/constants.dart';
 
 class ReservasScreen extends StatelessWidget {
-   
   const ReservasScreen({Key? key}) : super(key: key);
-  
+
   @override
   Widget build(BuildContext context) {
-
     final size = MediaQuery.of(context).size;
 
     return Scaffold(
@@ -30,7 +28,7 @@ class ReservasScreen extends StatelessWidget {
                 ),
               ),
               Container(
-                margin:  const EdgeInsets.all(20.0),
+                margin: const EdgeInsets.all(20.0),
                 padding: const EdgeInsets.all(10.0),
                 height: size.height * 0.40,
                 decoration: BoxDecoration(
@@ -50,13 +48,12 @@ class ReservasScreen extends StatelessWidget {
             ],
           ),
         ),
-      )
+      ),
     );
   }
 }
 
 class _CajaDeBusqueda extends StatefulWidget {
-
   final Size size;
 
   const _CajaDeBusqueda({
@@ -67,11 +64,10 @@ class _CajaDeBusqueda extends StatefulWidget {
   State<_CajaDeBusqueda> createState() => _CajaDeBusquedaState();
 }
 
-class _CajaDeBusquedaState extends State<_CajaDeBusqueda> with SingleTickerProviderStateMixin {
-  
+class _CajaDeBusquedaState extends State<_CajaDeBusqueda>
+    with SingleTickerProviderStateMixin {
   @override
   Widget build(BuildContext context) {
-
     final origenCtrl = TextEditingController();
     final destinoCtrl = TextEditingController();
     final fechaCtrl = TextEditingController();
@@ -97,7 +93,9 @@ class _CajaDeBusquedaState extends State<_CajaDeBusqueda> with SingleTickerProvi
                       Tab(text: 'Salgo de clase'),
                     ],
                   ),
-                  const SizedBox(height: 30,),
+                  const SizedBox(
+                    height: 30,
+                  ),
                   Expanded(
                     child: TabBarView(
                       physics: const NeverScrollableScrollPhysics(),
@@ -125,7 +123,7 @@ class _CajaDeBusquedaState extends State<_CajaDeBusqueda> with SingleTickerProvi
                           onChanged: (value) {
                             origenCtrl.clear();
                           },
-                          decoration: InputDecoration(              
+                          decoration: InputDecoration(
                             hintText: '¿Hacia dónde vas? (opcional)',
                             prefixIcon: const Icon(Icons.fmd_good_outlined),
                             suffixIcon: IconButton(
@@ -136,14 +134,14 @@ class _CajaDeBusquedaState extends State<_CajaDeBusqueda> with SingleTickerProvi
                             ),
                           ),
                         ),
-                      ]
-                    )
+                      ],
+                    ),
                   ),
                   Expanded(
                     child: TextFormField(
                       controller: fechaCtrl,
                       maxLength: 10,
-                      readOnly: true,                   
+                      readOnly: true,
                       decoration: InputDecoration(
                         hintText: 'Fecha (opcional)',
                         prefixIcon: const Icon(Icons.calendar_month_outlined),
@@ -155,44 +153,50 @@ class _CajaDeBusquedaState extends State<_CajaDeBusqueda> with SingleTickerProvi
                         ),
                         counterText: '',
                       ),
-                          
                       onTap: () async {
                         DateFormat dateFormat = DateFormat('dd/MM/yyyy');
                         DateTime? nuevaFecha = await showDatePicker(
                           context: context,
                           //no editable
-                          initialEntryMode: DatePickerEntryMode.calendarOnly, 
-                          initialDate: FechaConstants.initialDate, 
-                          firstDate: FechaConstants.initialDate, 
-                          lastDate: FechaConstants.initialDate.add(const Duration(days: 365)),
+                          initialEntryMode: DatePickerEntryMode.calendarOnly,
+                          initialDate: FechaConstants.initialDate,
+                          firstDate: FechaConstants.initialDate,
+                          lastDate: FechaConstants.initialDate
+                              .add(const Duration(days: 365)),
                           selectableDayPredicate: (DateTime val) {
-                            if (val.weekday == 6 || val.weekday == 7) return false;
+                            if (val.weekday == 6 || val.weekday == 7)
+                              return false;
                             if (val.month == 7 || val.month == 8) return false;
                             return true;
                           },
                         );
-                          
+
                         if (nuevaFecha == null) return;
                         fechaCtrl.text = dateFormat.format(nuevaFecha);
                         fecha = nuevaFecha.millisecondsSinceEpoch;
                       },
                     ),
                   ),
-            
                   TextButton(
-                    onPressed: (){
+                    onPressed: () {
                       PersistentNavBarNavigator.pushNewScreen(
-                        context, 
+                        context,
                         withNavBar: false,
-                        screen: DefaultTabController.of(context).index == 0 ? BusquedaScreen(
-                          isGoingToZonzamas: true,
-                          origen: origenCtrl.text.trim() == '' ? null : origenCtrl.text.trim(),
-                          fecha: fecha != 0 ? fecha : null,
-                        ) : BusquedaScreen(
-                          isGoingToZonzamas: false,
-                          destino: destinoCtrl.text.trim() == '' ? null : destinoCtrl.text.trim(),
-                          fecha: fecha != 0 ? fecha : null,
-                        )
+                        screen: DefaultTabController.of(context).index == 0
+                            ? BusquedaScreen(
+                                isGoingToZonzamas: true,
+                                origen: origenCtrl.text.trim() == ''
+                                    ? null
+                                    : origenCtrl.text.trim(),
+                                fecha: fecha != 0 ? fecha : null,
+                              )
+                            : BusquedaScreen(
+                                isGoingToZonzamas: false,
+                                destino: destinoCtrl.text.trim() == ''
+                                    ? null
+                                    : destinoCtrl.text.trim(),
+                                fecha: fecha != 0 ? fecha : null,
+                              ),
                       );
                       origenCtrl.clear();
                       destinoCtrl.clear();
@@ -205,16 +209,14 @@ class _CajaDeBusquedaState extends State<_CajaDeBusqueda> with SingleTickerProvi
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(20.0),
                       ),
-                    ), 
+                    ),
                     child: const Text('Buscar'),
                   ),
-            
-                  
                 ],
               ),
             ),
           );
-        }
+        },
       ),
     );
   }

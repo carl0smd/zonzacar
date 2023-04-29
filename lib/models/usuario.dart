@@ -1,4 +1,3 @@
-
 class Usuario {
   bool online;
   String email;
@@ -9,6 +8,6 @@ class Usuario {
     required this.online,
     required this.email,
     required this.nombre,
-    required this.uid
+    required this.uid,
   });
 }

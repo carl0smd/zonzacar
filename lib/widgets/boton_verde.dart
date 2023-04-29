@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 
 class BotonVerde extends StatelessWidget {
-
   final String text;
   final void Function() onPressed;
 
@@ -10,17 +9,19 @@ class BotonVerde extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ElevatedButton(
-
       style: ButtonStyle(
         backgroundColor: MaterialStateProperty.all(Colors.green),
-        shape: const MaterialStatePropertyAll(StadiumBorder())
+        shape: const MaterialStatePropertyAll(StadiumBorder()),
       ),
       onPressed: onPressed,
       child: SizedBox(
         height: 55,
         child: Center(
-          child: Text(text, style: const TextStyle(fontSize: 17),)
-        )
+          child: Text(
+            text,
+            style: const TextStyle(fontSize: 17),
+          ),
+        ),
       ),
     );
   }

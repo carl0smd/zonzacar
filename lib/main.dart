@@ -13,7 +13,7 @@ void main() async {
   await Firebase.initializeApp();
   SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual, overlays: []);
   SystemChrome.setPreferredOrientations([
-    DeviceOrientation.portraitUp
+    DeviceOrientation.portraitUp,
   ]).then((value) => runApp(const MyApp()));
 }
 
@@ -59,7 +59,8 @@ class _MyAppState extends State<MyApp> {
       onTap: () {
         FocusScopeNode currentFocus = FocusScope.of(context);
 
-        if (!currentFocus.hasPrimaryFocus && currentFocus.focusedChild != null) { 
+        if (!currentFocus.hasPrimaryFocus &&
+            currentFocus.focusedChild != null) {
           currentFocus.focusedChild!.unfocus();
         }
       },
@@ -71,7 +72,7 @@ class _MyAppState extends State<MyApp> {
           GlobalWidgetsLocalizations.delegate,
         ],
         supportedLocales: const [
-          Locale('es', 'ES')
+          Locale('es', 'ES'),
         ],
         title: 'zonzaCar',
         home: StreamBuilder<User?>(
@@ -82,13 +83,13 @@ class _MyAppState extends State<MyApp> {
               return const MenuScreen();
             } else {
               return const LoginScreen();
-            } 
+            }
           },
         ),
         routes: appRoutes,
         theme: ThemeData(
           primarySwatch: Colors.green,
-        )
+        ),
       ),
     );
   }

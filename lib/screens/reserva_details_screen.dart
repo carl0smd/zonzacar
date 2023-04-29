@@ -8,28 +8,35 @@ import 'package:zonzacar/providers/database_provider.dart';
 import 'package:zonzacar/widgets/snackbar.dart';
 
 class ReservaDetailsScreen extends StatefulWidget {
-
   final String id;
   final String userImage;
   final String userName;
   final bool isGoingToZonzamas;
-   
-  const ReservaDetailsScreen({Key? key, required this.id, required this.userName, required this.userImage, required this.isGoingToZonzamas}) : super(key: key);
+
+  const ReservaDetailsScreen({
+    Key? key,
+    required this.id,
+    required this.userName,
+    required this.userImage,
+    required this.isGoingToZonzamas,
+  }) : super(key: key);
 
   @override
   State<ReservaDetailsScreen> createState() => _ReservaDetailsScreenState();
 }
 
 class _ReservaDetailsScreenState extends State<ReservaDetailsScreen> {
-
-  final Completer<GoogleMapController> _controller = Completer<GoogleMapController>();
+  final Completer<GoogleMapController> _controller =
+      Completer<GoogleMapController>();
   String _mapTheme = '';
   bool _purchaseInProgress = false;
 
   @override
   void initState() {
     super.initState();
-    DefaultAssetBundle.of(context).loadString('assets/map_theme/classic_no_labels.json').then((string) {
+    DefaultAssetBundle.of(context)
+        .loadString('assets/map_theme/classic_no_labels.json')
+        .then((string) {
       _mapTheme = string;
     });
   }
@@ -40,7 +47,10 @@ class _ReservaDetailsScreenState extends State<ReservaDetailsScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Detalles del trayecto', style: TextStyle(color: Colors.black)),
+        title: const Text(
+          'Detalles del trayecto',
+          style: TextStyle(color: Colors.black),
+        ),
         centerTitle: true,
         backgroundColor: Colors.white,
         elevation: 0,
@@ -56,34 +66,58 @@ class _ReservaDetailsScreenState extends State<ReservaDetailsScreen> {
               if (snapshot.hasData) {
                 final publication = snapshot.data[0];
                 CameraPosition kGooglePlex = CameraPosition(
-                  target: LatLng(double.parse(publication['coordenadasOrigen'].split(',')[0]), double.parse(publication['coordenadasOrigen'].split(',')[1])),
+                  target: LatLng(
+                    double.parse(
+                      publication['coordenadasOrigen'].split(',')[0],
+                    ),
+                    double.parse(
+                      publication['coordenadasOrigen'].split(',')[1],
+                    ),
+                  ),
                   zoom: 16,
                 );
                 Marker marker = Marker(
-                  markerId:  const MarkerId('marker'),
-                  position: LatLng(double.parse(publication['coordenadasOrigen'].split(',')[0]), double.parse(publication['coordenadasOrigen'].split(',')[1])),
-                  icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueRed),
+                  markerId: const MarkerId('marker'),
+                  position: LatLng(
+                    double.parse(
+                      publication['coordenadasOrigen'].split(',')[0],
+                    ),
+                    double.parse(
+                      publication['coordenadasOrigen'].split(',')[1],
+                    ),
+                  ),
+                  icon: BitmapDescriptor.defaultMarkerWithHue(
+                    BitmapDescriptor.hueRed,
+                  ),
                   consumeTapEvents: true,
                   onTap: null,
                 );
-                
+
                 return Column(
-                  children: [             
+                  children: [
                     InfoTrayecto(publication: publication),
                     InfoPrecio(publication: publication),
                     infoConductor(databaseProvider, publication, context),
-                    InfoMapa(widget: widget, kGooglePlex: kGooglePlex, marker: marker, mapTheme: _mapTheme, controller: _controller),
-                    const SizedBox(height: 15,),
-                    buyButton(context, databaseProvider)
+                    InfoMapa(
+                      widget: widget,
+                      kGooglePlex: kGooglePlex,
+                      marker: marker,
+                      mapTheme: _mapTheme,
+                      controller: _controller,
+                    ),
+                    const SizedBox(
+                      height: 15,
+                    ),
+                    buyButton(context, databaseProvider),
                   ],
                 );
               } else {
                 return const Center(child: CircularProgressIndicator());
               }
-            }
+            },
           ),
         ),
-      )
+      ),
     );
   }
 
@@ -112,17 +146,24 @@ class _ReservaDetailsScreenState extends State<ReservaDetailsScreen> {
         child: ElevatedButton(
           onPressed: () {
             showModalBottomSheet(
-              context: context, 
-              builder: (BuildContext context) => buildSheet(databaseProvider)
+              context: context,
+              builder: (BuildContext context) => buildSheet(databaseProvider),
             );
           },
-          child: const Text('Continuar', style: TextStyle(fontSize: 20),),
+          child: const Text(
+            'Continuar',
+            style: TextStyle(fontSize: 20),
+          ),
         ),
       ),
     );
   }
 
-  Container infoConductor(DatabaseProvider databaseProvider, publication, BuildContext context) {
+  Container infoConductor(
+    DatabaseProvider databaseProvider,
+    publication,
+    BuildContext context,
+  ) {
     return Container(
       margin: const EdgeInsets.only(bottom: 15),
       decoration: const BoxDecoration(
@@ -142,11 +183,14 @@ class _ReservaDetailsScreenState extends State<ReservaDetailsScreen> {
             crossAxisAlignment: CrossAxisAlignment.center,
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Container(
+              SizedBox(
                 width: 250,
                 child: Text(
                   widget.userName,
-                  style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                  style: const TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                  ),
                   maxLines: 3,
                   overflow: TextOverflow.ellipsis,
                 ),
@@ -157,19 +201,37 @@ class _ReservaDetailsScreenState extends State<ReservaDetailsScreen> {
                 child: CircleAvatar(
                   backgroundColor: Colors.white,
                   radius: 40,
-                  child: widget.userImage == '' ? 
-                  const Icon(Icons.person, size: 40,)
-                  : ClipRRect(
-                    borderRadius: BorderRadius.circular(40),
-                    child: Image.network(widget.userImage, fit: BoxFit.cover, width: 100, height: 100,),
-                  ),
-                )
+                  child: widget.userImage == ''
+                      ? const Icon(
+                          Icons.person,
+                          size: 40,
+                        )
+                      : ClipRRect(
+                          borderRadius: BorderRadius.circular(40),
+                          child: Image.network(
+                            widget.userImage,
+                            fit: BoxFit.cover,
+                            width: 100,
+                            height: 100,
+                          ),
+                        ),
+                ),
               ),
-            ]
+            ],
           ),
-          const SizedBox(height: 20,),
-          SizedBox(height: 1, width: double.infinity, child: Container(color: Colors.black26,),),
-          const SizedBox(height: 20,),
+          const SizedBox(
+            height: 20,
+          ),
+          SizedBox(
+            height: 1,
+            width: double.infinity,
+            child: Container(
+              color: Colors.black26,
+            ),
+          ),
+          const SizedBox(
+            height: 20,
+          ),
           FutureBuilder(
             future: databaseProvider.getVehicleByUid(publication['vehiculo']),
             builder: (context, snapshot) {
@@ -177,14 +239,27 @@ class _ReservaDetailsScreenState extends State<ReservaDetailsScreen> {
                 final vehicle = snapshot.data[0];
                 return Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [ 
+                  children: [
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(vehicle['marca'].toUpperCase()+' '+vehicle['modelo'].toUpperCase(), style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.black87 ),),
-                        const SizedBox(height: 5,),
-                        Text(vehicle['color'], style: const TextStyle(fontSize: 20),),
-                        
+                        Text(
+                          vehicle['marca'].toUpperCase() +
+                              ' ' +
+                              vehicle['modelo'].toUpperCase(),
+                          style: const TextStyle(
+                            fontSize: 20,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.black87,
+                          ),
+                        ),
+                        const SizedBox(
+                          height: 5,
+                        ),
+                        Text(
+                          vehicle['color'],
+                          style: const TextStyle(fontSize: 20),
+                        ),
                       ],
                     ),
                     const Icon(
@@ -197,15 +272,23 @@ class _ReservaDetailsScreenState extends State<ReservaDetailsScreen> {
               } else {
                 return const Center(child: CircularProgressIndicator());
               }
-            }
+            },
           ),
-          const SizedBox(height: 20,),
-          SizedBox(height: 1, width: double.infinity, child: Container(color: Colors.black26,),),
+          const SizedBox(
+            height: 20,
+          ),
+          SizedBox(
+            height: 1,
+            width: double.infinity,
+            child: Container(
+              color: Colors.black26,
+            ),
+          ),
         ],
       ),
     );
   }
-  
+
   buildSheet(DatabaseProvider databaseProvider) {
     return Container(
       //pay with card, cash or cancel
@@ -219,18 +302,32 @@ class _ReservaDetailsScreenState extends State<ReservaDetailsScreen> {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                const Text('Método de pago', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),),
+                const Text(
+                  'Método de pago',
+                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                ),
                 IconButton(
-                  onPressed: _purchaseInProgress ? null : () {
-                    Navigator.pop(context);
-                  }, 
-                  icon: const Icon(Icons.close, color: Colors.red, size: 30,)
+                  onPressed: _purchaseInProgress
+                      ? null
+                      : () {
+                          Navigator.pop(context);
+                        },
+                  icon: const Icon(
+                    Icons.close,
+                    color: Colors.red,
+                    size: 30,
+                  ),
                 ),
               ],
             ),
           ),
-          const SizedBox(height: 20,),
-          const Divider( height: 1, thickness: 1,),
+          const SizedBox(
+            height: 20,
+          ),
+          const Divider(
+            height: 1,
+            thickness: 1,
+          ),
           Flexible(
             child: ListView.builder(
               padding: const EdgeInsets.all(20),
@@ -238,81 +335,143 @@ class _ReservaDetailsScreenState extends State<ReservaDetailsScreen> {
               itemBuilder: (BuildContext context, int index) {
                 if (index == 0) {
                   return ListTile(
-                    leading: const Icon(Icons.money, color: Colors.green, size: 30,),
-                    title: const Text('Efectivo', style: TextStyle(fontSize: 18),),
-                    trailing:  const Icon(Icons.arrow_forward_ios, color: Colors.green,),
-                    onTap: _purchaseInProgress ? null : () async {
-                      await showDialog(
-                        context: context, 
-                        barrierDismissible: false,
-                        builder: (BuildContext context) => AlertDialog(
-                          title: const Text('Confirmar reserva', style: TextStyle(fontSize: 20),),
-                          content: const Text('¿Estás seguro de reservar este trayecto?'),
-                          actions: [
-                            TextButton(
-                              onPressed: _purchaseInProgress ? null : () {
-                                setState(() {
-                                  _purchaseInProgress = false;
-                                });
-                                Navigator.pop(context);
-                              }, 
-                              child: const Text('Cancelar', style: TextStyle(fontSize: 18, color: Colors.red),),
-                            ),
-                            TextButton(
-                              onPressed: _purchaseInProgress ? null : () {
-                                setState(() {
-                                  _purchaseInProgress = true;
-                                });
-                                Navigator.pop(context);
-                              },
-                              child: const Text('Confirmar', style: TextStyle(fontSize: 18, color: Colors.green),),
-                            ),
-                          ],
-                        )                        
-                      ); 
+                    leading: const Icon(
+                      Icons.money,
+                      color: Colors.green,
+                      size: 30,
+                    ),
+                    title: const Text(
+                      'Efectivo',
+                      style: TextStyle(fontSize: 18),
+                    ),
+                    trailing: const Icon(
+                      Icons.arrow_forward_ios,
+                      color: Colors.green,
+                    ),
+                    onTap: _purchaseInProgress
+                        ? null
+                        : () async {
+                            await showDialog(
+                              context: context,
+                              barrierDismissible: false,
+                              builder: (BuildContext context) => AlertDialog(
+                                title: const Text(
+                                  'Confirmar reserva',
+                                  style: TextStyle(fontSize: 20),
+                                ),
+                                content: const Text(
+                                  '¿Estás seguro de reservar este trayecto?',
+                                ),
+                                actions: [
+                                  TextButton(
+                                    onPressed: _purchaseInProgress
+                                        ? null
+                                        : () {
+                                            setState(() {
+                                              _purchaseInProgress = false;
+                                            });
+                                            Navigator.pop(context);
+                                          },
+                                    child: const Text(
+                                      'Cancelar',
+                                      style: TextStyle(
+                                        fontSize: 18,
+                                        color: Colors.red,
+                                      ),
+                                    ),
+                                  ),
+                                  TextButton(
+                                    onPressed: _purchaseInProgress
+                                        ? null
+                                        : () {
+                                            setState(() {
+                                              _purchaseInProgress = true;
+                                            });
+                                            Navigator.pop(context);
+                                          },
+                                    child: const Text(
+                                      'Confirmar',
+                                      style: TextStyle(
+                                        fontSize: 18,
+                                        color: Colors.green,
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            );
 
-                      if (_purchaseInProgress && mounted) {
-                        showDialog(
-                          context: context, 
-                          barrierDismissible: false,
-                          builder: (BuildContext context) => const Center(child: CircularProgressIndicator(),)
-                        );
-                      }
-                      if (_purchaseInProgress) {
-                        try {
-                          await databaseProvider.saveReservation(widget.id, FirebaseAuth.instance.currentUser!.uid).then(
-                            (value) {
-                              if (mounted) {
-                                Navigator.pushReplacementNamed(context, 'home');
+                            if (_purchaseInProgress && mounted) {
+                              showDialog(
+                                context: context,
+                                barrierDismissible: false,
+                                builder: (BuildContext context) => const Center(
+                                  child: CircularProgressIndicator(),
+                                ),
+                              );
+                            }
+                            if (_purchaseInProgress) {
+                              try {
+                                await databaseProvider
+                                    .saveReservation(
+                                  widget.id,
+                                  FirebaseAuth.instance.currentUser!.uid,
+                                )
+                                    .then(
+                                  (value) {
+                                    if (mounted) {
+                                      Navigator.pushNamedAndRemoveUntil(
+                                        context,
+                                        'home',
+                                        (route) => false,
+                                      );
+                                      setState(() {
+                                        _purchaseInProgress = false;
+                                      });
+                                      showSnackbar(
+                                        'Reserva realizada con éxito',
+                                        context,
+                                      );
+                                    }
+                                  },
+                                );
+                              } catch (e) {
                                 setState(() {
                                   _purchaseInProgress = false;
                                 });
-                                showSnackbar('Reserva realizada con éxito', context);
-                              } 
+                                if (mounted) {
+                                  showSnackbar(
+                                    'Error al reservar trayecto, inténtelo más tarde',
+                                    context,
+                                  );
+                                }
+                              }
                             }
-                          );
-                      } catch (e) {
-                          setState(() {
-                            _purchaseInProgress = false;
-                          });
-                          showSnackbar('Error al reservar trayecto, inténtelo más tarde', context);
-                        }
-                      }
-                    },                          
+                          },
                   );
                 } else {
                   return ListTile(
-                    leading: const Icon(Icons.credit_card, color: Colors.grey, size: 30,),
-                    title: const Text('Tarjeta de crédito/débito (Próximamente)', style: TextStyle(fontSize: 18, color: Colors.grey),),
-                    trailing:  const Icon(Icons.arrow_forward_ios, color: Colors.grey,),
+                    leading: const Icon(
+                      Icons.credit_card,
+                      color: Colors.grey,
+                      size: 30,
+                    ),
+                    title: const Text(
+                      'Tarjeta de crédito/débito (Próximamente)',
+                      style: TextStyle(fontSize: 18, color: Colors.grey),
+                    ),
+                    trailing: const Icon(
+                      Icons.arrow_forward_ios,
+                      color: Colors.grey,
+                    ),
                     onTap: _purchaseInProgress ? null : () {},
                   );
                 }
-              },           
+              },
             ),
           ),
         ],
-      )
+      ),
     );
   }
 }
@@ -325,7 +484,8 @@ class InfoMapa extends StatelessWidget {
     required this.marker,
     required String mapTheme,
     required Completer<GoogleMapController> controller,
-  }) : _mapTheme = mapTheme, _controller = controller;
+  })  : _mapTheme = mapTheme,
+        _controller = controller;
 
   final ReservaDetailsScreen widget;
   final CameraPosition kGooglePlex;
@@ -351,8 +511,13 @@ class InfoMapa extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text('Punto de recogida', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),),
-          const SizedBox(height: 20,),
+          const Text(
+            'Punto de recogida',
+            style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+          ),
+          const SizedBox(
+            height: 20,
+          ),
           Flexible(
             child: GoogleMap(
               mapType: MapType.normal,
@@ -360,9 +525,7 @@ class InfoMapa extends StatelessWidget {
               myLocationEnabled: true,
               compassEnabled: true,
               scrollGesturesEnabled: true,
-              markers: {
-                marker
-              },
+              markers: {marker},
               onMapCreated: (GoogleMapController controller) {
                 controller.setMapStyle(_mapTheme);
                 _controller.complete(controller);
@@ -370,7 +533,7 @@ class InfoMapa extends StatelessWidget {
             ),
           ),
         ],
-      )
+      ),
     );
   }
 }
@@ -385,7 +548,7 @@ class InfoPrecio extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container (
+    return Container(
       margin: const EdgeInsets.only(bottom: 15),
       decoration: const BoxDecoration(
         color: Colors.white,
@@ -400,10 +563,20 @@ class InfoPrecio extends StatelessWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-            const Text('Precio para un pasajero' , style: TextStyle(fontSize: 20),),
-            Text('${publication['precio']} €', style: const TextStyle(fontSize: 26, fontWeight: FontWeight.bold, color: Colors.green),),
+          const Text(
+            'Precio para un pasajero',
+            style: TextStyle(fontSize: 20),
+          ),
+          Text(
+            '${publication['precio']} €',
+            style: const TextStyle(
+              fontSize: 26,
+              fontWeight: FontWeight.bold,
+              color: Colors.green,
+            ),
+          ),
         ],
-      )
+      ),
     );
   }
 }
@@ -436,27 +609,60 @@ class InfoTrayecto extends StatelessWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text(DateFormat('dd/MM/yyyy').format(DateTime.fromMillisecondsSinceEpoch(publication['fecha'])), style: const TextStyle(fontSize: 26, fontWeight: FontWeight.bold, color: Colors.green),),
-              const SizedBox(height: 10,),
-              Text(publication['horaSalida']+'h', style: const TextStyle(fontSize: 26, fontWeight: FontWeight.bold, color: Colors.green),),
-              const SizedBox(height: 10,),
+              Text(
+                DateFormat('dd/MM/yyyy').format(
+                  DateTime.fromMillisecondsSinceEpoch(publication['fecha']),
+                ),
+                style: const TextStyle(
+                  fontSize: 26,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.green,
+                ),
+              ),
+              const SizedBox(
+                height: 10,
+              ),
+              Text(
+                publication['horaSalida'] + 'h',
+                style: const TextStyle(
+                  fontSize: 26,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.green,
+                ),
+              ),
+              const SizedBox(
+                height: 10,
+              ),
             ],
           ),
-          const SizedBox(height: 40,),
-          Text(publication['origen'], style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),),
-          const SizedBox(height: 10,),
+          const SizedBox(
+            height: 40,
+          ),
+          Text(
+            publication['origen'],
+            style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+          ),
+          const SizedBox(
+            height: 10,
+          ),
           Container(
             margin: const EdgeInsets.symmetric(horizontal: 20.0),
             width: 3.0,
             height: 50.0,
             color: Colors.green,
           ),
-          const SizedBox(height: 10,),
-          Text(publication['destino'], style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),),
-          const SizedBox(height: 10,),
+          const SizedBox(
+            height: 10,
+          ),
+          Text(
+            publication['destino'],
+            style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+          ),
+          const SizedBox(
+            height: 10,
+          ),
         ],
       ),
     );
   }
 }
-

@@ -8,7 +8,6 @@ import '../providers/google_services_provider.dart';
 import 'package:uuid/uuid.dart';
 
 class PublicacionesScreen extends StatefulWidget {
-   
   const PublicacionesScreen({Key? key}) : super(key: key);
 
   @override
@@ -16,7 +15,6 @@ class PublicacionesScreen extends StatefulWidget {
 }
 
 class _PublicacionesScreenState extends State<PublicacionesScreen> {
-
   final _goToZonzamasSearchController = TextEditingController();
   final _goFromZonzamasSearchController = TextEditingController();
 
@@ -48,7 +46,10 @@ class _PublicacionesScreenState extends State<PublicacionesScreen> {
     }
     if (_debounce?.isActive ?? false) _debounce!.cancel();
     _debounce = Timer(const Duration(milliseconds: 350), () async {
-      goToPlaceList = await googlePlaceProvider.placeAutocomplete(_goToZonzamasSearchController.text, _sessionToken);
+      goToPlaceList = await googlePlaceProvider.placeAutocomplete(
+        _goToZonzamasSearchController.text,
+        _sessionToken,
+      );
       print('Estoy llamando a la API');
       setState(() {});
     });
@@ -62,7 +63,10 @@ class _PublicacionesScreenState extends State<PublicacionesScreen> {
     }
     if (_debounce?.isActive ?? false) _debounce!.cancel();
     _debounce = Timer(const Duration(milliseconds: 350), () async {
-      goFromPlaceList = await googlePlaceProvider.placeAutocomplete(_goFromZonzamasSearchController.text, _sessionToken);
+      goFromPlaceList = await googlePlaceProvider.placeAutocomplete(
+        _goFromZonzamasSearchController.text,
+        _sessionToken,
+      );
       print('Estoy llamando a la API');
       setState(() {});
     });
@@ -70,7 +74,6 @@ class _PublicacionesScreenState extends State<PublicacionesScreen> {
 
   @override
   Widget build(BuildContext context) {
-
     final size = MediaQuery.of(context).size;
 
     return DefaultTabController(
@@ -78,7 +81,8 @@ class _PublicacionesScreenState extends State<PublicacionesScreen> {
       child: Scaffold(
         body: SafeArea(
           child: Container(
-            margin: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 20.0),
+            margin:
+                const EdgeInsets.symmetric(horizontal: 20.0, vertical: 20.0),
             child: Column(
               children: [
                 const TabBar(
@@ -94,21 +98,22 @@ class _PublicacionesScreenState extends State<PublicacionesScreen> {
                   child: TabBarView(
                     children: [
                       SearchBar(
-                        size: size, 
-                        zonzamasSearchController: _goToZonzamasSearchController, 
+                        size: size,
+                        zonzamasSearchController: _goToZonzamasSearchController,
                         placeList: goToPlaceList,
                         hintText: '¿Desde dónde sales?',
                         imagePath: 'assets/publicaciones1.png',
                         isGoingToZonzamas: true,
                       ),
                       SearchBar(
-                        size: size, 
-                        zonzamasSearchController: _goFromZonzamasSearchController, 
-                        placeList: goFromPlaceList, 
-                        hintText: '¿Hacia dónde vas?', 
+                        size: size,
+                        zonzamasSearchController:
+                            _goFromZonzamasSearchController,
+                        placeList: goFromPlaceList,
+                        hintText: '¿Hacia dónde vas?',
                         imagePath: 'assets/publicaciones2.png',
                         isGoingToZonzamas: false,
-                      )
+                      ),
                     ],
                   ),
                 ),
@@ -126,7 +131,10 @@ class SearchBar extends StatefulWidget {
     super.key,
     required this.size,
     required TextEditingController zonzamasSearchController,
-    required this.placeList, required this.hintText, required this.imagePath, required this.isGoingToZonzamas,
+    required this.placeList,
+    required this.hintText,
+    required this.imagePath,
+    required this.isGoingToZonzamas,
   }) : _zonzamasSearchController = zonzamasSearchController;
 
   final Size size;
@@ -143,16 +151,15 @@ class SearchBar extends StatefulWidget {
 class _SearchBarState extends State<SearchBar> {
   @override
   Widget build(BuildContext context) {
-
     final GoogleServicesProvider googlePlaceProvider = GoogleServicesProvider();
     Location? coords;
 
     return Column(
       children: [
         const SizedBox(height: 10.0),
-        Container(                 
+        Container(
           height: widget.size.height * 0.38,
-          width:  double.infinity,
+          width: double.infinity,
           decoration: BoxDecoration(
             image: DecorationImage(
               image: AssetImage(widget.imagePath),
@@ -172,12 +179,13 @@ class _SearchBarState extends State<SearchBar> {
               suffixIcon: IconButton(
                 onPressed: () {
                   widget._zonzamasSearchController.clear();
-                }, 
-                icon: const Icon(Icons.clear)
+                },
+                icon: const Icon(Icons.clear),
               ),
-              
               hintText: widget.hintText,
-              hintStyle: const TextStyle(color: Colors.grey,),
+              hintStyle: const TextStyle(
+                color: Colors.grey,
+              ),
               border: const OutlineInputBorder(
                 borderRadius: BorderRadius.all(Radius.circular(10.0)),
               ),
@@ -196,28 +204,30 @@ class _SearchBarState extends State<SearchBar> {
                 title: Text(widget.placeList[index].description),
                 trailing: const Icon(Icons.keyboard_arrow_right),
                 onTap: () async {
-                  await googlePlaceProvider.placeCoordinates(widget.placeList[index].placeId).then(((value) => {
-                    coords = value
-                  }));
+                  await googlePlaceProvider
+                      .placeCoordinates(widget.placeList[index].placeId)
+                      .then(((value) => {
+                            coords = value,
+                          }));
                   if (mounted) {
                     PersistentNavBarNavigator.pushNewScreen(
                       withNavBar: false,
-                      context, 
+                      context,
                       screen: PublicarTrayectoScreen(
-                      isGoingToZonzamas: widget.isGoingToZonzamas, 
-                      zona: widget.placeList[index].description,
-                      zonaLat: coords!.lat,
-                      zonaLng: coords!.lng,
-                      )
+                        isGoingToZonzamas: widget.isGoingToZonzamas,
+                        zona: widget.placeList[index].description,
+                        zonaLat: coords!.lat,
+                        zonaLng: coords!.lng,
+                      ),
                     );
                     FocusScope.of(context).unfocus();
                     widget._zonzamasSearchController.clear();
                   }
                 },
               );
-            }
+            },
           ),
-        )
+        ),
       ],
     );
   }
