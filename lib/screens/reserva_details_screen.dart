@@ -224,9 +224,7 @@ class _ReservaDetailsScreenState extends State<ReservaDetailsScreen> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          vehicle['marca'].toUpperCase() +
-                              ' ' +
-                              vehicle['modelo'].toUpperCase(),
+                          vehicle['marca'] + ' ' + vehicle['modelo'],
                           style: const TextStyle(
                             fontSize: 20,
                             fontWeight: FontWeight.bold,

@@ -35,7 +35,10 @@ class BusquedaScreen extends StatelessWidget {
           icon: const Icon(Icons.arrow_back),
           onPressed: () {
             Navigator.pushNamedAndRemoveUntil(
-                context, 'home', (route) => false);
+              context,
+              'home',
+              (route) => false,
+            );
           },
         ),
         centerTitle: true,

@@ -8,12 +8,11 @@ class DatabaseProvider {
   final String? uid;
   DatabaseProvider({this.uid});
 
-  final estadoPublicacion = {
+  static final estadoPublicacion = {
     'disponible': 'Disponible',
-    'completa': 'Completa',
+    'llena': 'Llena',
     'encurso': 'En curso',
     'finalizada': 'Finalizada',
-    'cancelada': 'Cancelada',
   };
 
   //referencias a las colecciones de la base de datos
@@ -302,8 +301,30 @@ class DatabaseProvider {
 
     if (await checkIfFull(uidPublicacion)) {
       await publicacionesCollection.doc(uidPublicacion).update({
-        'estado': estadoPublicacion['completa'],
+        'estado': estadoPublicacion['llena'],
       });
     }
+  }
+
+  //eliminar reserva
+  Future deleteReservation(String uidPublicacion) async {
+    QuerySnapshot snapshot = await reservasCollection
+        .where('publicacion', isEqualTo: uidPublicacion)
+        .where('pasajero', isEqualTo: FirebaseAuth.instance.currentUser!.uid)
+        .get();
+
+    final uid = snapshot.docs[0]['uid'];
+
+    await reservasCollection.doc(uid).delete();
+
+    await usuarioCollection.doc(FirebaseAuth.instance.currentUser!.uid).update({
+      'reservas': FieldValue.arrayRemove([uid]),
+    });
+
+    await publicacionesCollection.doc(uidPublicacion).update({
+      'pasajeros':
+          FieldValue.arrayRemove([FirebaseAuth.instance.currentUser!.uid]),
+      'estado': estadoPublicacion['disponible'],
+    });
   }
 }

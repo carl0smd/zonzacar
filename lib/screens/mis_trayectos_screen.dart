@@ -82,7 +82,7 @@ class MisReservasYPublicaciones extends StatelessWidget {
               itemCount: snapshot.data.length,
               itemBuilder: (context, index) {
                 return futureReservas != null
-                    ? CardInfoPublicacion(
+                    ? CardInfoReserva(
                         origen: myList[index]['origen'],
                         destino: myList[index]['destino'],
                         fecha: myList[index]['fecha'],
@@ -130,8 +130,8 @@ class MisReservasYPublicaciones extends StatelessWidget {
   }
 }
 
-class CardInfoPublicacion extends StatefulWidget {
-  const CardInfoPublicacion({
+class CardInfoReserva extends StatefulWidget {
+  const CardInfoReserva({
     super.key,
     required this.origen,
     required this.destino,
@@ -149,15 +149,39 @@ class CardInfoPublicacion extends StatefulWidget {
   final publicacion;
 
   @override
-  State<CardInfoPublicacion> createState() => _CardInfoPublicacionState();
+  State<CardInfoReserva> createState() => _CardInfoReservaState();
 }
 
-class _CardInfoPublicacionState extends State<CardInfoPublicacion> {
+class _CardInfoReservaState extends State<CardInfoReserva> {
   final Completer<GoogleMapController> _controller =
       Completer<GoogleMapController>();
+  final Map colores = {
+    'lleno': Colors.red[300],
+    'disponible': Colors.green[300],
+    'encurso': Colors.yellow[300],
+    'finalizada': Colors.grey[300],
+  };
+
+  getColores(estado) {
+    switch (estado) {
+      case 'Disponible':
+        return Colors.green;
+      case 'Llena':
+        return Colors.red[400];
+      case 'En curso':
+        return Colors.blue[400];
+      case 'Finalizada':
+        return Colors.grey;
+      default:
+        return Colors.grey;
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
+    final DatabaseProvider databaseProvider = DatabaseProvider();
+    bool isLoading = false;
+
     return Card(
       margin: const EdgeInsets.symmetric(
         horizontal: 10.0,
@@ -172,6 +196,59 @@ class _CardInfoPublicacionState extends State<CardInfoPublicacion> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                const Expanded(
+                  child: Text(
+                    'Estado',
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 18.0,
+                    ),
+                  ),
+                ),
+                StreamBuilder(
+                  stream: databaseProvider
+                      .getPublications(widget.publicacion['uid'])
+                      .asStream(),
+                  builder: (context, snapshot) {
+                    if (snapshot.hasData) {
+                      return Container(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 10.0,
+                          vertical: 5.0,
+                        ),
+                        decoration: BoxDecoration(
+                          color: getColores(snapshot.data[0]['estado']),
+                          borderRadius: BorderRadius.circular(20.0),
+                        ),
+                        child: Text(
+                          snapshot.data[0]['estado'],
+                          style: const TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 16.0,
+                            color: Colors.white,
+                          ),
+                        ),
+                      );
+                    } else {
+                      return const Center(
+                        child: Text(
+                          'Cargando...',
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 16.0,
+                            color: Colors.white,
+                          ),
+                        ),
+                      );
+                    }
+                  },
+                ),
+              ],
+            ),
+            const Divider(height: 20.0, thickness: 2.0),
             Text(
               widget.origen,
               style: TextStyle(
@@ -240,43 +317,148 @@ class _CardInfoPublicacionState extends State<CardInfoPublicacion> {
             //Row button ver y cancelar
             const SizedBox(height: 10.0),
             Row(
-              mainAxisAlignment: MainAxisAlignment.end,
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                ElevatedButton(
-                  onPressed: () {
-                    showModalBottomSheet(
-                      context: context,
-                      builder: (BuildContext context) =>
-                          buildSheet(widget.publicacion, context, _controller),
-                      isScrollControlled: true,
-                      shape: const RoundedRectangleBorder(
-                        borderRadius: BorderRadius.only(
-                          topLeft: Radius.circular(20.0),
-                          topRight: Radius.circular(20.0),
+                Row(
+                  children: [
+                    Text(
+                      widget.publicacion['precio'].toString(),
+                      style: const TextStyle(
+                        fontSize: 20.0,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.green,
+                      ),
+                    ),
+                    const SizedBox(width: 5.0),
+                    const Icon(
+                      Icons.euro,
+                      color: Colors.green,
+                      size: 20,
+                    ),
+                  ],
+                ),
+                Row(
+                  children: [
+                    ElevatedButton(
+                      onPressed: () {
+                        showModalBottomSheet(
+                          context: context,
+                          builder: (BuildContext context) => buildSheet(
+                            widget.publicacion,
+                            context,
+                            _controller,
+                          ),
+                          isScrollControlled: true,
+                          shape: const RoundedRectangleBorder(
+                            borderRadius: BorderRadius.only(
+                              topLeft: Radius.circular(20.0),
+                              topRight: Radius.circular(20.0),
+                            ),
+                          ),
+                        );
+                      },
+                      style: ElevatedButton.styleFrom(
+                        //height 20
+                        minimumSize: const Size(80.0, 35.0),
+                        elevation: 1,
+                        backgroundColor: Colors.green,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(20.0),
                         ),
                       ),
-                    );
-                  },
-                  style: ElevatedButton.styleFrom(
-                    elevation: 1,
-                    backgroundColor: Colors.green,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(20.0),
+                      child: const Text('Ver'),
                     ),
-                  ),
-                  child: const Text('Ver'),
-                ),
-                const SizedBox(width: 10.0),
-                ElevatedButton(
-                  onPressed: () {},
-                  style: ElevatedButton.styleFrom(
-                    elevation: 1,
-                    backgroundColor: Colors.red,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(20.0),
-                    ),
-                  ),
-                  child: const Text('Cancelar'),
+                    widget.publicacion['estado'] ==
+                                DatabaseProvider
+                                    .estadoPublicacion['disponible'] ||
+                            widget.publicacion['estado'] ==
+                                DatabaseProvider.estadoPublicacion['completa']
+                        ? Row(
+                            children: [
+                              const SizedBox(width: 10.0),
+                              ElevatedButton(
+                                onPressed: () async {
+                                  showDialog(
+                                    context: context,
+                                    builder: (context) {
+                                      return AlertDialog(
+                                        title:
+                                            const Text('Cancelar publicación'),
+                                        content: const Text(
+                                          '¿Está seguro de cancelar su reserva?',
+                                        ),
+                                        actions: [
+                                          TextButton(
+                                            onPressed: () {
+                                              Navigator.pop(context);
+                                            },
+                                            child: const Text(
+                                              'No',
+                                              style:
+                                                  TextStyle(color: Colors.grey),
+                                            ),
+                                          ),
+                                          TextButton(
+                                            onPressed: isLoading
+                                                ? null
+                                                : () async {
+                                                    setState(() {
+                                                      isLoading = true;
+                                                    });
+
+                                                    try {
+                                                      await databaseProvider
+                                                          .deleteReservation(
+                                                        widget
+                                                            .publicacion['uid'],
+                                                      );
+                                                      setState(() {
+                                                        isLoading = false;
+                                                      });
+                                                      if (mounted) {
+                                                        Navigator
+                                                            .pushNamedAndRemoveUntil(
+                                                          context,
+                                                          'home',
+                                                          (route) => false,
+                                                        );
+                                                        showSnackbar(
+                                                          'Reserva cancelada con éxito',
+                                                          context,
+                                                        );
+                                                      }
+                                                    } catch (e) {
+                                                      setState(() {
+                                                        isLoading = false;
+                                                      });
+                                                      Navigator.pop(context);
+                                                      showSnackbar(
+                                                        'Error al cancelar la reserva, inténtelo más tarde',
+                                                        context,
+                                                      );
+                                                    }
+                                                  },
+                                            child: const Text('Si'),
+                                          ),
+                                        ],
+                                      );
+                                    },
+                                  );
+                                },
+                                style: ElevatedButton.styleFrom(
+                                  minimumSize: const Size(80.0, 35.0),
+                                  elevation: 1,
+                                  backgroundColor: Colors.grey,
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(20.0),
+                                  ),
+                                ),
+                                child: const Text('Cancelar'),
+                              ),
+                            ],
+                          )
+                        : Container(),
+                  ],
                 ),
               ],
             ),
@@ -429,9 +611,7 @@ Widget buildSheet(publicacion, context, mapController) {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        vehicle['marca'].toUpperCase() +
-                            ' ' +
-                            vehicle['modelo'].toUpperCase(),
+                        vehicle['marca'] + ' ' + vehicle['modelo'],
                         style: const TextStyle(
                           fontSize: 20,
                           fontWeight: FontWeight.bold,

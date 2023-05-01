@@ -305,9 +305,9 @@ Future<void> addVehicleDialog(
               onPressed: () async {
                 if (formKey.currentState!.validate()) {
                   await databaseProvider.saveVehicle(
-                    matriculaController.text.trim(),
-                    marcaController.text.trim(),
-                    modeloController.text.trim(),
+                    matriculaController.text.trim().toUpperCase(),
+                    marcaController.text.trim().toUpperCase(),
+                    modeloController.text.trim().toUpperCase(),
                     color,
                   );
                   Navigator.of(context).pop();
