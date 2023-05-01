@@ -270,6 +270,34 @@ class DatabaseProvider {
     return snapshot.docs;
   }
 
+  //delete publication
+  Future deletePublication(String uid) async {
+    QuerySnapshot snapshotReservas =
+        await reservasCollection.where('publicacion', isEqualTo: uid).get();
+
+    if (snapshotReservas.docs.isNotEmpty) {
+      for (var reserva in snapshotReservas.docs) {
+        await usuarioCollection.doc(reserva['pasajero']).update({
+          'reservas': FieldValue.arrayRemove([reserva['uid']]),
+        });
+      }
+    }
+
+    await reservasCollection.where('publicacion', isEqualTo: uid).get().then(
+      (snapshot) {
+        for (var reserva in snapshot.docs) {
+          reservasCollection.doc(reserva['uid']).delete();
+        }
+      },
+    );
+
+    await usuarioCollection.doc(FirebaseAuth.instance.currentUser!.uid).update({
+      'publicaciones': FieldValue.arrayRemove([uid]),
+    });
+
+    await publicacionesCollection.doc(uid).delete();
+  }
+
   //comprobar que el viaje no está lleno
   Future<bool> checkIfFull(String uid) async {
     DocumentSnapshot snapshot = await publicacionesCollection.doc(uid).get();

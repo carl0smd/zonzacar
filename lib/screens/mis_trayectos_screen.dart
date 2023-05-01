@@ -108,19 +108,21 @@ class _MisTrayectosScreenState extends State<MisTrayectosScreen> {
           ),
           reservas
               ? const Text(
-                  'Necesitas conceder permisos de ubicación para ver tu localización y punto de encuentro',
+                  'Necesitas conceder permisos de ubicación para ver tu localización y punto de recogida',
                   style: TextStyle(color: Colors.grey),
+                  textAlign: TextAlign.center,
                 )
               : const Text(
-                  'Necesitas conceder permisos de ubicación para ver tu localización y punto de encuentro',
+                  'Necesitas conceder permisos de ubicación para ver tu localización y punto de recogida',
                   style: TextStyle(color: Colors.grey),
+                  textAlign: TextAlign.center,
                 ),
           const SizedBox(
             height: 20.0,
           ),
           ElevatedButton(
             onPressed: _askForLocationPermission,
-            child: const Text('Activar GPS'),
+            child: const Text('Conceder permisos'),
           ),
         ],
       ),
@@ -151,19 +153,13 @@ class MisReservasYPublicaciones extends StatelessWidget {
               itemCount: snapshot.data.length,
               itemBuilder: (context, index) {
                 return futureReservas != null
-                    ? CardInfoReserva(
-                        origen: myList[index]['origen'],
-                        destino: myList[index]['destino'],
-                        fecha: myList[index]['fecha'],
-                        hora: myList[index]['horaSalida'],
-                        conductor: myList[index]['conductor'],
+                    ? CardInfo(
                         publicacion: myList[index],
+                        isPassenger: true,
                       )
-                    : Card(
-                        child: ListTile(
-                          title: Text(myList[index]['origen']),
-                          subtitle: Text(myList[index]['destino']),
-                        ),
+                    : CardInfo(
+                        publicacion: myList[index],
+                        isPassenger: false,
                       );
               },
             ),
@@ -199,29 +195,21 @@ class MisReservasYPublicaciones extends StatelessWidget {
   }
 }
 
-class CardInfoReserva extends StatefulWidget {
-  const CardInfoReserva({
+class CardInfo extends StatefulWidget {
+  const CardInfo({
     super.key,
-    required this.origen,
-    required this.destino,
-    required this.fecha,
-    required this.hora,
-    required this.conductor,
     required this.publicacion,
+    required this.isPassenger,
   });
 
-  final String origen;
-  final String destino;
-  final fecha;
-  final String hora;
-  final String conductor;
   final publicacion;
+  final bool isPassenger;
 
   @override
-  State<CardInfoReserva> createState() => _CardInfoReservaState();
+  State<CardInfo> createState() => _CardInfoState();
 }
 
-class _CardInfoReservaState extends State<CardInfoReserva> {
+class _CardInfoState extends State<CardInfo> {
   final Completer<GoogleMapController> _controller =
       Completer<GoogleMapController>();
   final Map colores = {
@@ -282,7 +270,7 @@ class _CardInfoReservaState extends State<CardInfoReserva> {
                       .getPublications(widget.publicacion['uid'])
                       .asStream(),
                   builder: (context, snapshot) {
-                    if (snapshot.hasData) {
+                    if (snapshot.hasData && snapshot.data.length > 0) {
                       return Container(
                         padding: const EdgeInsets.symmetric(
                           horizontal: 10.0,
@@ -319,7 +307,7 @@ class _CardInfoReservaState extends State<CardInfoReserva> {
             ),
             const Divider(height: 20.0, thickness: 2.0),
             Text(
-              widget.origen,
+              widget.publicacion['origen'],
               style: TextStyle(
                 fontWeight: FontWeight.bold,
                 fontSize: 16.0,
@@ -345,11 +333,11 @@ class _CardInfoReservaState extends State<CardInfoReserva> {
                   Icons.calendar_today,
                   color: Colors.green,
                 ),
-                const SizedBox(width: 10.0),
+                const SizedBox(width: 8.0),
                 Text(
                   DateFormat('dd/MM/yyyy').format(
                     DateTime.fromMillisecondsSinceEpoch(
-                      widget.fecha,
+                      widget.publicacion['fecha'],
                     ),
                   ),
                   style: const TextStyle(
@@ -357,15 +345,29 @@ class _CardInfoReservaState extends State<CardInfoReserva> {
                     fontSize: 14.0,
                   ),
                 ),
-                const SizedBox(width: 10.0),
+                const SizedBox(width: 8.0),
                 //hora de salida
                 const Icon(
                   Icons.access_time,
                   color: Colors.green,
                 ),
-                const SizedBox(width: 10.0),
+                const SizedBox(width: 8.0),
                 Text(
-                  widget.hora,
+                  widget.publicacion['horaSalida'],
+                  style: const TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 14.0,
+                  ),
+                ),
+                const SizedBox(width: 8.0),
+                //pasajeros permitidos
+                const Icon(
+                  Icons.people,
+                  color: Colors.green,
+                ),
+                const SizedBox(width: 8.0),
+                Text(
+                  widget.publicacion['pasajeros'].length.toString(),
                   style: const TextStyle(
                     fontWeight: FontWeight.bold,
                     fontSize: 14.0,
@@ -376,7 +378,7 @@ class _CardInfoReservaState extends State<CardInfoReserva> {
             //Destino
             const SizedBox(height: 10.0),
             Text(
-              widget.destino,
+              widget.publicacion['destino'],
               style: TextStyle(
                 fontWeight: FontWeight.bold,
                 fontSize: 16.0,
@@ -416,6 +418,7 @@ class _CardInfoReservaState extends State<CardInfoReserva> {
                             widget.publicacion,
                             context,
                             _controller,
+                            widget.isPassenger,
                           ),
                           isScrollControlled: true,
                           shape: const RoundedRectangleBorder(
@@ -474,13 +477,20 @@ class _CardInfoReservaState extends State<CardInfoReserva> {
                                                     setState(() {
                                                       isLoading = true;
                                                     });
-
                                                     try {
-                                                      await databaseProvider
-                                                          .deleteReservation(
-                                                        widget
-                                                            .publicacion['uid'],
-                                                      );
+                                                      if (widget.isPassenger) {
+                                                        await databaseProvider
+                                                            .deleteReservation(
+                                                          widget.publicacion[
+                                                              'uid'],
+                                                        );
+                                                      } else {
+                                                        await databaseProvider
+                                                            .deletePublication(
+                                                          widget.publicacion[
+                                                              'uid'],
+                                                        );
+                                                      }
                                                       setState(() {
                                                         isLoading = false;
                                                       });
@@ -538,7 +548,7 @@ class _CardInfoReservaState extends State<CardInfoReserva> {
   }
 }
 
-Widget buildSheet(publicacion, context, mapController) {
+Widget buildSheet(publicacion, context, mapController, isPassenger) {
   DatabaseProvider databaseProvider = DatabaseProvider();
   CameraPosition kGooglePlex = CameraPosition(
     target: LatLng(

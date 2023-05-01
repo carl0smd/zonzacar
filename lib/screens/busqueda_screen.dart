@@ -265,7 +265,7 @@ class BookingCard extends StatelessWidget {
                   ),
                   const SizedBox(width: 10.0),
                   //maximo de pasajeros
-                  const Icon(Icons.person, color: Colors.green),
+                  const Icon(Icons.people, color: Colors.green),
                   const SizedBox(width: 10.0),
                   Text(
                     '${publication['asientosDisponibles']}',
