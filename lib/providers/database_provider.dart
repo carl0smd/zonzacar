@@ -298,6 +298,25 @@ class DatabaseProvider {
     await publicacionesCollection.doc(uid).delete();
   }
 
+  //get usuarios a partir de una lista de ids de pasaajeros de una publicacion
+  Future getPassengers(String uid) async {
+    QuerySnapshot snapshotReservas =
+        await reservasCollection.where('publicacion', isEqualTo: uid).get();
+
+    List<String> passengers = [];
+
+    if (snapshotReservas.docs.isNotEmpty) {
+      for (var reserva in snapshotReservas.docs) {
+        passengers.add(reserva['pasajero']);
+      }
+    }
+
+    QuerySnapshot snapshotUsuarios =
+        await usuarioCollection.where('uid', whereIn: passengers).get();
+
+    return snapshotUsuarios.docs;
+  }
+
   //comprobar que el viaje no está lleno
   Future<bool> checkIfFull(String uid) async {
     DocumentSnapshot snapshot = await publicacionesCollection.doc(uid).get();

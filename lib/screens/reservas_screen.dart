@@ -30,7 +30,7 @@ class ReservasScreen extends StatelessWidget {
               Container(
                 margin: const EdgeInsets.all(20.0),
                 padding: const EdgeInsets.all(10.0),
-                height: size.height * 0.40,
+                height: size.height * 0.35,
                 decoration: BoxDecoration(
                   boxShadow: [
                     BoxShadow(
