@@ -1,11 +1,13 @@
 import 'dart:async';
 
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/foundation.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:intl/intl.dart';
 import 'package:zonzacar/providers/database_provider.dart';
-import 'package:zonzacar/widgets/snackbar.dart';
+import 'package:zonzacar/widgets/widgets.dart';
 
 class ReservaDetailsScreen extends StatefulWidget {
   final String id;
@@ -28,18 +30,7 @@ class ReservaDetailsScreen extends StatefulWidget {
 class _ReservaDetailsScreenState extends State<ReservaDetailsScreen> {
   final Completer<GoogleMapController> _controller =
       Completer<GoogleMapController>();
-  String _mapTheme = '';
   bool _purchaseInProgress = false;
-
-  @override
-  void initState() {
-    super.initState();
-    DefaultAssetBundle.of(context)
-        .loadString('assets/map_theme/classic_no_labels.json')
-        .then((string) {
-      _mapTheme = string;
-    });
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -97,12 +88,16 @@ class _ReservaDetailsScreenState extends State<ReservaDetailsScreen> {
                   children: [
                     InfoTrayecto(publication: publication),
                     InfoPrecio(publication: publication),
-                    infoConductor(databaseProvider, publication, context),
+                    infoConductor(
+                      databaseProvider,
+                      publication,
+                      widget.userImage,
+                      context,
+                    ),
                     InfoMapa(
                       widget: widget,
                       kGooglePlex: kGooglePlex,
                       marker: marker,
-                      mapTheme: _mapTheme,
                       controller: _controller,
                     ),
                     const SizedBox(
@@ -162,6 +157,7 @@ class _ReservaDetailsScreenState extends State<ReservaDetailsScreen> {
   Container infoConductor(
     DatabaseProvider databaseProvider,
     publication,
+    userImage,
     BuildContext context,
   ) {
     return Container(
@@ -195,27 +191,11 @@ class _ReservaDetailsScreenState extends State<ReservaDetailsScreen> {
                   overflow: TextOverflow.ellipsis,
                 ),
               ),
-              CircleAvatar(
-                backgroundColor: Colors.black87,
-                radius: 42,
-                child: CircleAvatar(
-                  backgroundColor: Colors.white,
-                  radius: 40,
-                  child: widget.userImage == ''
-                      ? const Icon(
-                          Icons.person,
-                          size: 40,
-                        )
-                      : ClipRRect(
-                          borderRadius: BorderRadius.circular(40),
-                          child: Image.network(
-                            widget.userImage,
-                            fit: BoxFit.cover,
-                            width: 100,
-                            height: 100,
-                          ),
-                        ),
-                ),
+              ImagenUsuario(
+                userImage: userImage,
+                radiusOutterCircle: 42,
+                radiusImageCircle: 40,
+                iconSize: 40,
               ),
             ],
           ),
@@ -411,39 +391,71 @@ class _ReservaDetailsScreenState extends State<ReservaDetailsScreen> {
                               );
                             }
                             if (_purchaseInProgress) {
-                              try {
-                                await databaseProvider
-                                    .saveReservation(
-                                  widget.id,
-                                  FirebaseAuth.instance.currentUser!.uid,
-                                )
-                                    .then(
-                                  (value) {
-                                    if (mounted) {
-                                      Navigator.pushNamedAndRemoveUntil(
-                                        context,
-                                        'home',
-                                        (route) => false,
-                                      );
-                                      setState(() {
-                                        _purchaseInProgress = false;
-                                      });
-                                      showSnackbar(
-                                        'Reserva realizada con éxito',
-                                        context,
-                                      );
-                                    }
-                                  },
-                                );
-                              } catch (e) {
+                              if (await databaseProvider
+                                  .checkIfFull(widget.id)) {
                                 setState(() {
                                   _purchaseInProgress = false;
                                 });
                                 if (mounted) {
-                                  showSnackbar(
-                                    'Error al reservar trayecto, inténtelo más tarde',
-                                    context,
+                                  Navigator.pop(context);
+                                  showDialog(
+                                    context: context,
+                                    builder: (context) => AlertDialog(
+                                      title: const Text('Trayecto completo'),
+                                      content: const Text(
+                                        'Lo sentimos, alguien se ha adelantado a tu reserva y el coche está lleno.',
+                                      ),
+                                      actions: [
+                                        TextButton(
+                                          onPressed: () {
+                                            Navigator.pushNamedAndRemoveUntil(
+                                              context,
+                                              'home',
+                                              (route) => false,
+                                            );
+                                          },
+                                          child: const Text('Ok'),
+                                        ),
+                                      ],
+                                    ),
                                   );
+                                  return;
+                                }
+                              } else {
+                                try {
+                                  await databaseProvider
+                                      .saveReservation(
+                                    widget.id,
+                                    FirebaseAuth.instance.currentUser!.uid,
+                                  )
+                                      .then(
+                                    (value) {
+                                      if (mounted) {
+                                        Navigator.pushNamedAndRemoveUntil(
+                                          context,
+                                          'home',
+                                          (route) => false,
+                                        );
+                                        setState(() {
+                                          _purchaseInProgress = false;
+                                        });
+                                        showSnackbar(
+                                          'Reserva realizada con éxito',
+                                          context,
+                                        );
+                                      }
+                                    },
+                                  );
+                                } catch (e) {
+                                  setState(() {
+                                    _purchaseInProgress = false;
+                                  });
+                                  if (mounted) {
+                                    showSnackbar(
+                                      'Error al reservar trayecto, inténtelo más tarde',
+                                      context,
+                                    );
+                                  }
                                 }
                               }
                             }
@@ -482,15 +494,12 @@ class InfoMapa extends StatelessWidget {
     required this.widget,
     required this.kGooglePlex,
     required this.marker,
-    required String mapTheme,
     required Completer<GoogleMapController> controller,
-  })  : _mapTheme = mapTheme,
-        _controller = controller;
+  }) : _controller = controller;
 
   final ReservaDetailsScreen widget;
   final CameraPosition kGooglePlex;
   final Marker marker;
-  final String _mapTheme;
   final Completer<GoogleMapController> _controller;
 
   @override
@@ -522,12 +531,15 @@ class InfoMapa extends StatelessWidget {
             child: GoogleMap(
               mapType: MapType.normal,
               initialCameraPosition: kGooglePlex,
-              myLocationEnabled: true,
+              gestureRecognizers: {
+                Factory<OneSequenceGestureRecognizer>(
+                  () => EagerGestureRecognizer(),
+                ),
+              },
               compassEnabled: true,
               scrollGesturesEnabled: true,
               markers: {marker},
               onMapCreated: (GoogleMapController controller) {
-                controller.setMapStyle(_mapTheme);
                 _controller.complete(controller);
               },
             ),
@@ -645,11 +657,45 @@ class InfoTrayecto extends StatelessWidget {
           const SizedBox(
             height: 10,
           ),
-          Container(
-            margin: const EdgeInsets.symmetric(horizontal: 20.0),
-            width: 3.0,
-            height: 50.0,
-            color: Colors.green,
+          Row(
+            children: [
+              Container(
+                margin: const EdgeInsets.symmetric(horizontal: 20.0),
+                width: 3.0,
+                height: 50.0,
+                color: Colors.green,
+              ),
+              const SizedBox(
+                width: 10,
+              ),
+              const Icon(
+                Icons.directions_car,
+                color: Colors.green,
+                size: 30,
+              ),
+              const SizedBox(
+                width: 10,
+              ),
+              Text(
+                publication['distancia'],
+                style: const TextStyle(fontSize: 20),
+              ),
+              const SizedBox(
+                width: 10,
+              ),
+              const Icon(
+                Icons.access_time,
+                color: Colors.green,
+                size: 30,
+              ),
+              const SizedBox(
+                width: 10,
+              ),
+              Text(
+                publication['duracionViaje'],
+                style: const TextStyle(fontSize: 20),
+              ),
+            ],
           ),
           const SizedBox(
             height: 10,

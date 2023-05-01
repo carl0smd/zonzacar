@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:zonzacar/widgets/snackbar.dart';
 
 import '../providers/database_provider.dart';
 import '../shared/constants.dart';
@@ -10,6 +11,7 @@ class FormularioTrayectoScreen extends StatefulWidget {
   final String destino;
   final String coordenadasOrigen;
   final String coordenadasDestino;
+  final String duracion;
 
   const FormularioTrayectoScreen({
     Key? key,
@@ -18,6 +20,7 @@ class FormularioTrayectoScreen extends StatefulWidget {
     required this.destino,
     required this.coordenadasOrigen,
     required this.coordenadasDestino,
+    required this.duracion,
   }) : super(key: key);
 
   @override
@@ -28,6 +31,7 @@ class FormularioTrayectoScreen extends StatefulWidget {
 class _FormularioTrayectoScreenState extends State<FormularioTrayectoScreen> {
   final databaseProvider = DatabaseProvider();
   final List vehicles = [];
+  bool isLoading = false;
 
   @override
   void initState() {
@@ -131,6 +135,19 @@ class _FormularioTrayectoScreenState extends State<FormularioTrayectoScreen> {
                               ),
                             ),
                             const SizedBox(width: 10.0),
+                            const Icon(
+                              Icons.timer,
+                              color: Colors.green,
+                            ),
+                            const SizedBox(width: 10.0),
+                            //Duración
+                            Text(
+                              widget.duracion,
+                              style: const TextStyle(
+                                fontSize: 20.0,
+                                color: Colors.green,
+                              ),
+                            ),
                           ],
                         ),
                         //Destino
@@ -320,8 +337,9 @@ class _FormularioTrayectoScreenState extends State<FormularioTrayectoScreen> {
                               onPressed: () {
                                 if (double.parse(precioCtrl.text) <=
                                         double.parse(precio) - 1 ||
-                                    double.parse(precioCtrl.text) - 0.1 <= 0)
+                                    double.parse(precioCtrl.text) - 0.1 <= 0) {
                                   return;
+                                }
                                 precioCtrl.text =
                                     (double.parse(precioCtrl.text) - 0.1)
                                         .toStringAsFixed(2);
@@ -364,28 +382,55 @@ class _FormularioTrayectoScreenState extends State<FormularioTrayectoScreen> {
                             ),
                           ),
                           child: ElevatedButton(
-                            onPressed: () async {
-                              if (formKey.currentState!.validate()) {
-                                await databaseProvider.savePublication(
-                                  fecha,
-                                  horaCtrl.text,
-                                  widget.origen,
-                                  widget.destino,
-                                  widget.coordenadasOrigen,
-                                  widget.coordenadasDestino,
-                                  int.parse(asientosCtrl.text),
-                                  double.parse(precioCtrl.text),
-                                  vehiculo,
-                                );
-                                if (mounted) {
-                                  Navigator.pushNamedAndRemoveUntil(
-                                    context,
-                                    'home',
-                                    (route) => false,
-                                  );
-                                }
-                              }
-                            },
+                            onPressed: isLoading
+                                ? null
+                                : () async {
+                                    if (formKey.currentState!.validate()) {
+                                      setState(() {
+                                        isLoading = true;
+                                      });
+                                      showDialog(
+                                        context: context,
+                                        barrierDismissible: false,
+                                        builder: (context) {
+                                          return const Center(
+                                            child: CircularProgressIndicator(),
+                                          );
+                                        },
+                                      );
+                                      try {
+                                        await databaseProvider.savePublication(
+                                          fecha,
+                                          widget.duracion,
+                                          widget.distancia,
+                                          horaCtrl.text,
+                                          widget.origen,
+                                          widget.destino,
+                                          widget.coordenadasOrigen,
+                                          widget.coordenadasDestino,
+                                          int.parse(asientosCtrl.text),
+                                          double.parse(precioCtrl.text),
+                                          vehiculo,
+                                        );
+                                        if (mounted) {
+                                          Navigator.pushNamedAndRemoveUntil(
+                                            context,
+                                            'home',
+                                            (route) => false,
+                                          );
+                                          showSnackbar(
+                                            'Publicación creada correctamente',
+                                            context,
+                                          );
+                                          isLoading = false;
+                                        }
+                                      } catch (e) {
+                                        showSnackbar(e.toString(), context);
+                                        isLoading = false;
+                                        return;
+                                      }
+                                    }
+                                  },
                             child: const Text(
                               'Publicar',
                               style: TextStyle(fontSize: 20),

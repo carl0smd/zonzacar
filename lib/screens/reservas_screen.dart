@@ -66,11 +66,20 @@ class _CajaDeBusqueda extends StatefulWidget {
 
 class _CajaDeBusquedaState extends State<_CajaDeBusqueda>
     with SingleTickerProviderStateMixin {
+  final origenCtrl = TextEditingController();
+  final destinoCtrl = TextEditingController();
+  final fechaCtrl = TextEditingController();
+
+  @override
+  void dispose() {
+    origenCtrl.dispose();
+    destinoCtrl.dispose();
+    fechaCtrl.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
-    final origenCtrl = TextEditingController();
-    final destinoCtrl = TextEditingController();
-    final fechaCtrl = TextEditingController();
     int fecha = 0;
     final formKey = GlobalKey<FormState>();
     return DefaultTabController(
@@ -164,8 +173,9 @@ class _CajaDeBusquedaState extends State<_CajaDeBusqueda>
                           lastDate: FechaConstants.initialDate
                               .add(const Duration(days: 365)),
                           selectableDayPredicate: (DateTime val) {
-                            if (val.weekday == 6 || val.weekday == 7)
+                            if (val.weekday == 6 || val.weekday == 7) {
                               return false;
+                            }
                             if (val.month == 7 || val.month == 8) return false;
                             return true;
                           },
@@ -198,12 +208,13 @@ class _CajaDeBusquedaState extends State<_CajaDeBusqueda>
                                 fecha: fecha != 0 ? fecha : null,
                               ),
                       );
+                      print(fecha);
                       origenCtrl.clear();
                       destinoCtrl.clear();
                       fechaCtrl.clear();
                     },
                     style: TextButton.styleFrom(
-                      backgroundColor: Colors.green[400],
+                      backgroundColor: Colors.green,
                       foregroundColor: Colors.white,
                       minimumSize: Size(widget.size.width, 50.0),
                       shape: RoundedRectangleBorder(

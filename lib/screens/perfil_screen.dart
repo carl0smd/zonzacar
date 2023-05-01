@@ -134,27 +134,11 @@ class _PerfilScreenState extends State<PerfilScreen> {
                       ],
                     ),
                     // Foto de perfil
-                    CircleAvatar(
-                      backgroundColor: Colors.black87,
-                      radius: 52,
-                      child: CircleAvatar(
-                        backgroundColor: Colors.white,
-                        radius: 50,
-                        child: userImage == ''
-                            ? const Icon(
-                                Icons.person,
-                                size: 50,
-                              )
-                            : ClipRRect(
-                                borderRadius: BorderRadius.circular(50),
-                                child: Image.network(
-                                  userImage,
-                                  fit: BoxFit.cover,
-                                  width: 100,
-                                  height: 100,
-                                ),
-                              ),
-                      ),
+                    ImagenUsuario(
+                      userImage: userImage,
+                      radiusOutterCircle: 52,
+                      radiusImageCircle: 50,
+                      iconSize: 50,
                     ),
                   ],
                 ),
@@ -229,11 +213,18 @@ class _PerfilScreenState extends State<PerfilScreen> {
                         subtitle: Text(vehicles[index]['matricula']),
                         trailing: IconButton(
                           onPressed: () async {
-                            await databaseProvider
-                                .deleteVehicle(vehicles[index]['uid']);
-                            setState(() {
-                              vehicles.removeAt(index);
-                            });
+                            if (await databaseProvider
+                                .deleteVehicle(vehicles[index]['uid'])) {
+                              setState(() {
+                                vehicles.removeAt(index);
+                              });
+                              showSnackbar(
+                                  'Vehículo eliminado correctamente', context);
+                            } else {
+                              showSnackbar(
+                                  'Error al eliminar, aún tienes publicaciones activas con este vehículo',
+                                  context);
+                            }
                           },
                           icon: const Icon(
                             Icons.delete,

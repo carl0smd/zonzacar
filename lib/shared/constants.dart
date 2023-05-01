@@ -29,7 +29,7 @@ class ColoresConstants {
 }
 
 //Constantes para los precios
-class PrecioConstants{
+class PrecioConstants {
   //Precio medio de gasolina por kilómetro España 2023
   static double precioPorKm = 0.20;
 
@@ -38,9 +38,11 @@ class PrecioConstants{
 }
 
 //Constantes para las fechas
-class FechaConstants{
+class FechaConstants {
   //Si el día de la semana es sábado o domingo pasa al lunes
-  static DateTime initialDate = DateTime.now().weekday == 6 
-  ? DateTime.now().add(const Duration(days: 2)) : DateTime.now().weekday == 7 
-  ? DateTime.now().add(const Duration(days: 1)) : DateTime.now();
+  static DateTime initialDate = DateTime.now().weekday == 6
+      ? DateTime.now().add(const Duration(days: 2))
+      : DateTime.now().weekday == 7
+          ? DateTime.now().add(const Duration(days: 1))
+          : DateTime.now();
 }

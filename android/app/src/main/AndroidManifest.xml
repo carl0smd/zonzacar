@@ -1,7 +1,12 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.zonzacar">
+    <!-- Internet -->
+    <uses-permission android:name="android.permission.INTERNET" />
+    <!-- GPS -->
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
    <application
-        android:label="ZonzaCar"
+        android:label="zonzacar"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
         <activity

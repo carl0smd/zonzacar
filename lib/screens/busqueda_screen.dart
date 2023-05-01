@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:persistent_bottom_nav_bar/persistent_tab_view.dart';
 import 'package:zonzacar/screens/screens.dart';
+import 'package:zonzacar/widgets/widgets.dart';
 
 import '../providers/database_provider.dart';
 
@@ -29,6 +30,14 @@ class BusquedaScreen extends StatelessWidget {
           'Resultados',
           style: TextStyle(color: Colors.black),
         ),
+        //change icon action
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back),
+          onPressed: () {
+            Navigator.pushNamedAndRemoveUntil(
+                context, 'home', (route) => false);
+          },
+        ),
         centerTitle: true,
         backgroundColor: Colors.white,
         elevation: 0,
@@ -53,9 +62,7 @@ class BusquedaScreen extends StatelessWidget {
                   element['conductor'] ==
                       FirebaseAuth.instance.currentUser!.uid ||
                   element['pasajeros']
-                      .contains(FirebaseAuth.instance.currentUser!.uid) ||
-                  element['asientosDisponibles'] <=
-                      publications[0]['pasajeros'].length);
+                      .contains(FirebaseAuth.instance.currentUser!.uid));
               origen != null
                   ? publications.removeWhere((element) =>
                       element['origen']
@@ -186,27 +193,11 @@ class BookingCard extends StatelessWidget {
               //Nombre del conductor y foto de perfil
               Row(
                 children: [
-                  CircleAvatar(
-                    backgroundColor: Colors.black87,
-                    radius: 32,
-                    child: CircleAvatar(
-                      backgroundColor: Colors.white,
-                      radius: 30,
-                      child: userImage == ''
-                          ? const Icon(
-                              Icons.person,
-                              size: 30,
-                            )
-                          : ClipRRect(
-                              borderRadius: BorderRadius.circular(50),
-                              child: Image.network(
-                                userImage,
-                                fit: BoxFit.cover,
-                                width: 100,
-                                height: 100,
-                              ),
-                            ),
-                    ),
+                  ImagenUsuario(
+                    userImage: userImage,
+                    radiusOutterCircle: 32,
+                    radiusImageCircle: 30,
+                    iconSize: 30,
                   ),
                   const SizedBox(width: 10.0),
                   SizedBox(

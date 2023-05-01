@@ -1,0 +1,7 @@
+
+Hacer pantalla chats
+Mejorar funcionanmiento pantalla mis trayectos
+Añadir CircularProgressIndicator cuando se publica un trayecto para impedir multiples creaciones
+Añadir opción eliminar cuenta
+Añadir opción no recuerdo contraseña
+Arreglar búsqueda de publicaciones porque si busco para una fecha en concreto que aparecen las que tienen una hora menor a la actual
