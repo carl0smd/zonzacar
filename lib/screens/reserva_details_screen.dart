@@ -578,7 +578,7 @@ class InfoPrecio extends StatelessWidget {
             style: TextStyle(fontSize: 20),
           ),
           Text(
-            '${publication['precio']} €',
+            '${publication['precio'].toStringAsFixed(2)} €',
             style: const TextStyle(
               fontSize: 26,
               fontWeight: FontWeight.bold,

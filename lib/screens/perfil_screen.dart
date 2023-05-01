@@ -1,8 +1,10 @@
 import 'dart:io';
+import 'package:device_info_plus/device_info_plus.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:zonzacar/providers/auth_provider.dart';
 import 'package:zonzacar/providers/database_provider.dart';
 import 'package:zonzacar/screens/login_screen.dart';
@@ -22,6 +24,66 @@ class _PerfilScreenState extends State<PerfilScreen> {
   AuthProvider authProvider = AuthProvider();
   DatabaseProvider databaseProvider = DatabaseProvider();
   List vehicles = [];
+  bool _isCameraPermissionGranted = false;
+  bool _isPhotosPermissionGranted = false;
+  bool _isStoragePermissionGranted = false;
+
+  void _askForCameraPermission() async {
+    final status = await Permission.camera.request();
+    switch (status) {
+      case PermissionStatus.granted:
+        setState(() {
+          _isCameraPermissionGranted = true;
+        });
+        break;
+      case PermissionStatus.denied:
+      case PermissionStatus.permanentlyDenied:
+      case PermissionStatus.restricted:
+      case PermissionStatus.limited:
+        setState(() {
+          _isCameraPermissionGranted = false;
+        });
+        openAppSettings();
+    }
+  }
+
+  void _askForPhotosPermission() async {
+    final status = await Permission.photos.request();
+    switch (status) {
+      case PermissionStatus.granted:
+        setState(() {
+          _isPhotosPermissionGranted = true;
+        });
+        break;
+      case PermissionStatus.denied:
+      case PermissionStatus.permanentlyDenied:
+      case PermissionStatus.restricted:
+      case PermissionStatus.limited:
+        setState(() {
+          _isPhotosPermissionGranted = false;
+        });
+        openAppSettings();
+    }
+  }
+
+  void _askForStoragePermission() async {
+    final status = await Permission.storage.request();
+    switch (status) {
+      case PermissionStatus.granted:
+        setState(() {
+          _isStoragePermissionGranted = true;
+        });
+        break;
+      case PermissionStatus.denied:
+      case PermissionStatus.permanentlyDenied:
+      case PermissionStatus.restricted:
+      case PermissionStatus.limited:
+        setState(() {
+          _isStoragePermissionGranted = false;
+        });
+        openAppSettings();
+    }
+  }
 
   @override
   void initState() {
@@ -43,6 +105,30 @@ class _PerfilScreenState extends State<PerfilScreen> {
   @override
   Widget build(BuildContext context) {
     void uploadImage(camara) async {
+      if (camara && _isCameraPermissionGranted == false) {
+        _askForCameraPermission();
+        if (_isCameraPermissionGranted == false) return;
+      }
+      if (!camara && Platform.isAndroid) {
+        final androidInfo = await DeviceInfoPlugin().androidInfo;
+        if (androidInfo.version.sdkInt <= 32) {
+          if (_isStoragePermissionGranted == false) {
+            _askForStoragePermission();
+            if (_isStoragePermissionGranted == false) return;
+          }
+        } else {
+          if (_isPhotosPermissionGranted == false) {
+            _askForPhotosPermission();
+            if (_isPhotosPermissionGranted == false) return;
+          }
+        }
+      }
+
+      if (!camara && Platform.isIOS && _isPhotosPermissionGranted == false) {
+        _askForPhotosPermission();
+        if (_isPhotosPermissionGranted == false) return;
+      }
+
       final image = await ImagePicker().pickImage(
         source: camara == true ? ImageSource.camera : ImageSource.gallery,
         maxHeight: 512,

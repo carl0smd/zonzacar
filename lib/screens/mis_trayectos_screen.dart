@@ -3,16 +3,50 @@ import 'dart:async';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:intl/intl.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:persistent_bottom_nav_bar/persistent_tab_view.dart';
 import 'package:zonzacar/providers/database_provider.dart';
 import 'package:zonzacar/screens/screens.dart';
 import 'package:zonzacar/widgets/widgets.dart';
 
-class MisTrayectosScreen extends StatelessWidget {
+class MisTrayectosScreen extends StatefulWidget {
   const MisTrayectosScreen({Key? key}) : super(key: key);
+
+  @override
+  State<MisTrayectosScreen> createState() => _MisTrayectosScreenState();
+}
+
+class _MisTrayectosScreenState extends State<MisTrayectosScreen> {
+  bool _isPermissionGranted = false;
+
+  void _askForLocationPermission() async {
+    final status = await Permission.location.request();
+
+    switch (status) {
+      case PermissionStatus.granted:
+        setState(() {
+          _isPermissionGranted = true;
+        });
+        break;
+      case PermissionStatus.denied:
+      case PermissionStatus.restricted:
+      case PermissionStatus.limited:
+      case PermissionStatus.permanentlyDenied:
+      default:
+        setState(() {
+          _isPermissionGranted = false;
+        });
+        openAppSettings();
+    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _askForLocationPermission();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -39,14 +73,18 @@ class MisTrayectosScreen extends StatelessWidget {
                 Expanded(
                   child: TabBarView(
                     children: [
-                      MisReservasYPublicaciones(
-                        futureReservas:
-                            databaseProvider.getPublicationsByPassenger(),
-                      ),
-                      MisReservasYPublicaciones(
-                        futurePublicaciones:
-                            databaseProvider.getPublicationsByDriver(),
-                      ),
+                      _isPermissionGranted
+                          ? MisReservasYPublicaciones(
+                              futureReservas:
+                                  databaseProvider.getPublicationsByPassenger(),
+                            )
+                          : solicitarGps(true),
+                      _isPermissionGranted
+                          ? MisReservasYPublicaciones(
+                              futurePublicaciones:
+                                  databaseProvider.getPublicationsByDriver(),
+                            )
+                          : solicitarGps(false),
                     ],
                   ),
                 ),
@@ -54,6 +92,37 @@ class MisTrayectosScreen extends StatelessWidget {
             ),
           ),
         ),
+      ),
+    );
+  }
+
+  Center solicitarGps(bool reservas) {
+    return Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          const Icon(
+            Icons.location_disabled,
+            size: 100.0,
+            color: Colors.grey,
+          ),
+          reservas
+              ? const Text(
+                  'Necesitas conceder permisos de ubicación para ver tu localización y punto de encuentro',
+                  style: TextStyle(color: Colors.grey),
+                )
+              : const Text(
+                  'Necesitas conceder permisos de ubicación para ver tu localización y punto de encuentro',
+                  style: TextStyle(color: Colors.grey),
+                ),
+          const SizedBox(
+            height: 20.0,
+          ),
+          ElevatedButton(
+            onPressed: _askForLocationPermission,
+            child: const Text('Activar GPS'),
+          ),
+        ],
       ),
     );
   }
@@ -322,7 +391,7 @@ class _CardInfoReservaState extends State<CardInfoReserva> {
                 Row(
                   children: [
                     Text(
-                      widget.publicacion['precio'].toString(),
+                      widget.publicacion['precio'].toStringAsFixed(2),
                       style: const TextStyle(
                         fontSize: 20.0,
                         fontWeight: FontWeight.bold,
@@ -372,7 +441,7 @@ class _CardInfoReservaState extends State<CardInfoReserva> {
                                 DatabaseProvider
                                     .estadoPublicacion['disponible'] ||
                             widget.publicacion['estado'] ==
-                                DatabaseProvider.estadoPublicacion['completa']
+                                DatabaseProvider.estadoPublicacion['llena']
                         ? Row(
                             children: [
                               const SizedBox(width: 10.0),
