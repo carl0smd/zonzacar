@@ -1,7 +1,10 @@
 
-Hacer pantalla chats
-Mejorar funcionanmiento pantalla mis trayectos
-Añadir CircularProgressIndicator cuando se publica un trayecto para impedir multiples creaciones
-Añadir opción eliminar cuenta
-Añadir opción no recuerdo contraseña
-Arreglar búsqueda de publicaciones porque si busco para una fecha en concreto que aparecen las que tienen una hora menor a la actual
+[x] Hacer pantalla chats
+✔ Mejorar funcionanmiento pantalla mis trayectos
+✔ Añadir CircularProgressIndicator cuando se publica un trayecto para impedir multiples creaciones
+[x] Añadir opción eliminar cuenta
+[x] Añadir opción no recuerdo contraseña
+[x] A la hora de crear una publicación sumarle a fecha los milisegundos de la hora ya que si no, la fecha acaba siendo 21/06/2023 00:00:00
+[x] Crear test 
+[x] Permitir cambiar marker del CIFP Zonzamas a la hora de crear publicación de forma que al cambiar el marker de sitio saque las coordenadas nuevas
+[x] Añadir a mistrayectos opción para poner la publicación EN CURSO o FINALIZADA si soy conductor

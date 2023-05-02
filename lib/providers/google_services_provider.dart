@@ -1,10 +1,11 @@
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:http/http.dart' as http;
 import 'package:zonzacar/models/models.dart';
 
 import '../models/directions_response.dart';
 
 class GoogleServicesProvider {
-  final String apiKey = "AIzaSyChq95jpxmwNComEH2yuE7E_RjES__r2JM";
+  final String apiKey = dotenv.env['GOOGLE_API_KEY']!;
   final String authority = "maps.googleapis.com";
   final String radius = '30000';
   final String location = '29.03576,-13.65051';
