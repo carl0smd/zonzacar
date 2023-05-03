@@ -40,13 +40,12 @@ class _ReservaDetailsScreenState extends State<ReservaDetailsScreen> {
       appBar: AppBar(
         title: const Text(
           'Detalles del trayecto',
-          style: TextStyle(color: Colors.black),
+          style: TextStyle(color: Colors.white),
         ),
         centerTitle: true,
-        backgroundColor: Colors.white,
+        backgroundColor: Colors.green,
         elevation: 0,
-        foregroundColor: Colors.black,
-        iconTheme: const IconThemeData(size: 40, color: Colors.green),
+        iconTheme: const IconThemeData(size: 40, color: Colors.white),
       ),
       body: SingleChildScrollView(
         physics: const BouncingScrollPhysics(),

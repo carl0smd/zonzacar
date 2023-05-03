@@ -63,13 +63,13 @@ class _FormularioTrayectoScreenState extends State<FormularioTrayectoScreen> {
       appBar: AppBar(
         title: const Text(
           'Publicar trayecto',
-          style: TextStyle(color: Colors.black),
+          style: TextStyle(color: Colors.white),
         ),
         centerTitle: true,
-        backgroundColor: Colors.white,
+        backgroundColor: Theme.of(context).primaryColor,
         elevation: 0,
         foregroundColor: Colors.black,
-        iconTheme: const IconThemeData(size: 40, color: Colors.green),
+        iconTheme: const IconThemeData(size: 40, color: Colors.white),
       ),
       body: SafeArea(
         child: SingleChildScrollView(
@@ -88,7 +88,7 @@ class _FormularioTrayectoScreenState extends State<FormularioTrayectoScreen> {
                     width: double.infinity,
                     decoration: BoxDecoration(
                       border: Border.all(
-                        color: Colors.green,
+                        color: Theme.of(context).primaryColor,
                         width: 2,
                       ),
                       borderRadius: BorderRadius.circular(10.0),
@@ -118,34 +118,34 @@ class _FormularioTrayectoScreenState extends State<FormularioTrayectoScreen> {
                                   const EdgeInsets.symmetric(horizontal: 20.0),
                               width: 3.0,
                               height: 50.0,
-                              color: Colors.green,
+                              color: Theme.of(context).primaryColor,
                             ),
                             const SizedBox(width: 10.0),
-                            const Icon(
+                            Icon(
                               Icons.directions_car,
-                              color: Colors.green,
+                              color: Theme.of(context).primaryColor,
                             ),
                             const SizedBox(width: 10.0),
                             //Distancia
                             Text(
                               widget.distancia,
-                              style: const TextStyle(
+                              style: TextStyle(
                                 fontSize: 20.0,
-                                color: Colors.green,
+                                color: Theme.of(context).primaryColor,
                               ),
                             ),
                             const SizedBox(width: 10.0),
-                            const Icon(
-                              Icons.timer,
-                              color: Colors.green,
+                            Icon(
+                              Icons.timer_sharp,
+                              color: Theme.of(context).primaryColor,
                             ),
                             const SizedBox(width: 10.0),
                             //Duración
                             Text(
                               widget.duracion,
-                              style: const TextStyle(
+                              style: TextStyle(
                                 fontSize: 20.0,
-                                color: Colors.green,
+                                color: Theme.of(context).primaryColor,
                               ),
                             ),
                           ],

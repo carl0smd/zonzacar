@@ -28,8 +28,9 @@ class BusquedaScreen extends StatelessWidget {
       appBar: AppBar(
         title: const Text(
           'Resultados',
-          style: TextStyle(color: Colors.black),
+          style: TextStyle(color: Colors.white),
         ),
+
         //change icon action
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
@@ -42,10 +43,9 @@ class BusquedaScreen extends StatelessWidget {
           },
         ),
         centerTitle: true,
-        backgroundColor: Colors.white,
+        backgroundColor: Colors.green,
         elevation: 0,
-        foregroundColor: Colors.black,
-        iconTheme: const IconThemeData(size: 40, color: Colors.green),
+        iconTheme: const IconThemeData(size: 40, color: Colors.white),
       ),
       body: SafeArea(
         //FutureBuilder para obtener los trayectos de la base de datos
@@ -184,10 +184,10 @@ class BookingCard extends StatelessWidget {
       ),
       //Card que muestra el trayecto
       child: Card(
-        margin: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 6.0),
+        margin: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),
         shape:
             RoundedRectangleBorder(borderRadius: BorderRadius.circular(20.0)),
-        elevation: 2,
+        elevation: 3,
         child: Container(
           padding: const EdgeInsets.all(20.0),
           child: Column(

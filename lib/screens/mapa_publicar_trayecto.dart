@@ -129,7 +129,7 @@ class _PublicarTrayectoScreenState extends State<PublicarTrayectoScreen> {
           return Scaffold(
             appBar: AppBar(
               elevation: 0,
-              backgroundColor: Colors.transparent,
+              backgroundColor: Theme.of(context).primaryColor,
               foregroundColor: Colors.black,
               centerTitle: true,
               leading: _userHasCar
@@ -155,12 +155,20 @@ class _PublicarTrayectoScreenState extends State<PublicarTrayectoScreen> {
                             ),
                           );
                         },
-                        icon: const Icon(Icons.check,
-                            size: 40, color: Colors.green),
+                        icon: const Icon(
+                          Icons.check,
+                          size: 40,
+                          color: Colors.white,
+                        ),
                       ),
                     )
                   : Container(),
-              title: _userHasCar ? const Text('¿Esta es la ruta?') : null,
+              title: _userHasCar
+                  ? const Text(
+                      '¿Crear ruta?',
+                      style: TextStyle(color: Colors.white),
+                    )
+                  : null,
               actions: [
                 // Botón para cerrar el mapa
                 Container(
@@ -170,46 +178,71 @@ class _PublicarTrayectoScreenState extends State<PublicarTrayectoScreen> {
                       Navigator.of(context).pop();
                     },
                     icon:
-                        const Icon(Icons.clear, size: 40, color: Colors.green),
+                        const Icon(Icons.clear, size: 40, color: Colors.white),
                   ),
                 ),
               ],
             ),
             // Si el usuario tiene un coche se muestra el mapa, si no se muestra un mensaje
             body: _userHasCar
-                ? GoogleMap(
-                    mapType: MapType.normal,
-                    initialCameraPosition: kGooglePlex,
-                    compassEnabled: true,
-                    scrollGesturesEnabled: true,
-                    markers: {
-                      originMarker,
-                      destinationMarker,
-                    },
-                    polylines: {
-                      Polyline(
-                        polylineId: const PolylineId('poly'),
-                        color: Colors.green,
-                        points: result
-                            .map((e) => LatLng(e.latitude, e.longitude))
-                            .toList(),
-                        width: 5,
+                ? Column(
+                    children: [
+                      Flexible(
+                        child: GoogleMap(
+                          mapType: MapType.normal,
+                          initialCameraPosition: kGooglePlex,
+                          compassEnabled: true,
+                          scrollGesturesEnabled: true,
+                          markers: {
+                            originMarker,
+                            destinationMarker,
+                          },
+                          polylines: {
+                            Polyline(
+                              polylineId: const PolylineId('poly'),
+                              color: Theme.of(context).primaryColor,
+                              points: result
+                                  .map((e) => LatLng(e.latitude, e.longitude))
+                                  .toList(),
+                              width: 5,
+                            ),
+                          },
+                          onMapCreated: (GoogleMapController controller) {
+                            controller.setMapStyle(_mapTheme);
+                            _controller.complete(controller);
+                          },
+                        ),
                       ),
-                    },
-                    onMapCreated: (GoogleMapController controller) {
-                      controller.setMapStyle(_mapTheme);
-                      _controller.complete(controller);
-                    },
+                      Container(
+                        color: Theme.of(context).primaryColor,
+                        padding: const EdgeInsets.all(10.0),
+                        child: Column(
+                          children: [
+                            const Text(
+                              '* Esta ruta es solo orientativa, el conductor podrá tomar otro camino siempre que llegue a su destino',
+                              style: TextStyle(
+                                fontSize: 14.0,
+                                color: Colors.white,
+                              ),
+                              overflow: TextOverflow.clip,
+                              textAlign: TextAlign.center,
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
                   )
                 : Container(
                     child: Center(
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
-                        children: const [
+                        children: [
                           Text(
                             'Para publicar trayectos debes añadir un vehículo a tu perfil',
-                            style:
-                                TextStyle(fontSize: 20.0, color: Colors.green),
+                            style: TextStyle(
+                              fontSize: 20.0,
+                              color: Theme.of(context).primaryColor,
+                            ),
                             overflow: TextOverflow.clip,
                             textAlign: TextAlign.center,
                           ),
@@ -223,14 +256,17 @@ class _PublicarTrayectoScreenState extends State<PublicarTrayectoScreen> {
           return Scaffold(
             appBar: AppBar(
               elevation: 0,
-              backgroundColor: Colors.transparent,
+              backgroundColor: Theme.of(context).primaryColor,
               foregroundColor: Colors.black,
-              iconTheme: const IconThemeData(color: Colors.green, size: 40),
+              iconTheme: IconThemeData(
+                color: Theme.of(context).primaryColor,
+                size: 40,
+              ),
             ),
             body: const Center(
               child: Text(
                 'Lo sentimos actualmente no permitimos trayectos entre Lanzarote y La Graciosa',
-                style: TextStyle(fontSize: 20.0, color: Colors.green),
+                style: TextStyle(fontSize: 20.0, color: Colors.white),
                 overflow: TextOverflow.clip,
                 textAlign: TextAlign.center,
               ),

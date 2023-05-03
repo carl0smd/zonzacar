@@ -82,7 +82,7 @@ class _PublicacionesScreenState extends State<PublicacionesScreen> {
         body: SafeArea(
           child: Container(
             margin:
-                const EdgeInsets.symmetric(horizontal: 20.0, vertical: 20.0),
+                const EdgeInsets.symmetric(horizontal: 10.0, vertical: 10.0),
             child: Column(
               children: [
                 const TabBar(

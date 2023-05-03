@@ -382,37 +382,90 @@ class DatabaseProvider {
   }
 
   //crear chat
-  Future createChat(List participantes) async {
+  Future createChat(String uidConductor, String uidPasajero) async {
     final id = chatsCollection.doc().id;
     await chatsCollection.doc(id).set({
-      'participantes': participantes,
+      'conductor': uidConductor,
+      'pasajero': uidPasajero,
       'ultimoMensaje': '',
       'emisorUltimoMensaje': '',
       'uid': id,
     });
 
-    for (var participante in participantes) {
-      await usuarioCollection.doc(participante).update({
-        'chats': FieldValue.arrayUnion([id]),
-      });
-    }
-
     final idMensaje = chatsCollection.doc(id).collection('mensajes').doc().id;
     await chatsCollection.doc(id).collection('mensajes').doc(idMensaje).set({
       'mensaje': '',
       'emisor': '',
-      'fecha': '',
+      //fecha milliseconds epoch today
+      'fecha': DateTime.now().millisecondsSinceEpoch,
       'uid': idMensaje,
     });
   }
 
-  //get mensajes de un chat
-  Future getMessages(String uidChat) async {
+  //get chat de pasajero y conductor y create si no existe
+  Future getChatFromPublication(String uidConductor, String uidPasajero) async {
     QuerySnapshot snapshot = await chatsCollection
-        .doc(uidChat)
-        .collection('mensajes')
-        .orderBy('fecha')
+        .where('conductor', isEqualTo: uidConductor)
+        .where('pasajero', isEqualTo: uidPasajero)
+        .get();
+
+    if (snapshot.docs.isNotEmpty) {
+      return snapshot.docs;
+    } else {
+      await createChat(uidConductor, uidPasajero);
+      return await getChatFromPublication(
+        uidConductor,
+        uidPasajero,
+      );
+    }
+  }
+
+  //get mis chats
+  Future getMyChats() async {
+    QuerySnapshot snapshot = await chatsCollection
+        .where(
+          'participantes',
+          arrayContains: FirebaseAuth.instance.currentUser!.uid,
+        )
         .get();
     return snapshot.docs;
+  }
+
+  //create mensaje
+  Future createMessage(
+    String uidChat,
+    String mensaje,
+    String emisor,
+  ) async {
+    final id = chatsCollection.doc(uidChat).collection('mensajes').doc().id;
+    await chatsCollection.doc(uidChat).collection('mensajes').doc(id).set({
+      'mensaje': mensaje,
+      'emisor': emisor,
+      'fecha': DateTime.now().millisecondsSinceEpoch,
+      'uid': id,
+    });
+
+    await chatsCollection.doc(uidChat).update({
+      'ultimoMensaje': mensaje,
+      'emisorUltimoMensaje': emisor,
+    });
+  }
+
+  //get mensajes de un chat
+  Stream getMessages(String uidChat) {
+    return chatsCollection
+        .doc(uidChat)
+        .collection('mensajes')
+        .orderBy('fecha', descending: true)
+        .snapshots();
+  }
+
+  //delete mensaje
+  Future deleteMessage(String uidChat, String uidMensaje) async {
+    await chatsCollection
+        .doc(uidChat)
+        .collection('mensajes')
+        .doc(uidMensaje)
+        .delete();
   }
 }

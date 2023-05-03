@@ -159,10 +159,99 @@ class _MiPublicacionScreenState extends State<MiPublicacionScreen> {
                             //icon button for chat
                             IconButton(
                               onPressed: () {
-                                PersistentNavBarNavigator.pushNewScreen(
-                                  context,
-                                  withNavBar: false,
-                                  screen: const ChatScreen(),
+                                //return a list of users and when you click on one of them, it opens the chat screen
+
+                                showModalBottomSheet(
+                                  context: context,
+                                  builder: (context) => Container(
+                                    height: MediaQuery.of(context).size.height *
+                                        0.4,
+                                    decoration: const BoxDecoration(
+                                      color: Colors.white,
+                                      borderRadius: BorderRadius.only(
+                                        topLeft: Radius.circular(20.0),
+                                        topRight: Radius.circular(20.0),
+                                      ),
+                                    ),
+                                    padding: const EdgeInsets.symmetric(
+                                      horizontal: 20.0,
+                                      vertical: 20.0,
+                                    ),
+                                    child: FutureBuilder(
+                                      future: databaseProvider.getPassengers(
+                                        widget.publicacion['uid'],
+                                      ),
+                                      builder: (
+                                        BuildContext context,
+                                        AsyncSnapshot<dynamic> snapshot,
+                                      ) {
+                                        if (snapshot.hasData &&
+                                            snapshot.data.isNotEmpty) {
+                                          final pasajeros = snapshot.data;
+                                          return ListView.separated(
+                                            separatorBuilder:
+                                                (BuildContext context,
+                                                        int index) =>
+                                                    const Divider(
+                                              thickness: 0.5,
+                                              color: Colors.grey,
+                                            ),
+                                            itemCount: pasajeros.length,
+                                            itemBuilder: (
+                                              BuildContext context,
+                                              int index,
+                                            ) {
+                                              return ListTile(
+                                                leading: ImagenUsuario(
+                                                  userImage: pasajeros[index]
+                                                      ['imagenPerfil'],
+                                                  radiusOutterCircle: 28,
+                                                  radiusImageCircle: 26,
+                                                  iconSize: 26,
+                                                ),
+                                                title: Text(
+                                                  pasajeros[index]
+                                                      ['nombreCompleto'],
+                                                ),
+                                                trailing: IconButton(
+                                                  icon: const Icon(
+                                                    Icons.send_rounded,
+                                                    color: Colors.green,
+                                                    size: 30,
+                                                  ),
+                                                  onPressed: () {
+                                                    Navigator.pop(context);
+                                                    PersistentNavBarNavigator
+                                                        .pushNewScreen(
+                                                      context,
+                                                      screen: ChatDetailsScreen(
+                                                        conductor:
+                                                            widget.publicacion[
+                                                                'conductor'],
+                                                        pasajero:
+                                                            pasajeros[index]
+                                                                ['uid'],
+                                                        isConductor: true,
+                                                      ),
+                                                    );
+                                                  },
+                                                ),
+                                              );
+                                            },
+                                          );
+                                        } else if (snapshot.hasData &&
+                                            snapshot.data.isEmpty) {
+                                          return const Center(
+                                            child: Text('No hay pasajeros'),
+                                          );
+                                        } else {
+                                          return const Center(
+                                            child: CircularProgressIndicator(),
+                                          );
+                                        }
+                                      },
+                                    ),
+                                  ),
                                 );
                               },
                               icon: const Icon(

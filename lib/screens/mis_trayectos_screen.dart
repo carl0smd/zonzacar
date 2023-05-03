@@ -63,7 +63,7 @@ class _MisTrayectosScreenState extends State<MisTrayectosScreen> {
         body: SafeArea(
           child: Container(
             margin:
-                const EdgeInsets.symmetric(horizontal: 20.0, vertical: 20.0),
+                const EdgeInsets.symmetric(horizontal: 10.0, vertical: 10.0),
             child: Column(
               children: [
                 const TabBar(
@@ -257,12 +257,12 @@ class _CardInfoState extends State<CardInfo> {
     return Card(
       margin: const EdgeInsets.symmetric(
         horizontal: 10.0,
-        vertical: 5.0,
+        vertical: 10.0,
       ),
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(20.0),
       ),
-      elevation: 2,
+      elevation: 3,
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),
         child: Column(
