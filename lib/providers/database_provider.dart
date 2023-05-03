@@ -28,6 +28,9 @@ class DatabaseProvider {
   final CollectionReference vehiculosCollection =
       FirebaseFirestore.instance.collection('vehiculos');
 
+  final CollectionReference chatsCollection =
+      FirebaseFirestore.instance.collection('chats');
+
   //guardar al usuario en la base de datos cuando se registra
   Future savingUserDataOnRegister(String nombreCompleto, String email) async {
     return await usuarioCollection.doc(uid).set({
@@ -36,6 +39,7 @@ class DatabaseProvider {
       'publicaciones': [],
       'reservas': [],
       'vehiculos': [],
+      'chats': [],
       'imagenPerfil': '',
       'uid': uid,
     });
@@ -255,6 +259,7 @@ class DatabaseProvider {
   Future getPublicationsByDriver() async {
     QuerySnapshot snapshot = await publicacionesCollection
         .where('conductor', isEqualTo: FirebaseAuth.instance.currentUser!.uid)
+        .orderBy('fecha')
         .get();
     return snapshot.docs;
   }
@@ -266,6 +271,7 @@ class DatabaseProvider {
           'pasajeros',
           arrayContains: FirebaseAuth.instance.currentUser!.uid,
         )
+        .orderBy('fecha')
         .get();
     return snapshot.docs;
   }
@@ -373,5 +379,40 @@ class DatabaseProvider {
           FieldValue.arrayRemove([FirebaseAuth.instance.currentUser!.uid]),
       'estado': estadoPublicacion['disponible'],
     });
+  }
+
+  //crear chat
+  Future createChat(List participantes) async {
+    final id = chatsCollection.doc().id;
+    await chatsCollection.doc(id).set({
+      'participantes': participantes,
+      'ultimoMensaje': '',
+      'emisorUltimoMensaje': '',
+      'uid': id,
+    });
+
+    for (var participante in participantes) {
+      await usuarioCollection.doc(participante).update({
+        'chats': FieldValue.arrayUnion([id]),
+      });
+    }
+
+    final idMensaje = chatsCollection.doc(id).collection('mensajes').doc().id;
+    await chatsCollection.doc(id).collection('mensajes').doc(idMensaje).set({
+      'mensaje': '',
+      'emisor': '',
+      'fecha': '',
+      'uid': idMensaje,
+    });
+  }
+
+  //get mensajes de un chat
+  Future getMessages(String uidChat) async {
+    QuerySnapshot snapshot = await chatsCollection
+        .doc(uidChat)
+        .collection('mensajes')
+        .orderBy('fecha')
+        .get();
+    return snapshot.docs;
   }
 }

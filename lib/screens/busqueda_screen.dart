@@ -268,7 +268,7 @@ class BookingCard extends StatelessWidget {
                   const Icon(Icons.people, color: Colors.green),
                   const SizedBox(width: 10.0),
                   Text(
-                    '${publication['asientosDisponibles']}',
+                    '${publication['pasajeros'].length}/${publication['asientosDisponibles']}',
                     style: const TextStyle(
                       fontWeight: FontWeight.bold,
                       fontSize: 14.0,

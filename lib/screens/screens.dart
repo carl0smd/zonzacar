@@ -1,3 +1,5 @@
+export 'package:zonzacar/screens/mi_reserva_screen.dart';
+export 'package:zonzacar/screens/mi_publicacion_screen.dart';
 export 'package:zonzacar/screens/busqueda_screen.dart';
 export 'package:zonzacar/screens/chat_screen.dart';
 export 'package:zonzacar/screens/formulario_publicar_trayecto.dart';

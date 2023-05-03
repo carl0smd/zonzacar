@@ -49,6 +49,11 @@ class _MisTrayectosScreenState extends State<MisTrayectosScreen> {
   }
 
   @override
+  void dispose() {
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     DatabaseProvider databaseProvider = DatabaseProvider();
 
@@ -235,6 +240,16 @@ class _CardInfoState extends State<CardInfo> {
   }
 
   @override
+  void initState() {
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     final DatabaseProvider databaseProvider = DatabaseProvider();
     bool isLoading = false;
@@ -367,7 +382,9 @@ class _CardInfoState extends State<CardInfo> {
                 ),
                 const SizedBox(width: 8.0),
                 Text(
-                  widget.publicacion['pasajeros'].length.toString(),
+                  widget.publicacion['pasajeros'].length.toString() +
+                      '/' +
+                      widget.publicacion['asientosDisponibles'].toString(),
                   style: const TextStyle(
                     fontWeight: FontWeight.bold,
                     fontSize: 14.0,
@@ -412,22 +429,21 @@ class _CardInfoState extends State<CardInfo> {
                   children: [
                     ElevatedButton(
                       onPressed: () {
-                        showModalBottomSheet(
-                          context: context,
-                          builder: (BuildContext context) => buildSheet(
-                            widget.publicacion,
-                            context,
-                            _controller,
-                            widget.isPassenger,
-                          ),
-                          isScrollControlled: true,
-                          shape: const RoundedRectangleBorder(
-                            borderRadius: BorderRadius.only(
-                              topLeft: Radius.circular(20.0),
-                              topRight: Radius.circular(20.0),
-                            ),
-                          ),
-                        );
+                        widget.isPassenger
+                            ? PersistentNavBarNavigator.pushNewScreen(
+                                context,
+                                withNavBar: false,
+                                screen: MiReservaScreen(
+                                  publicacion: widget.publicacion,
+                                ),
+                              )
+                            : PersistentNavBarNavigator.pushNewScreen(
+                                context,
+                                withNavBar: false,
+                                screen: MiPublicacionScreen(
+                                  publicacion: widget.publicacion,
+                                ),
+                              );
                       },
                       style: ElevatedButton.styleFrom(
                         //height 20
@@ -561,365 +577,4 @@ class _CardInfoState extends State<CardInfo> {
       ),
     );
   }
-}
-
-Widget buildSheet(publicacion, context, mapController, isPassenger) {
-  DatabaseProvider databaseProvider = DatabaseProvider();
-  CameraPosition kGooglePlex = CameraPosition(
-    target: LatLng(
-      double.parse(
-        publicacion['coordenadasOrigen'].split(',')[0],
-      ),
-      double.parse(
-        publicacion['coordenadasOrigen'].split(',')[1],
-      ),
-    ),
-    zoom: 16,
-  );
-
-  //Marker origen
-  Marker origenMarker = Marker(
-    markerId: const MarkerId('marker'),
-    position: LatLng(
-      double.parse(
-        publicacion['coordenadasOrigen'].split(',')[0],
-      ),
-      double.parse(
-        publicacion['coordenadasOrigen'].split(',')[1],
-      ),
-    ),
-    icon: BitmapDescriptor.defaultMarkerWithHue(
-      BitmapDescriptor.hueRed,
-    ),
-    consumeTapEvents: true,
-    onTap: null,
-  );
-
-  return SafeArea(
-    child: Container(
-      padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 20.0),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              isPassenger
-                  ? const Text(
-                      'Reserva',
-                      style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 30.0,
-                      ),
-                    )
-                  : const Text(
-                      'Publicación',
-                      style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 30.0,
-                      ),
-                    ),
-              IconButton(
-                onPressed: () {
-                  Navigator.pop(context);
-                },
-                icon: const Icon(
-                  Icons.close,
-                  color: Colors.red,
-                  size: 30,
-                ),
-              ),
-            ],
-          ),
-          //divider
-          const Divider(
-            thickness: 1.0,
-            color: Colors.grey,
-          ),
-          const SizedBox(height: 10.0),
-          isPassenger
-              ? FutureBuilder(
-                  future:
-                      databaseProvider.getUserByUid(publicacion['conductor']),
-                  builder:
-                      (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
-                    if (snapshot.hasData) {
-                      final usuario = snapshot.data[0];
-                      return Row(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Row(
-                            children: [
-                              ImagenUsuario(
-                                userImage: usuario['imagenPerfil'],
-                                radiusOutterCircle: 32,
-                                radiusImageCircle: 30,
-                                iconSize: 30,
-                              ),
-                              const SizedBox(width: 10.0),
-                              SizedBox(
-                                width: MediaQuery.of(context).size.width * 0.5,
-                                child: Text(
-                                  usuario['nombreCompleto'],
-                                  style: const TextStyle(
-                                    fontSize: 20,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                  maxLines: 3,
-                                  overflow: TextOverflow.ellipsis,
-                                ),
-                              ),
-                            ],
-                          ),
-
-                          //icon button for chat
-                          IconButton(
-                            onPressed: () {
-                              PersistentNavBarNavigator.pushNewScreen(
-                                context,
-                                withNavBar: false,
-                                screen: const ChatScreen(),
-                              );
-                            },
-                            icon: const Icon(
-                              Icons.chat,
-                              color: Colors.green,
-                              size: 30,
-                            ),
-                          ),
-                        ],
-                      );
-                    } else {
-                      return const Center(
-                        child: CircularProgressIndicator(),
-                      );
-                    }
-                  },
-                )
-              : FutureBuilder(
-                  future: databaseProvider.getPassengers(publicacion['uid']),
-                  builder:
-                      (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
-                    if (snapshot.hasData && snapshot.data.isNotEmpty) {
-                      final pasajeros = snapshot.data;
-                      return Column(
-                        children: [
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: [
-                              const Text(
-                                'Pasajeros',
-                                style: TextStyle(
-                                  fontSize: 20,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                              const SizedBox(width: 20.0),
-                              const Icon(
-                                Icons.people,
-                                color: Colors.green,
-                                size: 30,
-                              ),
-                              const SizedBox(width: 5.0),
-                              Text(
-                                '${pasajeros.length}',
-                                style: const TextStyle(
-                                  fontSize: 20,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                            ],
-                          ),
-                          const SizedBox(height: 10.0),
-                          Row(
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Row(
-                                children: [
-                                  Container(
-                                    height: 70,
-                                    width:
-                                        MediaQuery.of(context).size.width * 0.5,
-                                    child: Stack(
-                                      children: [
-                                        for (var pasajero in pasajeros)
-                                          //imagen de usuario en forma de stack para que se vean todas las imagenes un poco superpuestas
-                                          Positioned(
-                                            left: pasajeros.indexOf(pasajero) *
-                                                30.0,
-                                            child: ImagenUsuario(
-                                              userImage:
-                                                  pasajero['imagenPerfil'],
-                                              radiusOutterCircle: 32,
-                                              radiusImageCircle: 30,
-                                              iconSize: 30,
-                                            ),
-                                          ),
-                                      ],
-                                    ),
-                                  ),
-                                ],
-                              ),
-
-                              //icon button for chat
-                              IconButton(
-                                onPressed: () {
-                                  PersistentNavBarNavigator.pushNewScreen(
-                                    context,
-                                    withNavBar: false,
-                                    screen: const ChatScreen(),
-                                  );
-                                },
-                                icon: const Icon(
-                                  Icons.chat,
-                                  color: Colors.green,
-                                  size: 30,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ],
-                      );
-                    } else if (snapshot.hasData && snapshot.data.isEmpty) {
-                      return Row(
-                        children: const [
-                          Icon(
-                            Icons.person,
-                            color: Colors.grey,
-                            size: 30,
-                          ),
-                          SizedBox(width: 10.0),
-                          Text(
-                            'No hay pasajeros',
-                            style: TextStyle(
-                              fontSize: 20,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                        ],
-                      );
-                    } else {
-                      return const Center(
-                        child: CircularProgressIndicator(),
-                      );
-                    }
-                  },
-                ),
-          const SizedBox(
-            height: 20,
-          ),
-          SizedBox(
-            height: 1,
-            width: double.infinity,
-            child: Container(
-              color: Colors.black26,
-            ),
-          ),
-          const SizedBox(
-            height: 20,
-          ),
-          isPassenger
-              ? FutureBuilder(
-                  future:
-                      databaseProvider.getVehicleByUid(publicacion['vehiculo']),
-                  builder: (context, snapshot) {
-                    if (snapshot.hasData) {
-                      final vehicle = snapshot.data[0];
-                      return Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                vehicle['marca'] + ' ' + vehicle['modelo'],
-                                style: const TextStyle(
-                                  fontSize: 20,
-                                  fontWeight: FontWeight.bold,
-                                  color: Colors.black87,
-                                ),
-                              ),
-                              const SizedBox(
-                                height: 5,
-                              ),
-                              Text(
-                                vehicle['color'] + ' - ' + vehicle['matricula'],
-                                style: const TextStyle(
-                                    fontSize: 20, color: Colors.grey),
-                              ),
-                            ],
-                          ),
-                          const Icon(
-                            Icons.directions_car,
-                            size: 40,
-                            color: Colors.green,
-                          ),
-                        ],
-                      );
-                    } else {
-                      return const Center(child: CircularProgressIndicator());
-                    }
-                  },
-                )
-              : const SizedBox(),
-          isPassenger
-              ? Column(
-                  children: [
-                    const SizedBox(
-                      height: 20,
-                    ),
-                    SizedBox(
-                      height: 1,
-                      width: double.infinity,
-                      child: Container(
-                        color: Colors.black26,
-                      ),
-                    ),
-                    const SizedBox(
-                      height: 20,
-                    ),
-                  ],
-                )
-              : const SizedBox(),
-
-          Row(
-            children: const [
-              Text(
-                'Punto de recogida',
-                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-              ),
-            ],
-          ),
-          const SizedBox(
-            height: 10,
-          ),
-          Flexible(
-            child: GoogleMap(
-              mapType: MapType.normal,
-              initialCameraPosition: kGooglePlex,
-              gestureRecognizers: {
-                Factory<OneSequenceGestureRecognizer>(
-                  () => EagerGestureRecognizer(),
-                ),
-              },
-              myLocationEnabled: true,
-              compassEnabled: true,
-              scrollGesturesEnabled: true,
-              markers: {origenMarker},
-              onMapCreated: (GoogleMapController controller) {
-                if (!mapController.isCompleted) {
-                  mapController.complete(controller);
-                } else {
-                  mapController = null;
-                }
-              },
-            ),
-          ),
-        ],
-      ),
-    ),
-  );
 }
