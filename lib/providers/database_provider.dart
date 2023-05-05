@@ -1,6 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:intl/intl.dart';
+import 'package:zonzacar/providers/notifications_provider.dart';
 
 class DatabaseProvider {
   final DateFormat dateFormat = DateFormat('dd/MM/yyyy');
@@ -42,7 +44,16 @@ class DatabaseProvider {
       'chats': [],
       'imagenPerfil': '',
       'uid': uid,
+      'pushToken': await FirebaseMessaging.instance.getToken(),
     });
+  }
+
+  //update user push token
+  Future updateUserPushToken() async {
+    await usuarioCollection.doc(FirebaseAuth.instance.currentUser!.uid).update({
+      'pushToken': await FirebaseMessaging.instance.getToken(),
+    });
+    print('push token updated');
   }
 
   //actualizar nombre de usuario
@@ -72,6 +83,16 @@ class DatabaseProvider {
     QuerySnapshot snapshot =
         await usuarioCollection.where('uid', isEqualTo: uid).get();
     return snapshot.docs;
+  }
+
+  //get all users by uid
+  Future getAllUsersByUid(List<String> ids) async {
+    List<DocumentSnapshot> users = [];
+    for (var id in ids) {
+      DocumentSnapshot snapshot = await usuarioCollection.doc(id).get();
+      users.add(snapshot);
+    }
+    return users;
   }
 
   //get usuarios que compartan coche en una publicacion
@@ -264,6 +285,45 @@ class DatabaseProvider {
     return snapshot.docs;
   }
 
+  //get pasajeros de mis publicaciones
+  Future<List<String>> getAllMyPassengers() async {
+    QuerySnapshot snapshot = await publicacionesCollection
+        .where('conductor', isEqualTo: FirebaseAuth.instance.currentUser!.uid)
+        .get();
+
+    List<String> pasajeros = [];
+
+    for (var publicacion in snapshot.docs) {
+      for (var pasajero in publicacion['pasajeros']) {
+        if (!pasajeros.contains(pasajero)) {
+          pasajeros.add(pasajero);
+        }
+      }
+    }
+
+    return pasajeros;
+  }
+
+  //get all conductores
+  Future<List<String>> getAllMyDrivers() async {
+    QuerySnapshot snapshot = await publicacionesCollection
+        .where(
+          'pasajeros',
+          arrayContains: FirebaseAuth.instance.currentUser!.uid,
+        )
+        .get();
+
+    List<String> conductores = [];
+
+    for (var publicacion in snapshot.docs) {
+      if (!conductores.contains(publicacion['conductor'])) {
+        conductores.add(publicacion['conductor']);
+      }
+    }
+
+    return conductores;
+  }
+
   //get publicaciones dónde el usuario es pasajero
   Future getPublicationsByPassenger() async {
     QuerySnapshot snapshot = await publicacionesCollection
@@ -305,7 +365,7 @@ class DatabaseProvider {
   }
 
   //get usuarios a partir de una lista de ids de pasaajeros de una publicacion
-  Future getPassengers(String uid) async {
+  Future getPassengersFromPublication(String uid) async {
     QuerySnapshot snapshotReservas =
         await reservasCollection.where('publicacion', isEqualTo: uid).get();
 
@@ -431,11 +491,33 @@ class DatabaseProvider {
     return snapshot.docs;
   }
 
+  //get chats with a passenger
+  Future getChatsWithPassenger(String uidPasajero) async {
+    QuerySnapshot snapshot = await chatsCollection
+        .where('pasajero', isEqualTo: uidPasajero)
+        .where(
+          'conductor',
+          isEqualTo: FirebaseAuth.instance.currentUser!.uid,
+        )
+        .get();
+    return snapshot.docs;
+  }
+
+  //get chats with a driver
+  Future getChatsWithDriver(String uidConductor) async {
+    QuerySnapshot snapshot = await chatsCollection
+        .where('conductor', isEqualTo: uidConductor)
+        .where('pasajero', isEqualTo: FirebaseAuth.instance.currentUser!.uid)
+        .get();
+    return snapshot.docs;
+  }
+
   //create mensaje
   Future createMessage(
     String uidChat,
     String mensaje,
     String emisor,
+    String receptor,
   ) async {
     final id = chatsCollection.doc(uidChat).collection('mensajes').doc().id;
     await chatsCollection.doc(uidChat).collection('mensajes').doc(id).set({
@@ -449,6 +531,15 @@ class DatabaseProvider {
       'ultimoMensaje': mensaje,
       'emisorUltimoMensaje': emisor,
     });
+
+    final receiver = await usuarioCollection.doc(receptor).get();
+    final sender = await usuarioCollection.doc(emisor).get();
+
+    NotificationsProvider().sendPushNotification(
+      receiver['pushToken'],
+      sender['nombreCompleto'],
+      mensaje,
+    );
   }
 
   //get mensajes de un chat

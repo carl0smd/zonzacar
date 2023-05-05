@@ -6,11 +6,13 @@ class MensajeTile extends StatelessWidget {
     required this.mensaje,
     required this.emisor,
     required this.enviadoPorMi,
+    required this.hora,
   });
 
   final String mensaje;
   final String emisor;
   final bool enviadoPorMi;
+  final String hora;
 
   @override
   Widget build(BuildContext context) {
@@ -44,15 +46,31 @@ class MensajeTile extends StatelessWidget {
                   topRight: Radius.circular(23),
                   bottomRight: Radius.circular(23),
                 ),
-          color: enviadoPorMi ? Colors.green[300] : Colors.blue[300],
+          color: enviadoPorMi ? Colors.green[400] : Colors.blue[300],
         ),
-        child: Text(
-          mensaje,
-          textAlign: TextAlign.start,
-          style: const TextStyle(
-            color: Colors.white,
-            fontSize: 16,
-          ),
+        child: Column(
+          crossAxisAlignment:
+              enviadoPorMi ? CrossAxisAlignment.end : CrossAxisAlignment.start,
+          children: [
+            Text(
+              hora,
+              textAlign: TextAlign.start,
+              style: const TextStyle(
+                color: Colors.white,
+                fontSize: 14,
+                fontWeight: FontWeight.w300,
+              ),
+            ),
+            const SizedBox(height: 10),
+            Text(
+              mensaje,
+              textAlign: TextAlign.start,
+              style: const TextStyle(
+                color: Colors.white,
+                fontSize: 16,
+              ),
+            ),
+          ],
         ),
       ),
     );

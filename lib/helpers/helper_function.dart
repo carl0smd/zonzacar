@@ -1,19 +1,19 @@
-
-
+import 'package:awesome_notifications/awesome_notifications.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 class HelperFunctions {
-
   final _storage = const FlutterSecureStorage();
 
   //keys
   final String userLoggedInKey = "LOGGEDINKEY";
-  final String userEmailKey    = "USEREMAILKEY";
-  final String userNameKey     = "USERNAMEKEY";
+  final String userEmailKey = "USEREMAILKEY";
+  final String userNameKey = "USERNAMEKEY";
 
   //Guardar los datos en SS
   Future saveUserLoggedInStatus(isUserLoggedIn) async {
-    final writeStatus = await _storage.write(key: userLoggedInKey, value: isUserLoggedIn.toString());
+    final writeStatus = await _storage.write(
+        key: userLoggedInKey, value: isUserLoggedIn.toString());
     return writeStatus;
   }
 
@@ -42,5 +42,4 @@ class HelperFunctions {
     final readName = await _storage.read(key: userNameKey);
     return readName;
   }
- 
 }

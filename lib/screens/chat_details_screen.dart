@@ -1,5 +1,7 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:awesome_notifications/awesome_notifications.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:zonzacar/providers/database_provider.dart';
 import 'package:zonzacar/widgets/widgets.dart';
 
@@ -43,10 +45,6 @@ class _ChatDetailsScreenState extends State<ChatDetailsScreen> {
                 chatId = value[0]['uid'];
               }));
 
-      // await databaseProvider.getMessages(chatId!).then((value) => setState(() {
-      //       mensajes = value;
-      //     }));
-
       await databaseProvider
           .getUserByUid(
             widget.conductor,
@@ -77,9 +75,33 @@ class _ChatDetailsScreenState extends State<ChatDetailsScreen> {
     }
   }
 
+  void messageListener() {
+    FirebaseMessaging.onMessage.listen((RemoteMessage message) {
+      String? title = message.notification!.title;
+      String? body = message.notification!.body;
+      AwesomeNotifications().createNotification(
+        content: NotificationContent(
+          id: 10,
+          channelKey: 'basic_channel',
+          color: const Color(0xFF9D50DD),
+          title: title,
+          body: body,
+          notificationLayout: NotificationLayout.Messaging,
+          wakeUpScreen: true,
+          fullScreenIntent: true,
+          autoDismissible: true,
+          backgroundColor: Colors.white,
+          displayOnBackground: true,
+          summary: '',
+        ),
+      );
+    });
+  }
+
   @override
   void initState() {
     super.initState();
+    messageListener();
     getChatConductorYPasajero();
   }
 
@@ -111,7 +133,10 @@ class _ChatDetailsScreenState extends State<ChatDetailsScreen> {
                     ? Container(
                         margin: const EdgeInsets.only(right: 10),
                         child: ImagenUsuario(
-                          userImage: pasajero[0]['imagenPerfil'],
+                          userImage: pasajero[0]['imagenPerfil'] != '' &&
+                                  pasajero[0]['imagenPerfil'] != null
+                              ? pasajero[0]['imagenPerfil']
+                              : '',
                           radiusOutterCircle: 22,
                           radiusImageCircle: 20,
                           iconSize: 20,
@@ -120,7 +145,10 @@ class _ChatDetailsScreenState extends State<ChatDetailsScreen> {
                     : Container(
                         margin: const EdgeInsets.only(right: 10),
                         child: ImagenUsuario(
-                          userImage: conductor[0]['imagenPerfil'],
+                          userImage: conductor[0]['imagenPerfil'] != '' &&
+                                  conductor[0]['imagenPerfil'] != null
+                              ? conductor[0]['imagenPerfil']
+                              : '',
                           radiusOutterCircle: 22,
                           radiusImageCircle: 20,
                           iconSize: 20,
@@ -197,12 +225,22 @@ class _ChatDetailsScreenState extends State<ChatDetailsScreen> {
   sendMessage() {
     final mensaje = mensajeController.text;
     final emisor = widget.isConductor ? widget.conductor : widget.pasajero;
+    final receptor = widget.isConductor ? widget.pasajero : widget.conductor;
     if (mensajeController.text.isNotEmpty) {
-      databaseProvider.createMessage(
-        chatId!,
-        mensaje,
-        emisor,
-      );
+      try {
+        databaseProvider.createMessage(
+          chatId!,
+          mensaje,
+          emisor,
+          receptor,
+        );
+      } catch (e) {
+        showSnackbar(
+          'Lo sentimos ha ocurrido un error, inténtelo más tarde',
+          context,
+        );
+      }
+      ;
     }
 
     mensajeController.clear();
@@ -228,6 +266,11 @@ class Mensajes extends StatelessWidget {
       builder: (context, AsyncSnapshot snapshot) {
         if (snapshot.hasData && snapshot.data.docs.length > 1) {
           List mensajes = snapshot.data.docs;
+          final today = DateTime(
+            DateTime.now().year,
+            DateTime.now().month,
+            DateTime.now().day,
+          ).millisecondsSinceEpoch;
           print(mensajes[0]['mensaje']);
           return ListView.builder(
             reverse: true,
@@ -236,6 +279,17 @@ class Mensajes extends StatelessWidget {
               return index == mensajes.length - 1
                   ? Container()
                   : MensajeTile(
+                      hora: mensajes[index]['fecha'] > today
+                          ? DateFormat.Hm().format(
+                              DateTime.fromMillisecondsSinceEpoch(
+                                mensajes[index]['fecha'],
+                              ),
+                            )
+                          : DateFormat('dd/MM/yyyy H:m').format(
+                              DateTime.fromMillisecondsSinceEpoch(
+                                mensajes[index]['fecha'],
+                              ),
+                            ),
                       mensaje: mensajes[index]['mensaje'],
                       emisor: mensajes[index]['emisor'],
                       enviadoPorMi: widget.isConductor

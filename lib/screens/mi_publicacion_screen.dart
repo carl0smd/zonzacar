@@ -1,5 +1,7 @@
 import 'dart:async';
 
+import 'package:awesome_notifications/awesome_notifications.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
@@ -90,8 +92,8 @@ class _MiPublicacionScreenState extends State<MiPublicacionScreen> {
               ),
               const SizedBox(height: 10.0),
               FutureBuilder(
-                future:
-                    databaseProvider.getPassengers(widget.publicacion['uid']),
+                future: databaseProvider
+                    .getPassengersFromPublication(widget.publicacion['uid']),
                 builder:
                     (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
                   if (snapshot.hasData && snapshot.data.isNotEmpty) {
@@ -178,7 +180,8 @@ class _MiPublicacionScreenState extends State<MiPublicacionScreen> {
                                       vertical: 20.0,
                                     ),
                                     child: FutureBuilder(
-                                      future: databaseProvider.getPassengers(
+                                      future: databaseProvider
+                                          .getPassengersFromPublication(
                                         widget.publicacion['uid'],
                                       ),
                                       builder: (

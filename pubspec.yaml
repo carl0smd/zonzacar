@@ -28,12 +28,14 @@ environment:
 # the latest version available on pub.dev. To see which dependencies have newer
 # versions available, run `flutter pub outdated`.
 dependencies:
+  awesome_notifications: ^0.7.4+1
   cloud_firestore: ^4.4.4
   cupertino_icons: ^1.0.2
   dart_code_metrics: ^5.7.2
   device_info_plus: ^8.2.2
   firebase_auth: ^4.2.10
   firebase_core: ^2.7.1
+  firebase_messaging: ^14.5.0
   firebase_storage: ^11.0.15
   flutter:
     sdk: flutter

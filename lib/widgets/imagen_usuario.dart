@@ -22,7 +22,7 @@ class ImagenUsuario extends StatelessWidget {
       child: CircleAvatar(
         backgroundColor: Colors.white,
         radius: radiusImageCircle,
-        child: userImage == ''
+        child: userImage == '' || userImage.isEmpty
             ? Icon(
                 Icons.person,
                 size: iconSize,
