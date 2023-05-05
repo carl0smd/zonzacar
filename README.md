@@ -18,6 +18,7 @@ ZonzaCar is a car-sharing platform that allows users to share their cars with ot
 - Book and manage car reservations
 - Integration with Google Maps for location-based search
 - In-app messaging between car owners and passangers
+- Push-notifications
 
 ## Installation
 
