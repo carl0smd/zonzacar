@@ -69,12 +69,12 @@ class __FormState extends State<_Form> {
                           setState(() {});
                         },
                         validator: (value) {
-                          //regex for full name, the name and last name must be separated by a space and each name must have at least 2 characters
+                          //regex unlimited names, separated by space, accentuation allowed and ñ, first name atleast 3 characters
                           return RegExp(
-                            r"^[A-Za-záéíóúüÁÉÍÓÚÜñÑ]{2,}(?:\s[A-Za-záéíóúüÁÉÍÓÚÜñÑ]{2,})?$",
-                          ).hasMatch(value!)
+                            r"^(?=.{3,}$)[a-zA-ZÀ-ÿ\u00f1\u00d1]+(?:\s[a-zA-ZÀ-ÿ\u00f1\u00d1]+)*$",
+                          ).hasMatch(value!.trim())
                               ? null
-                              : 'Introduce un nombre válido, mínimo 2 caracteres';
+                              : 'Introduce un nombre válido, mínimo 3 caracteres';
                         },
                       ),
                       CustomInput(
@@ -88,7 +88,7 @@ class __FormState extends State<_Form> {
                         validator: (value) {
                           return RegExp(
                             r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+",
-                          ).hasMatch(value!)
+                          ).hasMatch(value!.trim())
                               ? null
                               : 'Introduce un correo válido';
                         },

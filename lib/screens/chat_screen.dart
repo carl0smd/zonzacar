@@ -5,7 +5,6 @@ import 'package:zonzacar/screens/screens.dart';
 import 'package:zonzacar/widgets/widgets.dart';
 
 import '../providers/database_provider.dart';
-import '../widgets/snackbar.dart';
 
 class ChatScreen extends StatefulWidget {
   const ChatScreen({Key? key}) : super(key: key);
@@ -86,7 +85,7 @@ class _ChatScreenState extends State<ChatScreen> {
                       isLoading
                           ? const Center(child: CircularProgressIndicator())
                           : driversId.isEmpty
-                              ? const NoDrivers()
+                              ? const NoUsers()
                               : Users(
                                   databaseProvider: databaseProvider,
                                   usersId: driversId,
@@ -97,7 +96,7 @@ class _ChatScreenState extends State<ChatScreen> {
                       isLoading
                           ? const Center(child: CircularProgressIndicator())
                           : passengersId.isEmpty
-                              ? const NoDrivers()
+                              ? const NoUsers()
                               : Users(
                                   databaseProvider: databaseProvider,
                                   usersId: passengersId,
@@ -221,8 +220,8 @@ class Users extends StatelessWidget {
   }
 }
 
-class NoDrivers extends StatelessWidget {
-  const NoDrivers({
+class NoUsers extends StatelessWidget {
+  const NoUsers({
     super.key,
   });
 

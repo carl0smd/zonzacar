@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:intl/intl.dart';
+import 'package:zonzacar/helpers/helper_function.dart';
 import 'package:zonzacar/providers/notifications_provider.dart';
 
 class DatabaseProvider {
@@ -50,10 +51,18 @@ class DatabaseProvider {
 
   //update user push token
   Future updateUserPushToken() async {
-    await usuarioCollection.doc(FirebaseAuth.instance.currentUser!.uid).update({
-      'pushToken': await FirebaseMessaging.instance.getToken(),
-    });
-    print('push token updated');
+    HelperFunctions helperFunctions = HelperFunctions();
+
+    if (helperFunctions.userLoggedInKey == 'true') {
+      await usuarioCollection
+          .doc(FirebaseAuth.instance.currentUser!.uid)
+          .update({
+        'pushToken': await FirebaseMessaging.instance.getToken(),
+      });
+      print('push token updated');
+    }
+
+    print('push token not updated');
   }
 
   //actualizar nombre de usuario
