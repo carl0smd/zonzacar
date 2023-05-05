@@ -313,6 +313,41 @@ class DatabaseProvider {
     return pasajeros;
   }
 
+  //get all my passengers without a chat
+  Future<List> getAllMyPassengersWithoutChat() async {
+    QuerySnapshot snapshot = await publicacionesCollection
+        .where('conductor', isEqualTo: FirebaseAuth.instance.currentUser!.uid)
+        .get();
+
+    List<String> pasajeros = [];
+
+    for (var publicacion in snapshot.docs) {
+      for (var pasajero in publicacion['pasajeros']) {
+        if (!pasajeros.contains(pasajero)) {
+          QuerySnapshot snapshotChat = await chatsCollection
+              .where('pasajero', isEqualTo: pasajero)
+              .where('conductor',
+                  isEqualTo: FirebaseAuth.instance.currentUser!.uid)
+              .get();
+
+          if (snapshotChat.docs.isEmpty) {
+            pasajeros.add(pasajero);
+          }
+        }
+      }
+    }
+
+    //search all users with the ids
+    List users = [];
+    for (var pasajero in pasajeros) {
+      QuerySnapshot snapshotUser =
+          await usuarioCollection.where('uid', isEqualTo: pasajero).get();
+      users.add(snapshotUser.docs[0]);
+    }
+
+    return users;
+  }
+
   //get all conductores
   Future<List<String>> getAllMyDrivers() async {
     QuerySnapshot snapshot = await publicacionesCollection
@@ -327,6 +362,34 @@ class DatabaseProvider {
     for (var publicacion in snapshot.docs) {
       if (!conductores.contains(publicacion['conductor'])) {
         conductores.add(publicacion['conductor']);
+      }
+    }
+
+    return conductores;
+  }
+
+  //get all my drivers without a chat
+  Future<List<String>> getAllMyDriversWithoutChat() async {
+    QuerySnapshot snapshot = await publicacionesCollection
+        .where(
+          'pasajeros',
+          arrayContains: FirebaseAuth.instance.currentUser!.uid,
+        )
+        .get();
+
+    List<String> conductores = [];
+
+    for (var publicacion in snapshot.docs) {
+      if (!conductores.contains(publicacion['conductor'])) {
+        QuerySnapshot snapshotChat = await chatsCollection
+            .where('pasajero',
+                isEqualTo: FirebaseAuth.instance.currentUser!.uid)
+            .where('conductor', isEqualTo: publicacion['conductor'])
+            .get();
+
+        if (snapshotChat.docs.isEmpty) {
+          conductores.add(publicacion['conductor']);
+        }
       }
     }
 
@@ -457,7 +520,10 @@ class DatabaseProvider {
       'conductor': uidConductor,
       'pasajero': uidPasajero,
       'ultimoMensaje': '',
+      'ultimoMensajeLeido': false,
       'emisorUltimoMensaje': '',
+      'pasajeroEnChat': false,
+      'conductorEnChat': false,
       'uid': id,
     });
 
@@ -465,8 +531,8 @@ class DatabaseProvider {
     await chatsCollection.doc(id).collection('mensajes').doc(idMensaje).set({
       'mensaje': '',
       'emisor': '',
-      //fecha milliseconds epoch today
       'fecha': DateTime.now().millisecondsSinceEpoch,
+      'leido': true,
       'uid': idMensaje,
     });
   }
@@ -479,6 +545,24 @@ class DatabaseProvider {
         .get();
 
     if (snapshot.docs.isNotEmpty) {
+      if (uidConductor == FirebaseAuth.instance.currentUser!.uid) {
+        await chatsCollection.doc(snapshot.docs[0]['uid']).update({
+          'conductorEnChat': true,
+          'ultimoMensajeLeido': snapshot.docs[0]['emisorUltimoMensaje'] !=
+                  FirebaseAuth.instance.currentUser!.uid
+              ? true
+              : false,
+        });
+      } else {
+        await chatsCollection.doc(snapshot.docs[0]['uid']).update({
+          'pasajeroEnChat': true,
+          'ultimoMensajeLeido': snapshot.docs[0]['emisorUltimoMensaje'] !=
+                  FirebaseAuth.instance.currentUser!.uid
+              ? true
+              : false,
+        });
+      }
+
       return snapshot.docs;
     } else {
       await createChat(uidConductor, uidPasajero);
@@ -486,6 +570,22 @@ class DatabaseProvider {
         uidConductor,
         uidPasajero,
       );
+    }
+  }
+
+  //exiting chat
+  Future exitChat(String uidChat, String uidUser) async {
+    DocumentSnapshot snapshot = await chatsCollection.doc(uidChat).get();
+    if (snapshot['conductor'] == uidUser) {
+      await chatsCollection.doc(uidChat).update({
+        'conductorEnChat': false,
+      });
+      print(snapshot['conductor']);
+    } else {
+      await chatsCollection.doc(uidChat).update({
+        'pasajeroEnChat': false,
+      });
+      print(snapshot['pasajero']);
     }
   }
 
@@ -528,6 +628,9 @@ class DatabaseProvider {
     String emisor,
     String receptor,
   ) async {
+    //snapshot del chat
+    DocumentSnapshot snapshot = await chatsCollection.doc(uidChat).get();
+
     final id = chatsCollection.doc(uidChat).collection('mensajes').doc().id;
     await chatsCollection.doc(uidChat).collection('mensajes').doc(id).set({
       'mensaje': mensaje,
@@ -539,16 +642,24 @@ class DatabaseProvider {
     await chatsCollection.doc(uidChat).update({
       'ultimoMensaje': mensaje,
       'emisorUltimoMensaje': emisor,
+      'ultimoMensajeLeido':
+          receptor == snapshot['conductor'] && snapshot['conductorEnChat'] ||
+                  receptor == snapshot['pasajero'] && snapshot['pasajeroEnChat']
+              ? true
+              : false,
     });
 
-    final receiver = await usuarioCollection.doc(receptor).get();
-    final sender = await usuarioCollection.doc(emisor).get();
-
-    NotificationsProvider().sendPushNotification(
-      receiver['pushToken'],
-      sender['nombreCompleto'],
-      mensaje,
-    );
+    //check if receptor is in chat
+    if (snapshot['conductor'] == receptor && !snapshot['conductorEnChat'] ||
+        snapshot['pasajero'] == receptor && !snapshot['pasajeroEnChat']) {
+      final receiver = await usuarioCollection.doc(receptor).get();
+      final sender = await usuarioCollection.doc(emisor).get();
+      NotificationsProvider().sendPushNotification(
+        receiver['pushToken'],
+        sender['nombreCompleto'],
+        mensaje,
+      );
+    }
   }
 
   //get mensajes de un chat

@@ -1,4 +1,5 @@
 import 'package:awesome_notifications/awesome_notifications.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -91,6 +92,7 @@ class _ChatDetailsScreenState extends State<ChatDetailsScreen> {
           fullScreenIntent: true,
           autoDismissible: true,
           backgroundColor: Colors.white,
+          displayOnForeground: true,
           displayOnBackground: true,
           summary: '',
         ),
@@ -107,126 +109,137 @@ class _ChatDetailsScreenState extends State<ChatDetailsScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: isLoading
-          ? null
-          : AppBar(
-              elevation: 0,
-              title: widget.isConductor
-                  ? Text(
-                      pasajero[0]['nombreCompleto'],
-                      maxLines: 2,
-                    )
-                  : Text(
-                      conductor[0]['nombreCompleto'],
-                      maxLines: 2,
-                    ),
-              leading: IconButton(
-                icon: const Icon(Icons.arrow_back),
-                onPressed: () {
-                  Navigator.pop(context);
-                },
-              ),
-              centerTitle: true,
-              actions: [
-                widget.isConductor
-                    ? Container(
-                        margin: const EdgeInsets.only(right: 10),
-                        child: ImagenUsuario(
-                          userImage: pasajero[0]['imagenPerfil'] != '' &&
-                                  pasajero[0]['imagenPerfil'] != null
-                              ? pasajero[0]['imagenPerfil']
-                              : '',
-                          radiusOutterCircle: 22,
-                          radiusImageCircle: 20,
-                          iconSize: 20,
-                        ),
+    return WillPopScope(
+      onWillPop: () async {
+        await databaseProvider.exitChat(
+            chatId!, FirebaseAuth.instance.currentUser!.uid);
+        return true;
+      },
+      child: Scaffold(
+        appBar: isLoading
+            ? null
+            : AppBar(
+                elevation: 0,
+                title: widget.isConductor
+                    ? Text(
+                        pasajero[0]['nombreCompleto'],
+                        maxLines: 2,
                       )
-                    : Container(
-                        margin: const EdgeInsets.only(right: 10),
-                        child: ImagenUsuario(
-                          userImage: conductor[0]['imagenPerfil'] != '' &&
-                                  conductor[0]['imagenPerfil'] != null
-                              ? conductor[0]['imagenPerfil']
-                              : '',
-                          radiusOutterCircle: 22,
-                          radiusImageCircle: 20,
-                          iconSize: 20,
+                    : Text(
+                        conductor[0]['nombreCompleto'],
+                        maxLines: 2,
+                      ),
+                leading: IconButton(
+                  icon: const Icon(Icons.arrow_back),
+                  onPressed: () async {
+                    await databaseProvider.exitChat(
+                      chatId!,
+                      FirebaseAuth.instance.currentUser!.uid,
+                    );
+                    if (mounted) Navigator.pop(context);
+                  },
+                ),
+                centerTitle: true,
+                actions: [
+                  widget.isConductor
+                      ? Container(
+                          margin: const EdgeInsets.only(right: 10),
+                          child: ImagenUsuario(
+                            userImage: pasajero[0]['imagenPerfil'] != '' &&
+                                    pasajero[0]['imagenPerfil'] != null
+                                ? pasajero[0]['imagenPerfil']
+                                : '',
+                            radiusOutterCircle: 22,
+                            radiusImageCircle: 20,
+                            iconSize: 20,
+                          ),
+                        )
+                      : Container(
+                          margin: const EdgeInsets.only(right: 10),
+                          child: ImagenUsuario(
+                            userImage: conductor[0]['imagenPerfil'] != '' &&
+                                    conductor[0]['imagenPerfil'] != null
+                                ? conductor[0]['imagenPerfil']
+                                : '',
+                            radiusOutterCircle: 22,
+                            radiusImageCircle: 20,
+                            iconSize: 20,
+                          ),
                         ),
-                      ),
-              ],
-            ),
-      body: isLoading
-          ? const Center(child: CircularProgressIndicator())
-          : SafeArea(
-              child: Column(
-                children: [
-                  Flexible(
-                    child: Mensajes(
-                      databaseProvider: databaseProvider,
-                      chatId: chatId,
-                      widget: widget,
-                    ),
-                  ),
-                  Container(
-                    alignment: Alignment.bottomCenter,
-                    child: Container(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 24,
-                        vertical: 16,
-                      ),
-                      color: Colors.grey[600],
-                      child: Row(
-                        children: [
-                          Expanded(
-                            child: TextFormField(
-                              controller: mensajeController,
-                              style: const TextStyle(
-                                color: Colors.white,
-                              ),
-                              decoration: const InputDecoration(
-                                hintText: 'Envía un mensaje...',
-                                hintStyle: TextStyle(
-                                  color: Colors.white,
-                                ),
-                                border: InputBorder.none,
-                              ),
-                            ),
-                          ),
-                          GestureDetector(
-                            onTap: () {
-                              sendMessage();
-                            },
-                            child: Container(
-                              height: 45,
-                              width: 45,
-                              decoration: BoxDecoration(
-                                color: Theme.of(context).primaryColor,
-                                borderRadius: BorderRadius.circular(30),
-                              ),
-                              child: const Center(
-                                child: Icon(
-                                  Icons.send_rounded,
-                                  color: Colors.white,
-                                ),
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
                 ],
               ),
-            ),
+        body: isLoading
+            ? const Center(child: CircularProgressIndicator())
+            : SafeArea(
+                child: Column(
+                  children: [
+                    Flexible(
+                      child: Mensajes(
+                        databaseProvider: databaseProvider,
+                        chatId: chatId,
+                        widget: widget,
+                      ),
+                    ),
+                    Container(
+                      alignment: Alignment.bottomCenter,
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 24,
+                          vertical: 16,
+                        ),
+                        color: Colors.grey[600],
+                        child: Row(
+                          children: [
+                            Expanded(
+                              child: TextFormField(
+                                controller: mensajeController,
+                                style: const TextStyle(
+                                  color: Colors.white,
+                                ),
+                                decoration: const InputDecoration(
+                                  hintText: 'Envía un mensaje...',
+                                  hintStyle: TextStyle(
+                                    color: Colors.white,
+                                  ),
+                                  border: InputBorder.none,
+                                ),
+                              ),
+                            ),
+                            GestureDetector(
+                              onTap: () {
+                                sendMessage();
+                              },
+                              child: Container(
+                                height: 45,
+                                width: 45,
+                                decoration: BoxDecoration(
+                                  color: Theme.of(context).primaryColor,
+                                  borderRadius: BorderRadius.circular(30),
+                                ),
+                                child: const Center(
+                                  child: Icon(
+                                    Icons.send_rounded,
+                                    color: Colors.white,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+      ),
     );
   }
 
   sendMessage() {
-    final mensaje = mensajeController.text;
+    final mensaje = mensajeController.text.trim();
     final emisor = widget.isConductor ? widget.conductor : widget.pasajero;
     final receptor = widget.isConductor ? widget.pasajero : widget.conductor;
-    if (mensajeController.text.isNotEmpty) {
+    if (mensajeController.text.trim().isNotEmpty) {
       try {
         databaseProvider.createMessage(
           chatId!,
@@ -236,11 +249,10 @@ class _ChatDetailsScreenState extends State<ChatDetailsScreen> {
         );
       } catch (e) {
         showSnackbar(
-          'Lo sentimos ha ocurrido un error, inténtelo más tarde',
+          'Lo sentimos ha ocurrido un error al enviar el mensaje',
           context,
         );
       }
-      ;
     }
 
     mensajeController.clear();

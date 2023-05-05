@@ -89,15 +89,6 @@ class _ChatScreenState extends State<ChatScreen> {
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   children: [
                                     const NoUsers(),
-                                    // Flexible(
-                                    //   child: Positioned(
-                                    //     bottom: 0,
-                                    //     child: ElevatedButton(
-                                    //       onPressed: () {},
-                                    //       child: const Text('Chat'),
-                                    //     ),
-                                    //   ),
-                                    // ),
                                   ],
                                 )
                               : Column(
@@ -108,15 +99,6 @@ class _ChatScreenState extends State<ChatScreen> {
                                       usersId: driversId,
                                       isDriver: true,
                                     ),
-                                    // Flexible(
-                                    //   child: Positioned(
-                                    //     bottom: 0,
-                                    //     child: ElevatedButton(
-                                    //       onPressed: () {},
-                                    //       child: const Text('Chat'),
-                                    //     ),
-                                    //   ),
-                                    // ),
                                   ],
                                 ),
 
@@ -128,15 +110,6 @@ class _ChatScreenState extends State<ChatScreen> {
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   children: [
                                     const NoUsers(),
-                                    // Flexible(
-                                    //   child: Positioned(
-                                    //     bottom: 0,
-                                    //     child: ElevatedButton(
-                                    //       onPressed: () {},
-                                    //       child: const Text('Chat'),
-                                    //     ),
-                                    //   ),
-                                    // ),
                                   ],
                                 )
                               : Column(
@@ -147,15 +120,6 @@ class _ChatScreenState extends State<ChatScreen> {
                                       usersId: passengersId,
                                       isDriver: false,
                                     ),
-                                    // Flexible(
-                                    //   child: Positioned(
-                                    //     bottom: 0,
-                                    //     child: ElevatedButton(
-                                    //       onPressed: () {},
-                                    //       child: const Text('Chat'),
-                                    //     ),
-                                    //   ),
-                                    // ),
                                   ],
                                 ),
                     ],
@@ -221,45 +185,13 @@ class Users extends StatelessWidget {
                       users[index]['nombreCompleto'],
                     ),
                     subtitle: isDriver
-                        ? FutureBuilder(
-                            future: databaseProvider
+                        ? UserLastMessage(
+                            databaseProvider: databaseProvider
                                 .getChatsWithDriver(users[index]['uid']),
-                            builder: (context, snapshot) {
-                              if (snapshot.hasData) {
-                                List chat = snapshot.data as List;
-                                return Text(
-                                  chat[0]['ultimoMensaje'],
-                                  style: const TextStyle(
-                                    fontSize: 12.0,
-                                    color: Colors.grey,
-                                  ),
-                                  maxLines: 1,
-                                  overflow: TextOverflow.ellipsis,
-                                );
-                              } else {
-                                return const SizedBox();
-                              }
-                            },
                           )
-                        : FutureBuilder(
-                            future: databaseProvider
+                        : UserLastMessage(
+                            databaseProvider: databaseProvider
                                 .getChatsWithPassenger(users[index]['uid']),
-                            builder: (context, snapshot) {
-                              if (snapshot.hasData) {
-                                List chat = snapshot.data as List;
-                                return Text(
-                                  chat[0]['ultimoMensaje'],
-                                  style: const TextStyle(
-                                    fontSize: 12.0,
-                                    color: Colors.grey,
-                                  ),
-                                  maxLines: 1,
-                                  overflow: TextOverflow.ellipsis,
-                                );
-                              } else {
-                                return const SizedBox();
-                              }
-                            },
                           ),
                     trailing:
                         Icon(Icons.send, color: Theme.of(context).primaryColor),
@@ -269,8 +201,67 @@ class Users extends StatelessWidget {
             ),
           );
         } else {
-          return const Center(
-            child: CircularProgressIndicator(),
+          return const SizedBox();
+        }
+      },
+    );
+  }
+}
+
+class UserLastMessage extends StatelessWidget {
+  const UserLastMessage({
+    super.key,
+    required this.databaseProvider,
+  });
+
+  final Future databaseProvider;
+
+  @override
+  Widget build(BuildContext context) {
+    return StreamBuilder(
+      stream: databaseProvider.asStream(),
+      builder: (context, snapshot) {
+        if (snapshot.hasData &&
+            snapshot.data.isNotEmpty &&
+            snapshot.data[0]['ultimoMensaje'] != '') {
+          List chat = snapshot.data as List;
+          return Row(
+            children: [
+              Flexible(
+                child: Text(
+                  chat[0]['emisorUltimoMensaje'] ==
+                          FirebaseAuth.instance.currentUser!.uid
+                      ? 'Tú: ${chat[0]['ultimoMensaje']}'
+                      : '${chat[0]['ultimoMensaje']}',
+                  style: const TextStyle(
+                    fontSize: 12.0,
+                    color: Colors.grey,
+                  ),
+                  maxLines: 1,
+                  overflow: TextOverflow.clip,
+                ),
+              ),
+              const SizedBox(width: 5.0),
+              chat[0]['ultimoMensajeLeido'] == false &&
+                      chat[0]['emisorUltimoMensaje'] !=
+                          FirebaseAuth.instance.currentUser!.uid
+                  ? const Icon(
+                      Icons.circle,
+                      color: Colors.red,
+                      size: 10.0,
+                    )
+                  : const SizedBox(),
+            ],
+          );
+        } else {
+          return const Text(
+            'No hay mensajes',
+            style: TextStyle(
+              fontSize: 12.0,
+              color: Colors.grey,
+            ),
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
           );
         }
       },

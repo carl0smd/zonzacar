@@ -27,6 +27,7 @@ Future<void> backgroundHandler(RemoteMessage message) async {
       fullScreenIntent: true,
       autoDismissible: false,
       backgroundColor: Colors.white,
+      displayOnForeground: true,
       displayOnBackground: true,
       summary: '',
       icon: 'assets/logo.png',
