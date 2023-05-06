@@ -43,14 +43,27 @@ class _FormularioTrayectoScreenState extends State<FormularioTrayectoScreen> {
     });
   }
 
+  toDouble(hour, minute) {
+    return hour + minute / 60.0;
+  }
+
   @override
   Widget build(BuildContext context) {
     final formKey = GlobalKey<FormState>();
     final fechaCtrl = TextEditingController();
-    int fecha = 0;
     final horaCtrl = TextEditingController();
     final precioCtrl = TextEditingController();
     final asientosCtrl = TextEditingController();
+    int fecha = 0;
+    final today = DateTime(
+      DateTime.now().year,
+      DateTime.now().month,
+      DateTime.now().day,
+    ).millisecondsSinceEpoch;
+    final hourNow = TimeOfDay(
+      hour: DateTime.now().hour,
+      minute: DateTime.now().minute,
+    );
     final precio = (double.parse(widget.distancia.split(" ")[0]) *
             PrecioConstants.precioPorKm /
             4)
@@ -242,8 +255,20 @@ class _FormularioTrayectoScreenState extends State<FormularioTrayectoScreen> {
                           validator: (value) {
                             if (value == null || value.isEmpty) {
                               return 'Por favor, introduce una hora';
+                            } else if (today <= fecha &&
+                                toDouble(hourNow.hour, hourNow.minute) >=
+                                    toDouble(
+                                      int.parse(
+                                        value.split(':')[0],
+                                      ),
+                                      int.parse(
+                                        value.split(':')[1],
+                                      ),
+                                    )) {
+                              return 'Si el trayecto es hoy, la hora debe ser posterior a la actual';
+                            } else {
+                              return null;
                             }
-                            return null;
                           },
                         ),
                         const SizedBox(height: 20.0),
