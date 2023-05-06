@@ -149,7 +149,7 @@ class Users extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
-      future: databaseProvider.getAllUsersByUid(usersId),
+      future: databaseProvider.getAllUsersByUid(usersId, isDriver),
       builder: (context, snapshot) {
         if (snapshot.hasData) {
           List users = snapshot.data as List;

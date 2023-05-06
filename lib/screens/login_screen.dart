@@ -44,7 +44,9 @@ class _Form extends StatefulWidget {
 
 class __FormState extends State<_Form> {
   final formKey = GlobalKey<FormState>();
+  final forgetPasswordKey = GlobalKey<FormFieldState>();
   final helper = HelperFunctions();
+  final forgetPasswordController = TextEditingController();
 
   bool _isLoading = false;
   String? email = '';
@@ -104,6 +106,92 @@ class __FormState extends State<_Form> {
                           login(email, password);
                           // Navigator.pushReplacementNamed(context, 'home');
                         },
+                      ),
+                      //He olvidado mi contraseña
+                      const SizedBox(
+                        height: 10,
+                      ),
+                      TextButton(
+                        onPressed: () {
+                          showDialog(
+                            context: context,
+                            builder: (BuildContext context) {
+                              return AlertDialog(
+                                title: const Text('Cambiar contraseña'),
+                                content: SingleChildScrollView(
+                                  child: ListBody(
+                                    children: [
+                                      const SizedBox(
+                                        height: 10,
+                                      ),
+                                      const Text(
+                                        '¿Introduce tú correo electrónico?',
+                                      ),
+                                      const SizedBox(
+                                        height: 30,
+                                      ),
+                                      TextFormField(
+                                        controller: forgetPasswordController,
+                                        key: forgetPasswordKey,
+                                        keyboardType:
+                                            TextInputType.emailAddress,
+                                        decoration: const InputDecoration(
+                                            labelText: 'Correo electrónico',
+                                            border: OutlineInputBorder()),
+                                        validator: (value) {
+                                          return RegExp(
+                                            r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+",
+                                          ).hasMatch(value!)
+                                              ? null
+                                              : 'Introduce un correo válido';
+                                        },
+                                      ),
+                                      const SizedBox(
+                                        height: 20,
+                                      ),
+                                      BotonVerde(
+                                        text: 'Enviar',
+                                        onPressed: () async {
+                                          if (forgetPasswordKey.currentState!
+                                              .validate()) {
+                                            await authProvider
+                                                .resetPassword(
+                                              forgetPasswordController.text,
+                                            )
+                                                .then((value) {
+                                              if (value == true) {
+                                                Navigator.pop(context);
+                                                showSnackbar(
+                                                  'Se ha enviado un correo para cambiar la contraseña',
+                                                  context,
+                                                );
+                                              } else {
+                                                showSnackbar(
+                                                  'No se ha podido enviar el correo, comprueba que el correo sea correcto',
+                                                  context,
+                                                  duration: const Duration(
+                                                    seconds: 5,
+                                                  ),
+                                                );
+                                              }
+                                            });
+                                          }
+                                        },
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              );
+                            },
+                          );
+                        },
+                        child: const Text(
+                          '¿Olvidaste tu contraseña?',
+                          style: TextStyle(
+                            color: Colors.black54,
+                            fontSize: 15,
+                          ),
+                        ),
                       ),
                     ],
                   ),

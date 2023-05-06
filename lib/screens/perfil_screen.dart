@@ -5,6 +5,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:zonzacar/helpers/helper_function.dart';
 import 'package:zonzacar/providers/auth_provider.dart';
 import 'package:zonzacar/providers/database_provider.dart';
 import 'package:zonzacar/screens/login_screen.dart';
@@ -337,8 +338,15 @@ class _PerfilScreenState extends State<PerfilScreen> {
                     'Eliminar cuenta',
                     style: TextStyle(fontSize: 16, color: Colors.red),
                   ),
-                  onPressed: () {
-                    print('Cuenta eliminada');
+                  onPressed: () async {
+                    showDialog(
+                      context: context,
+                      builder: (context) {
+                        return DeleteAccountDialog(
+                            authProvider: authProvider,
+                            databaseProvider: databaseProvider);
+                      },
+                    );
                   },
                 ),
               ],
@@ -465,6 +473,164 @@ class _PerfilScreenState extends State<PerfilScreen> {
           ),
         );
       },
+    );
+  }
+}
+
+class DeleteAccountDialog extends StatefulWidget {
+  const DeleteAccountDialog({
+    super.key,
+    required this.authProvider,
+    required this.databaseProvider,
+  });
+
+  final AuthProvider authProvider;
+  final DatabaseProvider databaseProvider;
+
+  @override
+  State<DeleteAccountDialog> createState() => _DeleteAccountDialogState();
+}
+
+class _DeleteAccountDialogState extends State<DeleteAccountDialog> {
+  final passwordController = TextEditingController();
+  final formKey = GlobalKey<FormState>();
+  HelperFunctions helperFunctions = HelperFunctions();
+  bool isLoading = false;
+
+  @override
+  void dispose() {
+    passwordController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return AlertDialog(
+      title: const Text(
+        '¿Estás seguro?',
+        textAlign: TextAlign.center,
+      ),
+      content: SingleChildScrollView(
+        child: !isLoading
+            ? ListBody(
+                children: [
+                  const Text(
+                    'Si eliminas tu cuenta, se eliminarán todos tus datos y no podrás recuperarlos',
+                    textAlign: TextAlign.center,
+                  ),
+                  const SizedBox(
+                    height: 20,
+                  ),
+                  const Text(
+                    'Introduce tu contraseña para continuar',
+                    textAlign: TextAlign.center,
+                  ),
+                  const SizedBox(
+                    height: 20,
+                  ),
+                  Form(
+                    key: formKey,
+                    child: TextFormField(
+                      controller: passwordController,
+                      decoration: const InputDecoration(
+                        border: OutlineInputBorder(),
+                        labelText: 'Contraseña',
+                      ),
+                      obscureText: true,
+                      //don't show the last character typed
+
+                      validator: (value) {
+                        if (value!.isEmpty) {
+                          return 'Introduce tu contraseña';
+                        } else if (value.length < 6) {
+                          return 'Debe tener al menos 6 caracteres';
+                        }
+                        return null;
+                      },
+                    ),
+                  ),
+                ],
+              )
+            : const Center(
+                child: CircularProgressIndicator(),
+              ),
+      ),
+      actions: [
+        TextButton(
+          onPressed: () {
+            Navigator.of(context).pop();
+          },
+          child: !isLoading
+              ? const Text(
+                  'Cancelar',
+                  style: TextStyle(
+                    color: Colors.green,
+                  ),
+                )
+              : Container(),
+        ),
+        TextButton(
+          onPressed: () async {
+            if (formKey.currentState!.validate()) {
+              setState(() {
+                isLoading = true;
+              });
+              await widget.authProvider
+                  .reauthenticate(passwordController.text)
+                  .then((value) async {
+                switch (value) {
+                  case true:
+                    await widget.databaseProvider.deleteUser(true);
+                    if (mounted) {
+                      showSnackbar('Cuenta eliminada', context);
+                      Navigator.pushNamedAndRemoveUntil(
+                        context,
+                        'login',
+                        (route) => false,
+                      );
+                    }
+                    break;
+                  case 'wrong-password':
+                    setState(() {
+                      isLoading = false;
+                    });
+                    showSnackbar('Contraseña incorrecta', context);
+                    break;
+                  case 'too-many-requests':
+                    showSnackbar(
+                      'Demasiados intentos, para poder acceder a su cuenta renueve la contraseña',
+                      context,
+                      duration: const Duration(seconds: 10),
+                    );
+                    helperFunctions.saveUserLoggedInStatus(false);
+                    Navigator.pushNamedAndRemoveUntil(
+                      context,
+                      'login',
+                      (route) => false,
+                    );
+                    break;
+                  default:
+                    setState(() {
+                      isLoading = false;
+                    });
+                    showSnackbar(
+                      'Ha ocurrido un error, inténtelo más tarde',
+                      context,
+                    );
+                }
+              });
+            }
+          },
+          child: !isLoading
+              ? const Text(
+                  'Eliminar',
+                  style: TextStyle(
+                    color: Colors.red,
+                  ),
+                )
+              : Container(),
+        ),
+      ],
     );
   }
 }

@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 
 import 'package:zonzacar/helpers/helper_function.dart';
 import 'package:zonzacar/providers/notifications_provider.dart';
@@ -8,6 +9,8 @@ import 'package:zonzacar/providers/notifications_provider.dart';
 class DatabaseProvider {
   final String? uid;
   DatabaseProvider({this.uid});
+
+  HelperFunctions helperFunctions = HelperFunctions();
 
   static final estadoPublicacion = {
     'disponible': 'Disponible',
@@ -41,7 +44,12 @@ class DatabaseProvider {
       'publicaciones': [],
       'reservas': [],
       'vehiculos': [],
-      'chats': [],
+      'mediaValoraciones': 0,
+      'unaEstrella': 0,
+      'dosEstrellas': 0,
+      'tresEstrellas': 0,
+      'cuatroEstrellas': 0,
+      'cincoEstrellas': 0,
       'imagenPerfil': '',
       'uid': uid,
       'pushToken': await FirebaseMessaging.instance.getToken(),
@@ -50,8 +58,6 @@ class DatabaseProvider {
 
   //update user push token
   Future updateUserPushToken() async {
-    HelperFunctions helperFunctions = HelperFunctions();
-
     if (helperFunctions.userLoggedInKey == 'true') {
       await usuarioCollection
           .doc(FirebaseAuth.instance.currentUser!.uid)
@@ -91,12 +97,59 @@ class DatabaseProvider {
   }
 
   //get all users by uid
-  Future getAllUsersByUid(List<String> ids) async {
+  Future getAllUsersByUid(List<String> ids, bool isDriver) async {
     List<DocumentSnapshot> users = [];
+    List lastMessageDates = [];
     for (var id in ids) {
       DocumentSnapshot snapshot = await usuarioCollection.doc(id).get();
       users.add(snapshot);
     }
+
+    if (isDriver) {
+      //search for chats where i'm pasajero and user is conductor and then order users bt fechaUltimoMensaje
+      for (var user in users) {
+        QuerySnapshot snapshot = await chatsCollection
+            .where('pasajero',
+                isEqualTo: FirebaseAuth.instance.currentUser!.uid)
+            .where('conductor', isEqualTo: user['uid'])
+            .get();
+        if (snapshot.docs.isNotEmpty) {
+          lastMessageDates.add(snapshot.docs[0]['fechaUltimoMensaje']);
+        } else {
+          lastMessageDates.add(0);
+        }
+      }
+    } else {
+      //search for chats where i'm conductor and user is pasajero and then order users bt fechaUltimoMensaje
+      for (var user in users) {
+        QuerySnapshot snapshot = await chatsCollection
+            .where('conductor',
+                isEqualTo: FirebaseAuth.instance.currentUser!.uid)
+            .where('pasajero', isEqualTo: user['uid'])
+            .get();
+        if (snapshot.docs.isNotEmpty) {
+          lastMessageDates.add(snapshot.docs[0]['fechaUltimoMensaje']);
+        } else {
+          lastMessageDates.add(0);
+        }
+      }
+    }
+
+    //order users list by lastMessageDate
+    for (var i = 0; i < users.length; i++) {
+      for (var j = 0; j < users.length - 1; j++) {
+        if (lastMessageDates[j] < lastMessageDates[j + 1]) {
+          var aux = lastMessageDates[j];
+          lastMessageDates[j] = lastMessageDates[j + 1];
+          lastMessageDates[j + 1] = aux;
+
+          var aux2 = users[j];
+          users[j] = users[j + 1];
+          users[j + 1] = aux2;
+        }
+      }
+    }
+
     return users;
   }
 
@@ -122,10 +175,122 @@ class DatabaseProvider {
   }
 
   //eliminar usuario de la base de datos
-  Future deleteUser() async {
+  Future deleteUser(bool correctCredentials) async {
+    if (!correctCredentials) {
+      return;
+    }
+
+    //delete chats where user is pasajero || conductor
+    QuerySnapshot snapshotChats = await chatsCollection
+        .where('pasajero', isEqualTo: FirebaseAuth.instance.currentUser!.uid)
+        .get();
+
+    //delete subcollection mensajes
+
+    for (var chat in snapshotChats.docs) {
+      await chatsCollection
+          .doc(chat.id)
+          .collection('mensajes')
+          .get()
+          .then((snapshot) {
+        for (DocumentSnapshot ds in snapshot.docs) {
+          ds.reference.delete();
+        }
+      });
+    }
+
+    for (var chat in snapshotChats.docs) {
+      await chatsCollection.doc(chat.id).delete();
+    }
+
+    QuerySnapshot snapshotChats2 = await chatsCollection
+        .where('conductor', isEqualTo: FirebaseAuth.instance.currentUser!.uid)
+        .get();
+
+    for (var chat in snapshotChats2.docs) {
+      await chatsCollection.doc(chat.id).delete();
+    }
+
+    //delete reservas where user is pasajero
+
+    QuerySnapshot snapshotReservas = await reservasCollection
+        .where('pasajero', isEqualTo: FirebaseAuth.instance.currentUser!.uid)
+        .get();
+
+    for (var reserva in snapshotReservas.docs) {
+      await reservasCollection.doc(reserva.id).delete();
+      await usuarioCollection.doc(reserva['pasajero']).update({
+        'reservas': FieldValue.arrayRemove([reserva.id]),
+      });
+    }
+
+    //delete reservas where publicacion is equal to any of the user's publicaciones
+
+    QuerySnapshot snapshotPublicaciones = await publicacionesCollection
+        .where('conductor', isEqualTo: FirebaseAuth.instance.currentUser!.uid)
+        .get();
+
+    for (var publicacion in snapshotPublicaciones.docs) {
+      QuerySnapshot snapshotReservas = await reservasCollection
+          .where('publicacion', isEqualTo: publicacion.id)
+          .get();
+
+      for (var reserva in snapshotReservas.docs) {
+        await reservasCollection.doc(reserva.id).delete();
+      }
+    }
+
+    for (var publicacion in snapshotPublicaciones.docs) {
+      await publicacionesCollection.doc(publicacion.id).delete();
+    }
+
+    //delete user from publicaciones where user is pasajero
+
+    QuerySnapshot snapshotPublicaciones2 = await publicacionesCollection
+        .where(
+          'pasajeros',
+          arrayContains: FirebaseAuth.instance.currentUser!.uid,
+        )
+        .get();
+
+    for (var publicacion in snapshotPublicaciones2.docs) {
+      await publicacionesCollection.doc(publicacion.id).update({
+        'pasajeros': FieldValue.arrayRemove(
+          [FirebaseAuth.instance.currentUser!.uid],
+        ),
+      });
+    }
+
+    //delete vechicle
+
+    QuerySnapshot snapshotVehiculos = await vehiculosCollection
+        .where('conductor', isEqualTo: FirebaseAuth.instance.currentUser!.uid)
+        .get();
+
+    for (var vehiculo in snapshotVehiculos.docs) {
+      await vehiculosCollection.doc(vehiculo.id).delete();
+    }
+
+    //delete imagePerfil from firebase storage
+
+    String imagePerfil = await usuarioCollection
+        .doc(FirebaseAuth.instance.currentUser!.uid)
+        .get()
+        .then((value) => value['imagenPerfil']);
+
+    if (imagePerfil != '') {
+      await FirebaseStorage.instance.refFromURL(imagePerfil).delete();
+    }
+
+    // delete user from firebase auth and db
+
     await usuarioCollection
         .doc(FirebaseAuth.instance.currentUser!.uid)
         .delete();
+
+    await FirebaseAuth.instance.currentUser!.delete();
+
+    helperFunctions.saveUserLoggedInStatus(false);
   }
 
   //guardar vehiculos
@@ -572,6 +737,7 @@ class DatabaseProvider {
       'ultimoMensaje': '',
       'ultimoMensajeLeido': false,
       'emisorUltimoMensaje': '',
+      'fechaUltimoMensaje': '',
       'pasajeroEnChat': false,
       'conductorEnChat': false,
       'uid': id,
@@ -656,6 +822,7 @@ class DatabaseProvider {
           'conductor',
           isEqualTo: FirebaseAuth.instance.currentUser!.uid,
         )
+        .orderBy('fechaUltimoMensaje', descending: true)
         .get();
     return snapshot.docs;
   }
@@ -665,6 +832,7 @@ class DatabaseProvider {
     QuerySnapshot snapshot = await chatsCollection
         .where('conductor', isEqualTo: uidConductor)
         .where('pasajero', isEqualTo: FirebaseAuth.instance.currentUser!.uid)
+        .orderBy('fechaUltimoMensaje', descending: true)
         .get();
     return snapshot.docs;
   }
@@ -690,6 +858,7 @@ class DatabaseProvider {
     await chatsCollection.doc(uidChat).update({
       'ultimoMensaje': mensaje,
       'emisorUltimoMensaje': emisor,
+      'fechaUltimoMensaje': DateTime.now().millisecondsSinceEpoch,
       'ultimoMensajeLeido':
           receptor == snapshot['conductor'] && snapshot['conductorEnChat'] ||
                   receptor == snapshot['pasajero'] && snapshot['pasajeroEnChat']
