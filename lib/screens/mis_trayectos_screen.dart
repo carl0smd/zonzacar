@@ -1,7 +1,5 @@
 import 'dart:async';
 
-import 'package:flutter/foundation.dart';
-import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:intl/intl.dart';
@@ -382,9 +380,7 @@ class _CardInfoState extends State<CardInfo> {
                 ),
                 const SizedBox(width: 8.0),
                 Text(
-                  widget.publicacion['pasajeros'].length.toString() +
-                      '/' +
-                      widget.publicacion['asientosDisponibles'].toString(),
+                  '${widget.publicacion['pasajeros'].length}/${widget.publicacion['asientosDisponibles']}',
                   style: const TextStyle(
                     fontWeight: FontWeight.bold,
                     fontSize: 14.0,

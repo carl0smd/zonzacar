@@ -112,7 +112,9 @@ class _ChatDetailsScreenState extends State<ChatDetailsScreen> {
     return WillPopScope(
       onWillPop: () async {
         await databaseProvider.exitChat(
-            chatId!, FirebaseAuth.instance.currentUser!.uid);
+          chatId!,
+          FirebaseAuth.instance.currentUser!.uid,
+        );
         return true;
       },
       child: Scaffold(
@@ -283,7 +285,6 @@ class Mensajes extends StatelessWidget {
             DateTime.now().month,
             DateTime.now().day,
           ).millisecondsSinceEpoch;
-          print(mensajes[0]['mensaje']);
           return ListView.builder(
             reverse: true,
             itemCount: mensajes.length,

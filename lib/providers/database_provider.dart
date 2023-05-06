@@ -59,10 +59,7 @@ class DatabaseProvider {
           .update({
         'pushToken': await FirebaseMessaging.instance.getToken(),
       });
-      print('push token updated');
     }
-
-    print('push token not updated');
   }
 
   //actualizar nombre de usuario
@@ -134,7 +131,11 @@ class DatabaseProvider {
 
   //guardar vehiculos
   Future saveVehicle(
-      String matricula, String marca, String modelo, String color) async {
+    String matricula,
+    String marca,
+    String modelo,
+    String color,
+  ) async {
     final id = vehiculosCollection.doc().id;
     await vehiculosCollection.doc(id).set({
       'matricula': matricula,
@@ -326,8 +327,10 @@ class DatabaseProvider {
         if (!pasajeros.contains(pasajero)) {
           QuerySnapshot snapshotChat = await chatsCollection
               .where('pasajero', isEqualTo: pasajero)
-              .where('conductor',
-                  isEqualTo: FirebaseAuth.instance.currentUser!.uid)
+              .where(
+                'conductor',
+                isEqualTo: FirebaseAuth.instance.currentUser!.uid,
+              )
               .get();
 
           if (snapshotChat.docs.isEmpty) {
@@ -382,8 +385,10 @@ class DatabaseProvider {
     for (var publicacion in snapshot.docs) {
       if (!conductores.contains(publicacion['conductor'])) {
         QuerySnapshot snapshotChat = await chatsCollection
-            .where('pasajero',
-                isEqualTo: FirebaseAuth.instance.currentUser!.uid)
+            .where(
+              'pasajero',
+              isEqualTo: FirebaseAuth.instance.currentUser!.uid,
+            )
             .where('conductor', isEqualTo: publicacion['conductor'])
             .get();
 
@@ -580,12 +585,10 @@ class DatabaseProvider {
       await chatsCollection.doc(uidChat).update({
         'conductorEnChat': false,
       });
-      print(snapshot['conductor']);
     } else {
       await chatsCollection.doc(uidChat).update({
         'pasajeroEnChat': false,
       });
-      print(snapshot['pasajero']);
     }
   }
 

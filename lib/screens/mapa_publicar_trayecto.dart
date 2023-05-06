@@ -72,16 +72,26 @@ class _PublicarTrayectoScreenState extends State<PublicarTrayectoScreen> {
     //Marcador de origen
     Marker originMarker = Marker(
       markerId: const MarkerId('origin'),
-      position: LatLng(double.parse(origin.split(',')[0]),
-          double.parse(origin.split(',')[1])),
+      position: LatLng(
+        double.parse(
+          origin.split(',')[0],
+        ),
+        double.parse(
+          origin.split(',')[1],
+        ),
+      ),
       infoWindow: const InfoWindow(title: 'Origen'),
       consumeTapEvents: true,
       icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueGreen),
       onTap: () {
         _controller.future.then((value) {
           value.animateCamera(CameraUpdate.newCameraPosition(CameraPosition(
-            target: LatLng(double.parse(origin.split(',')[0]),
-                double.parse(origin.split(',')[1])),
+            target: LatLng(
+              double.parse(origin.split(',')[0]),
+              double.parse(
+                origin.split(',')[1],
+              ),
+            ),
             zoom: 18,
           )));
         });
@@ -91,16 +101,28 @@ class _PublicarTrayectoScreenState extends State<PublicarTrayectoScreen> {
     //Marcador de destino
     Marker destinationMarker = Marker(
       markerId: const MarkerId('destination'),
-      position: LatLng(double.parse(destination.split(',')[0]),
-          double.parse(destination.split(',')[1])),
+      position: LatLng(
+        double.parse(
+          destination.split(',')[0],
+        ),
+        double.parse(
+          destination.split(',')[1],
+        ),
+      ),
       infoWindow: const InfoWindow(title: 'Destino'),
       icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueRed),
       consumeTapEvents: true,
       onTap: () {
         _controller.future.then((value) {
           value.animateCamera(CameraUpdate.newCameraPosition(CameraPosition(
-            target: LatLng(double.parse(destination.split(',')[0]),
-                double.parse(destination.split(',')[1])),
+            target: LatLng(
+              double.parse(
+                destination.split(',')[0],
+              ),
+              double.parse(
+                destination.split(',')[1],
+              ),
+            ),
             zoom: 18,
           )));
         });
@@ -217,8 +239,8 @@ class _PublicarTrayectoScreenState extends State<PublicarTrayectoScreen> {
                         color: Theme.of(context).primaryColor,
                         padding: const EdgeInsets.all(10.0),
                         child: Column(
-                          children: [
-                            const Text(
+                          children: const [
+                            Text(
                               '* Esta ruta es solo orientativa, el conductor podrá tomar otro camino siempre que llegue a su destino',
                               style: TextStyle(
                                 fontSize: 14.0,

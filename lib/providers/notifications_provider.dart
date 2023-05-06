@@ -31,7 +31,7 @@ class NotificationsProvider {
         body: jsonEncode(body),
       );
     } catch (e) {
-      print(e);
+      return e.toString();
     }
   }
 }

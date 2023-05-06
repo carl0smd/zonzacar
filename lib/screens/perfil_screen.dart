@@ -304,12 +304,19 @@ class _PerfilScreenState extends State<PerfilScreen> {
                               setState(() {
                                 vehicles.removeAt(index);
                               });
-                              showSnackbar(
-                                  'Vehículo eliminado correctamente', context);
+                              if (mounted) {
+                                showSnackbar(
+                                  'Vehículo eliminado correctamente',
+                                  context,
+                                );
+                              }
                             } else {
-                              showSnackbar(
+                              if (mounted) {
+                                showSnackbar(
                                   'Error al eliminar, aún tienes publicaciones activas con este vehículo',
-                                  context);
+                                  context,
+                                );
+                              }
                             }
                           },
                           icon: const Icon(

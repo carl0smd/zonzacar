@@ -208,7 +208,6 @@ class _CajaDeBusquedaState extends State<_CajaDeBusqueda>
                                 fecha: fecha != 0 ? fecha : null,
                               ),
                       );
-                      print(fecha);
                       origenCtrl.clear();
                       destinoCtrl.clear();
                       fechaCtrl.clear();

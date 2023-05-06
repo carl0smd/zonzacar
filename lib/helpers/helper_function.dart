@@ -1,5 +1,3 @@
-import 'package:awesome_notifications/awesome_notifications.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 class HelperFunctions {
@@ -13,7 +11,9 @@ class HelperFunctions {
   //Guardar los datos en SS
   Future saveUserLoggedInStatus(isUserLoggedIn) async {
     final writeStatus = await _storage.write(
-        key: userLoggedInKey, value: isUserLoggedIn.toString());
+      key: userLoggedInKey,
+      value: isUserLoggedIn.toString(),
+    );
     return writeStatus;
   }
 

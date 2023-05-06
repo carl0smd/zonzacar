@@ -29,7 +29,6 @@ class GoogleServicesProvider {
     if (response.statusCode == 200) {
       final predictionsResponse =
           PredictionsResponse.fromRawJson(response.body);
-      print(response.body);
       // predictionsResponse.predictions.removeWhere((element) => element.description.toLowerCase().contains('graciosa'));
       return predictionsResponse.predictions;
     } else {
@@ -54,7 +53,9 @@ class GoogleServicesProvider {
   }
 
   Future<List<String>> getPolylineAndDistanceAndDuration(
-      String origin, String destination) async {
+    String origin,
+    String destination,
+  ) async {
     Uri request = Uri.https(authority, '/maps/api/directions/json', {
       'origin': origin,
       'destination': destination,
@@ -69,7 +70,7 @@ class GoogleServicesProvider {
         return [
           directionsResponse.routes[0].overviewPolyline.points,
           directionsResponse.routes[0].legs[0].distance.text,
-          directionsResponse.routes[0].legs[0].duration.text
+          directionsResponse.routes[0].legs[0].duration.text,
         ];
       } else {
         return ['', ''];

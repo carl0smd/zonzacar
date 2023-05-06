@@ -87,8 +87,8 @@ class _ChatScreenState extends State<ChatScreen> {
                           : driversId.isEmpty
                               ? Column(
                                   mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    const NoUsers(),
+                                  children: const [
+                                    NoUsers(),
                                   ],
                                 )
                               : Column(
@@ -108,8 +108,8 @@ class _ChatScreenState extends State<ChatScreen> {
                           : passengersId.isEmpty
                               ? Column(
                                   mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    const NoUsers(),
+                                  children: const [
+                                    NoUsers(),
                                   ],
                                 )
                               : Column(
