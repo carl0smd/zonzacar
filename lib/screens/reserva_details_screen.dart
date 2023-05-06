@@ -85,8 +85,8 @@ class _ReservaDetailsScreenState extends State<ReservaDetailsScreen> {
 
                 return Column(
                   children: [
-                    InfoTrayecto(publication: publication),
-                    InfoPrecio(publication: publication),
+                    InfoTrip(publication: publication),
+                    PriceInfo(publication: publication),
                     infoConductor(
                       databaseProvider,
                       publication,
@@ -190,7 +190,7 @@ class _ReservaDetailsScreenState extends State<ReservaDetailsScreen> {
                   overflow: TextOverflow.ellipsis,
                 ),
               ),
-              ImagenUsuario(
+              UserImage(
                 userImage: userImage,
                 radiusOutterCircle: 42,
                 radiusImageCircle: 40,
@@ -547,8 +547,8 @@ class InfoMapa extends StatelessWidget {
   }
 }
 
-class InfoPrecio extends StatelessWidget {
-  const InfoPrecio({
+class PriceInfo extends StatelessWidget {
+  const PriceInfo({
     super.key,
     required this.publication,
   });
@@ -590,8 +590,8 @@ class InfoPrecio extends StatelessWidget {
   }
 }
 
-class InfoTrayecto extends StatelessWidget {
-  const InfoTrayecto({
+class InfoTrip extends StatelessWidget {
+  const InfoTrip({
     super.key,
     required this.publication,
   });

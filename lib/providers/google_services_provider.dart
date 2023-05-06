@@ -5,7 +5,7 @@ import 'package:zonzacar/models/models.dart';
 import '../models/directions_response.dart';
 
 class GoogleServicesProvider {
-  final String apiKey = dotenv.env['GOOGLE_API_KEY']!;
+  final String _apiKey = dotenv.env['GOOGLE_API_KEY']!;
   final String authority = "maps.googleapis.com";
   final String radius = '30000';
   final String location = '29.03576,-13.65051';
@@ -16,7 +16,7 @@ class GoogleServicesProvider {
     const String unencodedPath = "/maps/api/place/autocomplete/json";
     Uri request = Uri.https(authority, unencodedPath, {
       'input': input,
-      'key': apiKey,
+      'key': _apiKey,
       'radius': radius,
       'location': location,
       'strictbounds': 'true',
@@ -39,7 +39,7 @@ class GoogleServicesProvider {
   Future<Location> placeCoordinates(String placeId) async {
     Uri request = Uri.https(authority, '/maps/api/place/details/json', {
       'place_id': placeId,
-      'key': apiKey,
+      'key': _apiKey,
       'fields': 'geometry',
     });
     final response = await http.get(request);
@@ -60,7 +60,7 @@ class GoogleServicesProvider {
       'origin': origin,
       'destination': destination,
       'mode': 'driving',
-      'key': apiKey,
+      'key': _apiKey,
     });
     final response = await http.get(request);
     if (response.statusCode == 200) {

@@ -8,16 +8,16 @@ import 'package:zonzacar/widgets/widgets.dart';
 import '../providers/database_provider.dart';
 
 class BusquedaScreen extends StatelessWidget {
-  final String? origen;
-  final String? destino;
-  final int? fecha;
+  final String? origin;
+  final String? destination;
+  final int? date;
   final bool isGoingToZonzamas;
 
   const BusquedaScreen({
     Key? key,
-    this.origen,
-    this.destino,
-    this.fecha,
+    this.origin,
+    this.destination,
+    this.date,
     required this.isGoingToZonzamas,
   }) : super(key: key);
 
@@ -51,11 +51,11 @@ class BusquedaScreen extends StatelessWidget {
         //FutureBuilder para obtener los trayectos de la base de datos
         child: FutureBuilder(
           future: isGoingToZonzamas
-              ? fecha != null
-                  ? databaseProvider.getPublicationsToZonzamas(fecha)
+              ? date != null
+                  ? databaseProvider.getPublicationsToZonzamas(date)
                   : databaseProvider.getPublicationsToZonzamas()
-              : fecha != null
-                  ? databaseProvider.getPublicationsFromZonzamas(fecha)
+              : date != null
+                  ? databaseProvider.getPublicationsFromZonzamas(date)
                   : databaseProvider.getPublicationsFromZonzamas(),
           builder: (BuildContext context, AsyncSnapshot snapshot) {
             if (snapshot.hasData && snapshot.data.length != 0) {
@@ -65,19 +65,19 @@ class BusquedaScreen extends StatelessWidget {
                       FirebaseAuth.instance.currentUser!.uid ||
                   element['pasajeros']
                       .contains(FirebaseAuth.instance.currentUser!.uid));
-              origen != null
+              origin != null
                   ? publications.removeWhere((element) =>
                       element['origen']
                           .toString()
                           .toLowerCase()
-                          .contains(origen!.toLowerCase()) ==
+                          .contains(origin!.toLowerCase()) ==
                       false)
-                  : destino != null
+                  : destination != null
                       ? publications.removeWhere((element) =>
                           element['destino']
                               .toString()
                               .toLowerCase()
-                              .contains(destino!.toLowerCase()) ==
+                              .contains(destination!.toLowerCase()) ==
                           false)
                       : null;
               return publications.length != 0
@@ -195,7 +195,7 @@ class BookingCard extends StatelessWidget {
               //Nombre del conductor y foto de perfil
               Row(
                 children: [
-                  ImagenUsuario(
+                  UserImage(
                     userImage: userImage,
                     radiusOutterCircle: 32,
                     radiusImageCircle: 30,

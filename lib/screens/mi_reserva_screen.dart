@@ -12,9 +12,9 @@ import 'package:zonzacar/screens/screens.dart';
 import '../widgets/widgets.dart';
 
 class MiReservaScreen extends StatefulWidget {
-  const MiReservaScreen({Key? key, this.publicacion}) : super(key: key);
+  const MiReservaScreen({Key? key, this.publication}) : super(key: key);
 
-  final dynamic publicacion;
+  final dynamic publication;
 
   @override
   State<MiReservaScreen> createState() => _MiReservaScreenState();
@@ -30,24 +30,24 @@ class _MiReservaScreenState extends State<MiReservaScreen> {
     CameraPosition kGooglePlex = CameraPosition(
       target: LatLng(
         double.parse(
-          widget.publicacion['coordenadasOrigen'].split(',')[0],
+          widget.publication['coordenadasOrigen'].split(',')[0],
         ),
         double.parse(
-          widget.publicacion['coordenadasOrigen'].split(',')[1],
+          widget.publication['coordenadasOrigen'].split(',')[1],
         ),
       ),
       zoom: 16,
     );
 
     //Marker origen
-    Marker origenMarker = Marker(
+    Marker originMarker = Marker(
       markerId: const MarkerId('marker'),
       position: LatLng(
         double.parse(
-          widget.publicacion['coordenadasOrigen'].split(',')[0],
+          widget.publication['coordenadasOrigen'].split(',')[0],
         ),
         double.parse(
-          widget.publicacion['coordenadasOrigen'].split(',')[1],
+          widget.publication['coordenadasOrigen'].split(',')[1],
         ),
       ),
       icon: BitmapDescriptor.defaultMarkerWithHue(
@@ -104,7 +104,7 @@ class _MiReservaScreenState extends State<MiReservaScreen> {
               const SizedBox(height: 10.0),
               FutureBuilder(
                 future: databaseProvider
-                    .getUserByUid(widget.publicacion['conductor']),
+                    .getUserByUid(widget.publication['conductor']),
                 builder:
                     (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
                   if (snapshot.hasData) {
@@ -115,7 +115,7 @@ class _MiReservaScreenState extends State<MiReservaScreen> {
                       children: [
                         Row(
                           children: [
-                            ImagenUsuario(
+                            UserImage(
                               userImage: usuario['imagenPerfil'],
                               radiusOutterCircle: 32,
                               radiusImageCircle: 30,
@@ -145,10 +145,10 @@ class _MiReservaScreenState extends State<MiReservaScreen> {
                               context,
                               withNavBar: false,
                               screen: ChatDetailsScreen(
-                                pasajero:
+                                passenger:
                                     FirebaseAuth.instance.currentUser!.uid,
-                                conductor: widget.publicacion['conductor'],
-                                isConductor: false,
+                                driver: widget.publication['conductor'],
+                                isDriver: false,
                               ),
                             );
                           },
@@ -182,7 +182,7 @@ class _MiReservaScreenState extends State<MiReservaScreen> {
               ),
               FutureBuilder(
                 future: databaseProvider
-                    .getVehicleByUid(widget.publicacion['vehiculo']),
+                    .getVehicleByUid(widget.publication['vehiculo']),
                 builder: (context, snapshot) {
                   if (snapshot.hasData) {
                     final vehicle = snapshot.data[0];
@@ -266,7 +266,7 @@ class _MiReservaScreenState extends State<MiReservaScreen> {
                   myLocationEnabled: true,
                   compassEnabled: true,
                   scrollGesturesEnabled: true,
-                  markers: {origenMarker},
+                  markers: {originMarker},
                   onMapCreated: (GoogleMapController controller) {
                     _controller.complete(controller);
                   },

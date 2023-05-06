@@ -78,13 +78,13 @@ class _MisTrayectosScreenState extends State<MisTrayectosScreen> {
                     children: [
                       _isPermissionGranted
                           ? MisReservasYPublicaciones(
-                              futureReservas:
+                              futureBookings:
                                   databaseProvider.getPublicationsByPassenger(),
                             )
                           : solicitarGps(true),
                       _isPermissionGranted
                           ? MisReservasYPublicaciones(
-                              futurePublicaciones:
+                              futurePublications:
                                   databaseProvider.getPublicationsByDriver(),
                             )
                           : solicitarGps(false),
@@ -136,17 +136,17 @@ class _MisTrayectosScreenState extends State<MisTrayectosScreen> {
 class MisReservasYPublicaciones extends StatelessWidget {
   const MisReservasYPublicaciones({
     super.key,
-    this.futureReservas,
-    this.futurePublicaciones,
+    this.futureBookings,
+    this.futurePublications,
   });
 
-  final Future<dynamic>? futureReservas;
-  final Future<dynamic>? futurePublicaciones;
+  final Future<dynamic>? futureBookings;
+  final Future<dynamic>? futurePublications;
 
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
-      future: futureReservas ?? futurePublicaciones,
+      future: futureBookings ?? futurePublications,
       builder: (context, snapshot) {
         if (snapshot.hasData && snapshot.data.length > 0) {
           List myList = snapshot.data;
@@ -155,7 +155,7 @@ class MisReservasYPublicaciones extends StatelessWidget {
             child: ListView.builder(
               itemCount: snapshot.data.length,
               itemBuilder: (context, index) {
-                return futureReservas != null
+                return futureBookings != null
                     ? CardInfo(
                         publicacion: myList[index],
                         isPassenger: true,
@@ -172,7 +172,7 @@ class MisReservasYPublicaciones extends StatelessWidget {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                futureReservas != null
+                futureBookings != null
                     ? const Text(
                         'No tienes reservas',
                         style: TextStyle(fontSize: 25.0, color: Colors.grey),
@@ -430,14 +430,14 @@ class _CardInfoState extends State<CardInfo> {
                                 context,
                                 withNavBar: false,
                                 screen: MiReservaScreen(
-                                  publicacion: widget.publicacion,
+                                  publication: widget.publicacion,
                                 ),
                               )
                             : PersistentNavBarNavigator.pushNewScreen(
                                 context,
                                 withNavBar: false,
                                 screen: MiPublicacionScreen(
-                                  publicacion: widget.publicacion,
+                                  publication: widget.publicacion,
                                 ),
                               );
                       },

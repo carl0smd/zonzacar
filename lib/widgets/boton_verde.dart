@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 
-class BotonVerde extends StatelessWidget {
+class CredentialsGreenButton extends StatelessWidget {
   final String text;
   final void Function() onPressed;
 
-  const BotonVerde({super.key, required this.text, required this.onPressed});
+  const CredentialsGreenButton(
+      {super.key, required this.text, required this.onPressed});
 
   @override
   Widget build(BuildContext context) {

@@ -66,21 +66,21 @@ class _CajaDeBusqueda extends StatefulWidget {
 
 class _CajaDeBusquedaState extends State<_CajaDeBusqueda>
     with SingleTickerProviderStateMixin {
-  final origenCtrl = TextEditingController();
-  final destinoCtrl = TextEditingController();
-  final fechaCtrl = TextEditingController();
+  final originCtrl = TextEditingController();
+  final destinationCtrl = TextEditingController();
+  final dateCtrl = TextEditingController();
 
   @override
   void dispose() {
-    origenCtrl.dispose();
-    destinoCtrl.dispose();
-    fechaCtrl.dispose();
+    originCtrl.dispose();
+    destinationCtrl.dispose();
+    dateCtrl.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    int fecha = 0;
+    int date = 0;
     final formKey = GlobalKey<FormState>();
     return DefaultTabController(
       length: 2,
@@ -110,10 +110,10 @@ class _CajaDeBusquedaState extends State<_CajaDeBusqueda>
                       physics: const NeverScrollableScrollPhysics(),
                       children: [
                         TextFormField(
-                          controller: origenCtrl,
+                          controller: originCtrl,
                           autofocus: false,
                           onChanged: (value) {
-                            destinoCtrl.clear();
+                            destinationCtrl.clear();
                           },
                           decoration: InputDecoration(
                             hintText: '¿Desde dónde sales? (opcional)',
@@ -121,16 +121,16 @@ class _CajaDeBusquedaState extends State<_CajaDeBusqueda>
                             suffixIcon: IconButton(
                               icon: const Icon(Icons.clear),
                               onPressed: () {
-                                origenCtrl.clear();
+                                originCtrl.clear();
                               },
                             ),
                           ),
                         ),
                         TextFormField(
-                          controller: destinoCtrl,
+                          controller: destinationCtrl,
                           autofocus: false,
                           onChanged: (value) {
-                            origenCtrl.clear();
+                            originCtrl.clear();
                           },
                           decoration: InputDecoration(
                             hintText: '¿Hacia dónde vas? (opcional)',
@@ -138,7 +138,7 @@ class _CajaDeBusquedaState extends State<_CajaDeBusqueda>
                             suffixIcon: IconButton(
                               icon: const Icon(Icons.clear),
                               onPressed: () {
-                                destinoCtrl.clear();
+                                destinationCtrl.clear();
                               },
                             ),
                           ),
@@ -148,7 +148,7 @@ class _CajaDeBusquedaState extends State<_CajaDeBusqueda>
                   ),
                   Expanded(
                     child: TextFormField(
-                      controller: fechaCtrl,
+                      controller: dateCtrl,
                       maxLength: 10,
                       readOnly: true,
                       decoration: InputDecoration(
@@ -157,7 +157,7 @@ class _CajaDeBusquedaState extends State<_CajaDeBusqueda>
                         suffixIcon: IconButton(
                           icon: const Icon(Icons.clear),
                           onPressed: () {
-                            fechaCtrl.clear();
+                            dateCtrl.clear();
                           },
                         ),
                         counterText: '',
@@ -168,9 +168,9 @@ class _CajaDeBusquedaState extends State<_CajaDeBusqueda>
                           context: context,
                           //no editable
                           initialEntryMode: DatePickerEntryMode.calendarOnly,
-                          initialDate: FechaConstants.initialDate,
-                          firstDate: FechaConstants.initialDate,
-                          lastDate: FechaConstants.initialDate
+                          initialDate: DateConstants.initialDate,
+                          firstDate: DateConstants.initialDate,
+                          lastDate: DateConstants.initialDate
                               .add(const Duration(days: 365)),
                           selectableDayPredicate: (DateTime val) {
                             if (val.weekday == 6 || val.weekday == 7) {
@@ -182,8 +182,8 @@ class _CajaDeBusquedaState extends State<_CajaDeBusqueda>
                         );
 
                         if (nuevaFecha == null) return;
-                        fechaCtrl.text = dateFormat.format(nuevaFecha);
-                        fecha = nuevaFecha.millisecondsSinceEpoch;
+                        dateCtrl.text = dateFormat.format(nuevaFecha);
+                        date = nuevaFecha.millisecondsSinceEpoch;
                       },
                     ),
                   ),
@@ -195,22 +195,22 @@ class _CajaDeBusquedaState extends State<_CajaDeBusqueda>
                         screen: DefaultTabController.of(context).index == 0
                             ? BusquedaScreen(
                                 isGoingToZonzamas: true,
-                                origen: origenCtrl.text.trim() == ''
+                                origin: originCtrl.text.trim() == ''
                                     ? null
-                                    : origenCtrl.text.trim(),
-                                fecha: fecha != 0 ? fecha : null,
+                                    : originCtrl.text.trim(),
+                                date: date != 0 ? date : null,
                               )
                             : BusquedaScreen(
                                 isGoingToZonzamas: false,
-                                destino: destinoCtrl.text.trim() == ''
+                                destination: destinationCtrl.text.trim() == ''
                                     ? null
-                                    : destinoCtrl.text.trim(),
-                                fecha: fecha != 0 ? fecha : null,
+                                    : destinationCtrl.text.trim(),
+                                date: date != 0 ? date : null,
                               ),
                       );
-                      origenCtrl.clear();
-                      destinoCtrl.clear();
-                      fechaCtrl.clear();
+                      originCtrl.clear();
+                      destinationCtrl.clear();
+                      dateCtrl.clear();
                     },
                     style: TextButton.styleFrom(
                       backgroundColor: Colors.green,

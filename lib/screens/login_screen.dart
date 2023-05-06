@@ -23,7 +23,7 @@ class LoginScreen extends StatelessWidget {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: const [
-                Logo(titulo: 'Acceso'),
+                Logo(title: 'Acceso'),
                 _Form(),
               ],
             ),
@@ -100,7 +100,7 @@ class __FormState extends State<_Form> {
                         },
                       ),
                       //Botón de acceso
-                      BotonVerde(
+                      CredentialsGreenButton(
                         text: 'Acceder',
                         onPressed: () {
                           login(email, password);
@@ -136,8 +136,9 @@ class __FormState extends State<_Form> {
                                         keyboardType:
                                             TextInputType.emailAddress,
                                         decoration: const InputDecoration(
-                                            labelText: 'Correo electrónico',
-                                            border: OutlineInputBorder()),
+                                          labelText: 'Correo electrónico',
+                                          border: OutlineInputBorder(),
+                                        ),
                                         validator: (value) {
                                           return RegExp(
                                             r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+",
@@ -149,7 +150,7 @@ class __FormState extends State<_Form> {
                                       const SizedBox(
                                         height: 20,
                                       ),
-                                      BotonVerde(
+                                      CredentialsGreenButton(
                                         text: 'Enviar',
                                         onPressed: () async {
                                           if (forgetPasswordKey.currentState!
@@ -200,12 +201,10 @@ class __FormState extends State<_Form> {
                   ),
                   //Botón de registro
                   const Labels(
-                    ruta: 'register',
+                    route: 'register',
                     text: '¿No tienes cuenta?',
                     gestureText: 'Crea una ahora!',
                   ),
-                  // const SizedBox(height: 40,),
-                  // Text('Términos y condiciones de uso', style: TextStyle(fontWeight: FontWeight.w200),),
                 ],
               ),
             ),

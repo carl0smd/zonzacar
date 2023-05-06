@@ -20,7 +20,7 @@ class _ChatScreenState extends State<ChatScreen> {
   List<String> driversId = [];
   List<String> passengersId = [];
 
-  void getConductoresYPasajeros() async {
+  void getDriversAndPassengers() async {
     try {
       setState(() {
         isLoading = true;
@@ -51,7 +51,7 @@ class _ChatScreenState extends State<ChatScreen> {
   @override
   void initState() {
     super.initState();
-    getConductoresYPasajeros();
+    getDriversAndPassengers();
   }
 
   @override
@@ -165,17 +165,17 @@ class Users extends StatelessWidget {
                         context,
                         withNavBar: false,
                         screen: ChatDetailsScreen(
-                          pasajero: isDriver
+                          passenger: isDriver
                               ? FirebaseAuth.instance.currentUser!.uid
                               : users[index]['uid'],
-                          conductor: isDriver
+                          driver: isDriver
                               ? users[index]['uid']
                               : FirebaseAuth.instance.currentUser!.uid,
-                          isConductor: !isDriver,
+                          isDriver: !isDriver,
                         ),
                       );
                     },
-                    leading: ImagenUsuario(
+                    leading: UserImage(
                       userImage: users[index]['imagenPerfil'],
                       radiusOutterCircle: 22,
                       radiusImageCircle: 20,

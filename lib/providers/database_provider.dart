@@ -20,7 +20,7 @@ class DatabaseProvider {
     'expulsado': 'Expulsado',
   };
 
-  //referencias a las colecciones de la base de datos
+  //References to the collections
   final CollectionReference usuarioCollection =
       FirebaseFirestore.instance.collection('usuarios');
 
@@ -36,7 +36,7 @@ class DatabaseProvider {
   final CollectionReference chatsCollection =
       FirebaseFirestore.instance.collection('chats');
 
-  //guardar al usuario en la base de datos cuando se registra
+  //Save user data on register
   Future savingUserDataOnRegister(String nombreCompleto, String email) async {
     return await usuarioCollection.doc(uid).set({
       'nombreCompleto': nombreCompleto,
@@ -67,14 +67,14 @@ class DatabaseProvider {
     }
   }
 
-  //actualizar nombre de usuario
+  //update user name
   Future updateUserName(String nombreCompleto) async {
     await usuarioCollection.doc(FirebaseAuth.instance.currentUser!.uid).update({
       'nombreCompleto': nombreCompleto,
     });
   }
 
-  //buscar al usuario en la base de datos por email
+  //search user by email
   Future gettingUserDataByEmail(String email) async {
     QuerySnapshot snapshot =
         await usuarioCollection.where('email', isEqualTo: email).get();
@@ -89,7 +89,7 @@ class DatabaseProvider {
     return snapshot;
   }
 
-  //get usuario por uid
+  //get user by uid
   Future getUserByUid(String uid) async {
     QuerySnapshot snapshot =
         await usuarioCollection.where('uid', isEqualTo: uid).get();
@@ -106,11 +106,13 @@ class DatabaseProvider {
     }
 
     if (isDriver) {
-      //search for chats where i'm pasajero and user is conductor and then order users bt fechaUltimoMensaje
+      //search for chats where i'm pasajero and user is conductor and then order users by fechaUltimoMensaje
       for (var user in users) {
         QuerySnapshot snapshot = await chatsCollection
-            .where('pasajero',
-                isEqualTo: FirebaseAuth.instance.currentUser!.uid)
+            .where(
+              'pasajero',
+              isEqualTo: FirebaseAuth.instance.currentUser!.uid,
+            )
             .where('conductor', isEqualTo: user['uid'])
             .get();
         if (snapshot.docs.isNotEmpty) {
@@ -153,7 +155,7 @@ class DatabaseProvider {
     return users;
   }
 
-  //get usuarios que compartan coche en una publicacion
+  //get users that share car in the same publication
   Future getUsersSharingCar(String uidPublication) async {
     QuerySnapshot snapshotReservas = await reservasCollection
         .where('publicacion', isEqualTo: uidPublication)
@@ -167,14 +169,14 @@ class DatabaseProvider {
     return snapshotUsuarios.docs;
   }
 
-  //guardar imagen de perfil
+  //save user profile image url on database
   Future storeProfileImage(String userImage) async {
     await usuarioCollection.doc(FirebaseAuth.instance.currentUser!.uid).update({
       'imagenPerfil': userImage,
     });
   }
 
-  //eliminar usuario de la base de datos
+  //delete user
   Future deleteUser(bool correctCredentials) async {
     if (!correctCredentials) {
       return;
@@ -293,7 +295,7 @@ class DatabaseProvider {
     helperFunctions.saveUserLoggedInStatus(false);
   }
 
-  //guardar vehiculos
+  //create vehicle
   Future saveVehicle(
     String matricula,
     String marca,
@@ -315,14 +317,14 @@ class DatabaseProvider {
     });
   }
 
-  //get vehiculo por uid
+  //get vehicle by uid
   Future getVehicleByUid(String uid) async {
     QuerySnapshot snapshot =
         await vehiculosCollection.where('uid', isEqualTo: uid).get();
     return snapshot.docs;
   }
 
-  //get vehiculos de usuario
+  //get vehicles of user
   Future getVehicles() async {
     QuerySnapshot snapshot = await vehiculosCollection
         .where('conductor', isEqualTo: FirebaseAuth.instance.currentUser!.uid)
@@ -330,9 +332,8 @@ class DatabaseProvider {
     return snapshot.docs;
   }
 
-  //eliminar vehiculo
+  //delete vehicle
   Future deleteVehicle(String uid) async {
-    //get publicaciones del vehiculo
     QuerySnapshot snapshotPublicaciones =
         await publicacionesCollection.where('vehiculo', isEqualTo: uid).get();
 
@@ -349,7 +350,7 @@ class DatabaseProvider {
     }
   }
 
-  //guardar publicacion
+  //save publication
   Future savePublication(
     int fecha,
     String duracionViaje,
@@ -377,9 +378,9 @@ class DatabaseProvider {
       'asientosDisponibles': asientos,
       'precio': precio,
       'vehiculo': uidVehiculo,
-      'deleted': false,
       'conductor': FirebaseAuth.instance.currentUser!.uid,
       'estado': estadoPublicacion['disponible'],
+      'valoraciones': [],
       'uid': id,
     });
 
@@ -388,7 +389,7 @@ class DatabaseProvider {
     });
   }
 
-  //update publicacion (estado)
+  //update publication (estado)
   Future updatePublicationState(String uid, String estado) async {
     await publicacionesCollection.doc(uid).update({
       'estado': estado,
@@ -426,14 +427,14 @@ class DatabaseProvider {
     }
   }
 
-  //get publicaciones
+  //get publications by uid
   Future getPublications(String id) async {
     QuerySnapshot snapshot =
         await publicacionesCollection.where('uid', isEqualTo: id).get();
     return snapshot.docs;
   }
 
-  //get publicaciones hacia el Zonzamas
+  //get publications to zonzamas
   Future getPublicationsToZonzamas([dynamic fecha]) async {
     if (fecha != null) {
       QuerySnapshot snapshot = await publicacionesCollection
@@ -461,7 +462,7 @@ class DatabaseProvider {
     }
   }
 
-  //get publicaciones desde el Zonzamas
+  //get publications from zonzamas
   Future getPublicationsFromZonzamas([dynamic fecha]) async {
     if (fecha != null) {
       QuerySnapshot snapshot = await publicacionesCollection
@@ -489,7 +490,7 @@ class DatabaseProvider {
     }
   }
 
-  //get publicaciones dónde el usuario es conductor
+  //get publications where I am passenger
   Future getPublicationsByDriver() async {
     QuerySnapshot snapshot = await publicacionesCollection
         .where('conductor', isEqualTo: FirebaseAuth.instance.currentUser!.uid)
@@ -498,7 +499,7 @@ class DatabaseProvider {
     return snapshot.docs;
   }
 
-  //get pasajeros de mis publicaciones
+  //get passengers from my publications
   Future<List<String>> getAllMyPassengers() async {
     QuerySnapshot snapshot = await publicacionesCollection
         .where('conductor', isEqualTo: FirebaseAuth.instance.currentUser!.uid)
@@ -517,44 +518,7 @@ class DatabaseProvider {
     return pasajeros;
   }
 
-  //get all my passengers without a chat
-  Future<List> getAllMyPassengersWithoutChat() async {
-    QuerySnapshot snapshot = await publicacionesCollection
-        .where('conductor', isEqualTo: FirebaseAuth.instance.currentUser!.uid)
-        .get();
-
-    List<String> pasajeros = [];
-
-    for (var publicacion in snapshot.docs) {
-      for (var pasajero in publicacion['pasajeros']) {
-        if (!pasajeros.contains(pasajero)) {
-          QuerySnapshot snapshotChat = await chatsCollection
-              .where('pasajero', isEqualTo: pasajero)
-              .where(
-                'conductor',
-                isEqualTo: FirebaseAuth.instance.currentUser!.uid,
-              )
-              .get();
-
-          if (snapshotChat.docs.isEmpty) {
-            pasajeros.add(pasajero);
-          }
-        }
-      }
-    }
-
-    //search all users with the ids
-    List users = [];
-    for (var pasajero in pasajeros) {
-      QuerySnapshot snapshotUser =
-          await usuarioCollection.where('uid', isEqualTo: pasajero).get();
-      users.add(snapshotUser.docs[0]);
-    }
-
-    return users;
-  }
-
-  //get all conductores
+  //get all my drivers
   Future<List<String>> getAllMyDrivers() async {
     QuerySnapshot snapshot = await publicacionesCollection
         .where(
@@ -574,37 +538,7 @@ class DatabaseProvider {
     return conductores;
   }
 
-  //get all my drivers without a chat
-  Future<List<String>> getAllMyDriversWithoutChat() async {
-    QuerySnapshot snapshot = await publicacionesCollection
-        .where(
-          'pasajeros',
-          arrayContains: FirebaseAuth.instance.currentUser!.uid,
-        )
-        .get();
-
-    List<String> conductores = [];
-
-    for (var publicacion in snapshot.docs) {
-      if (!conductores.contains(publicacion['conductor'])) {
-        QuerySnapshot snapshotChat = await chatsCollection
-            .where(
-              'pasajero',
-              isEqualTo: FirebaseAuth.instance.currentUser!.uid,
-            )
-            .where('conductor', isEqualTo: publicacion['conductor'])
-            .get();
-
-        if (snapshotChat.docs.isEmpty) {
-          conductores.add(publicacion['conductor']);
-        }
-      }
-    }
-
-    return conductores;
-  }
-
-  //get publicaciones dónde el usuario es pasajero
+  //get publicactions where I am passenger
   Future getPublicationsByPassenger() async {
     QuerySnapshot snapshot = await publicacionesCollection
         .where(
@@ -651,7 +585,7 @@ class DatabaseProvider {
     await publicacionesCollection.doc(uid).delete();
   }
 
-  //get usuarios a partir de una lista de ids de pasaajeros de una publicacion
+  //get passengers from a publication
   Future getPassengersFromPublication(String uid) async {
     QuerySnapshot snapshotReservas =
         await reservasCollection.where('publicacion', isEqualTo: uid).get();
@@ -670,7 +604,7 @@ class DatabaseProvider {
     return [];
   }
 
-  //comprobar que el viaje no está lleno
+  //check if publication is full
   Future<bool> checkIfFull(String uid) async {
     DocumentSnapshot snapshot = await publicacionesCollection.doc(uid).get();
     final asientosDisponibles = snapshot['asientosDisponibles'];
@@ -682,7 +616,7 @@ class DatabaseProvider {
     }
   }
 
-  //guardar reserva
+  //save reservation
   Future saveReservation(String uidPublicacion, String uidPasajero) async {
     final id = reservasCollection.doc().id;
     await reservasCollection.doc(id).set({
@@ -706,7 +640,7 @@ class DatabaseProvider {
     }
   }
 
-  //eliminar reserva
+  //delete reservation
   Future deleteReservation(String uidPublicacion) async {
     QuerySnapshot snapshot = await reservasCollection
         .where('publicacion', isEqualTo: uidPublicacion)
@@ -728,7 +662,7 @@ class DatabaseProvider {
     });
   }
 
-  //crear chat
+  //create chat
   Future createChat(String uidConductor, String uidPasajero) async {
     final id = chatsCollection.doc().id;
     await chatsCollection.doc(id).set({
@@ -753,7 +687,7 @@ class DatabaseProvider {
     });
   }
 
-  //get chat de pasajero y conductor y create si no existe
+  //get chat from publication and if it doesn't exist, create it
   Future getChatFromPublication(String uidConductor, String uidPasajero) async {
     QuerySnapshot snapshot = await chatsCollection
         .where('conductor', isEqualTo: uidConductor)
@@ -789,7 +723,7 @@ class DatabaseProvider {
     }
   }
 
-  //exiting chat
+  //check when a user exits a chat
   Future exitChat(String uidChat, String uidUser) async {
     DocumentSnapshot snapshot = await chatsCollection.doc(uidChat).get();
     if (snapshot['conductor'] == uidUser) {
@@ -803,7 +737,7 @@ class DatabaseProvider {
     }
   }
 
-  //get mis chats
+  //get my chats
   Future getMyChats() async {
     QuerySnapshot snapshot = await chatsCollection
         .where(
@@ -814,7 +748,7 @@ class DatabaseProvider {
     return snapshot.docs;
   }
 
-  //get chats with a passenger
+  //get my chat with a passenger
   Future getChatsWithPassenger(String uidPasajero) async {
     QuerySnapshot snapshot = await chatsCollection
         .where('pasajero', isEqualTo: uidPasajero)
@@ -827,7 +761,7 @@ class DatabaseProvider {
     return snapshot.docs;
   }
 
-  //get chats with a driver
+  //get my chat with a driver
   Future getChatsWithDriver(String uidConductor) async {
     QuerySnapshot snapshot = await chatsCollection
         .where('conductor', isEqualTo: uidConductor)
@@ -837,14 +771,13 @@ class DatabaseProvider {
     return snapshot.docs;
   }
 
-  //create mensaje
+  //create message
   Future createMessage(
     String uidChat,
     String mensaje,
     String emisor,
     String receptor,
   ) async {
-    //snapshot del chat
     DocumentSnapshot snapshot = await chatsCollection.doc(uidChat).get();
 
     final id = chatsCollection.doc(uidChat).collection('mensajes').doc().id;

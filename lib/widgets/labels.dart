@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 
 class Labels extends StatelessWidget {
-  final String ruta;
+  final String route;
   final String text;
   final String gestureText;
 
   const Labels({
     super.key,
-    required this.ruta,
+    required this.route,
     required this.text,
     required this.gestureText,
   });
@@ -28,7 +28,7 @@ class Labels extends StatelessWidget {
           const SizedBox(height: 10),
           GestureDetector(
             onTap: () {
-              Navigator.pushReplacementNamed(context, ruta);
+              Navigator.pushReplacementNamed(context, route);
             },
             child: Text(
               gestureText,

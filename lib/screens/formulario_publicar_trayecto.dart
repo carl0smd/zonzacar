@@ -6,21 +6,21 @@ import '../providers/database_provider.dart';
 import '../shared/constants.dart';
 
 class FormularioTrayectoScreen extends StatefulWidget {
-  final String distancia;
-  final String origen;
-  final String destino;
-  final String coordenadasOrigen;
-  final String coordenadasDestino;
-  final String duracion;
+  final String distance;
+  final String origin;
+  final String destination;
+  final String coordsOrigin;
+  final String coordsDestination;
+  final String duration;
 
   const FormularioTrayectoScreen({
     Key? key,
-    required this.distancia,
-    required this.origen,
-    required this.destino,
-    required this.coordenadasOrigen,
-    required this.coordenadasDestino,
-    required this.duracion,
+    required this.distance,
+    required this.origin,
+    required this.destination,
+    required this.coordsOrigin,
+    required this.coordsDestination,
+    required this.duration,
   }) : super(key: key);
 
   @override
@@ -50,11 +50,11 @@ class _FormularioTrayectoScreenState extends State<FormularioTrayectoScreen> {
   @override
   Widget build(BuildContext context) {
     final formKey = GlobalKey<FormState>();
-    final fechaCtrl = TextEditingController();
-    final horaCtrl = TextEditingController();
-    final precioCtrl = TextEditingController();
-    final asientosCtrl = TextEditingController();
-    int fecha = 0;
+    final dateCtrl = TextEditingController();
+    final hourCtrl = TextEditingController();
+    final priceCtrl = TextEditingController();
+    final seatsCtrl = TextEditingController();
+    int date = 0;
     final today = DateTime(
       DateTime.now().year,
       DateTime.now().month,
@@ -64,14 +64,14 @@ class _FormularioTrayectoScreenState extends State<FormularioTrayectoScreen> {
       hour: DateTime.now().hour,
       minute: DateTime.now().minute,
     );
-    final precio = (double.parse(widget.distancia.split(" ")[0]) *
-            PrecioConstants.precioPorKm /
+    final price = (double.parse(widget.distance.split(" ")[0]) *
+            PriceConstants.pricePerKm /
             4)
         .toStringAsFixed(2);
-    dynamic vehiculo;
-    int plazas = 4;
-    asientosCtrl.text = plazas.toString();
-    precioCtrl.text = precio;
+    dynamic vehicle;
+    int seats = 4;
+    seatsCtrl.text = seats.toString();
+    priceCtrl.text = price;
     return Scaffold(
       appBar: AppBar(
         title: const Text(
@@ -114,7 +114,7 @@ class _FormularioTrayectoScreenState extends State<FormularioTrayectoScreen> {
                         Container(
                           margin: const EdgeInsets.only(bottom: 10.0),
                           child: Text(
-                            widget.origen,
+                            widget.origin,
                             style: const TextStyle(
                               fontSize: 20.0,
                               color: Colors.black,
@@ -141,7 +141,7 @@ class _FormularioTrayectoScreenState extends State<FormularioTrayectoScreen> {
                             const SizedBox(width: 10.0),
                             //Distancia
                             Text(
-                              widget.distancia,
+                              widget.distance,
                               style: TextStyle(
                                 fontSize: 20.0,
                                 color: Theme.of(context).primaryColor,
@@ -155,7 +155,7 @@ class _FormularioTrayectoScreenState extends State<FormularioTrayectoScreen> {
                             const SizedBox(width: 10.0),
                             //Duración
                             Text(
-                              widget.duracion,
+                              widget.duration,
                               style: TextStyle(
                                 fontSize: 20.0,
                                 color: Theme.of(context).primaryColor,
@@ -167,7 +167,7 @@ class _FormularioTrayectoScreenState extends State<FormularioTrayectoScreen> {
                         Container(
                           margin: const EdgeInsets.only(top: 10.0),
                           child: Text(
-                            widget.destino,
+                            widget.destination,
                             style: const TextStyle(
                               fontSize: 20.0,
                               color: Colors.black,
@@ -186,7 +186,7 @@ class _FormularioTrayectoScreenState extends State<FormularioTrayectoScreen> {
                       children: [
                         //Campo fecha
                         TextFormField(
-                          controller: fechaCtrl,
+                          controller: dateCtrl,
                           maxLength: 10,
                           readOnly: true,
                           decoration: const InputDecoration(
@@ -203,9 +203,9 @@ class _FormularioTrayectoScreenState extends State<FormularioTrayectoScreen> {
                               initialEntryMode:
                                   DatePickerEntryMode.calendarOnly,
                               //not on july and august and weekends
-                              initialDate: FechaConstants.initialDate,
-                              firstDate: FechaConstants.initialDate,
-                              lastDate: FechaConstants.initialDate
+                              initialDate: DateConstants.initialDate,
+                              firstDate: DateConstants.initialDate,
+                              lastDate: DateConstants.initialDate
                                   .add(const Duration(days: 365)),
                               selectableDayPredicate: (DateTime val) {
                                 if (val.weekday == 6 || val.weekday == 7) {
@@ -218,8 +218,8 @@ class _FormularioTrayectoScreenState extends State<FormularioTrayectoScreen> {
                               },
                             );
                             if (nuevaFecha == null) return;
-                            fechaCtrl.text = dateFormat.format(nuevaFecha);
-                            fecha = nuevaFecha.millisecondsSinceEpoch;
+                            dateCtrl.text = dateFormat.format(nuevaFecha);
+                            date = nuevaFecha.millisecondsSinceEpoch;
                           },
                           validator: (value) {
                             if (value == null || value.isEmpty) {
@@ -231,7 +231,7 @@ class _FormularioTrayectoScreenState extends State<FormularioTrayectoScreen> {
                         const SizedBox(height: 20.0),
                         //Campo hora
                         TextFormField(
-                          controller: horaCtrl,
+                          controller: hourCtrl,
                           maxLength: 5,
                           readOnly: true,
                           decoration: const InputDecoration(
@@ -249,13 +249,13 @@ class _FormularioTrayectoScreenState extends State<FormularioTrayectoScreen> {
                             );
                             if (nuevaHora == null) return;
                             if (mounted) {
-                              horaCtrl.text = nuevaHora.format(context);
+                              hourCtrl.text = nuevaHora.format(context);
                             }
                           },
                           validator: (value) {
                             if (value == null || value.isEmpty) {
                               return 'Por favor, introduce una hora';
-                            } else if (today <= fecha &&
+                            } else if (today <= date &&
                                 toDouble(hourNow.hour, hourNow.minute) >=
                                     toDouble(
                                       int.parse(
@@ -291,7 +291,7 @@ class _FormularioTrayectoScreenState extends State<FormularioTrayectoScreen> {
                             fillColor: Colors.white,
                           ),
                           onChanged: (value) {
-                            vehiculo = value;
+                            vehicle = value;
                           },
                           validator: (value) {
                             if (value == null) {
@@ -305,7 +305,7 @@ class _FormularioTrayectoScreenState extends State<FormularioTrayectoScreen> {
 
                         //Campo asientos
                         TextFormField(
-                          controller: asientosCtrl,
+                          controller: seatsCtrl,
                           maxLength: 1,
                           readOnly: true,
                           decoration: InputDecoration(
@@ -316,21 +316,19 @@ class _FormularioTrayectoScreenState extends State<FormularioTrayectoScreen> {
                             counterText: '',
                             prefixIcon: IconButton(
                               onPressed: () {
-                                if (int.parse(asientosCtrl.text) <= 1) return;
-                                asientosCtrl.text =
-                                    (int.parse(asientosCtrl.text) - 1)
-                                        .toString();
+                                if (int.parse(seatsCtrl.text) <= 1) return;
+                                seatsCtrl.text =
+                                    (int.parse(seatsCtrl.text) - 1).toString();
                               },
                               icon: const Icon(Icons.remove_circle_outline),
                             ),
                             suffixIcon: IconButton(
                               onPressed: () {
-                                if (int.parse(asientosCtrl.text) >= plazas) {
+                                if (int.parse(seatsCtrl.text) >= seats) {
                                   return;
                                 }
-                                asientosCtrl.text =
-                                    (int.parse(asientosCtrl.text) + 1)
-                                        .toString();
+                                seatsCtrl.text =
+                                    (int.parse(seatsCtrl.text) + 1).toString();
                               },
                               icon: const Icon(Icons.add_circle_outline),
                             ),
@@ -347,7 +345,7 @@ class _FormularioTrayectoScreenState extends State<FormularioTrayectoScreen> {
 
                         //Campo precio
                         TextFormField(
-                          controller: precioCtrl,
+                          controller: priceCtrl,
                           maxLength: 5,
                           readOnly: true,
                           decoration: InputDecoration(
@@ -360,23 +358,23 @@ class _FormularioTrayectoScreenState extends State<FormularioTrayectoScreen> {
                             helperMaxLines: 2,
                             prefixIcon: IconButton(
                               onPressed: () {
-                                if (double.parse(precioCtrl.text) <=
-                                        double.parse(precio) - 1 ||
-                                    double.parse(precioCtrl.text) - 0.1 <= 0) {
+                                if (double.parse(priceCtrl.text) <=
+                                        double.parse(price) - 1 ||
+                                    double.parse(priceCtrl.text) - 0.1 <= 0) {
                                   return;
                                 }
-                                precioCtrl.text =
-                                    (double.parse(precioCtrl.text) - 0.1)
+                                priceCtrl.text =
+                                    (double.parse(priceCtrl.text) - 0.1)
                                         .toStringAsFixed(2);
                               },
                               icon: const Icon(Icons.remove_circle_outline),
                             ),
                             suffixIcon: IconButton(
                               onPressed: () {
-                                if (double.parse(precioCtrl.text) >=
-                                    double.parse(precio) + 1) return;
-                                precioCtrl.text =
-                                    (double.parse(precioCtrl.text) + 0.1)
+                                if (double.parse(priceCtrl.text) >=
+                                    double.parse(price) + 1) return;
+                                priceCtrl.text =
+                                    (double.parse(priceCtrl.text) + 0.1)
                                         .toStringAsFixed(2);
                               },
                               icon: const Icon(Icons.add_circle_outline),
@@ -425,17 +423,17 @@ class _FormularioTrayectoScreenState extends State<FormularioTrayectoScreen> {
                                       );
                                       try {
                                         await databaseProvider.savePublication(
-                                          fecha,
-                                          widget.duracion,
-                                          widget.distancia,
-                                          horaCtrl.text,
-                                          widget.origen,
-                                          widget.destino,
-                                          widget.coordenadasOrigen,
-                                          widget.coordenadasDestino,
-                                          int.parse(asientosCtrl.text),
-                                          double.parse(precioCtrl.text),
-                                          vehiculo,
+                                          date,
+                                          widget.duration,
+                                          widget.distance,
+                                          hourCtrl.text,
+                                          widget.origin,
+                                          widget.destination,
+                                          widget.coordsOrigin,
+                                          widget.coordsDestination,
+                                          int.parse(seatsCtrl.text),
+                                          double.parse(priceCtrl.text),
+                                          vehicle,
                                         );
                                         if (mounted) {
                                           Navigator.pushNamedAndRemoveUntil(

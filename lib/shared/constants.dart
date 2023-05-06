@@ -1,6 +1,6 @@
 //Contantes para los colores de los coches
-class ColoresConstants {
-  static List<String> colores = [
+class ColorsConstants {
+  static List<String> colors = [
     'Amarillo',
     'Azul',
     'Beige',
@@ -19,16 +19,13 @@ class ColoresConstants {
 }
 
 //Constantes para los precios
-class PrecioConstants {
+class PriceConstants {
   //Precio medio de gasolina por kilómetro España 2023
-  static double precioPorKm = 0.20;
-
-  //15% de gastos de gestión para zonzaCar (costos de la api)
-  static double porcentajeZonzaCar = 1.15;
+  static double pricePerKm = 0.20;
 }
 
 //Constantes para las fechas
-class FechaConstants {
+class DateConstants {
   //Si el día de la semana es sábado o domingo pasa al lunes
   static DateTime initialDate = DateTime.now().weekday == 6
       ? DateTime.now().add(const Duration(days: 2))

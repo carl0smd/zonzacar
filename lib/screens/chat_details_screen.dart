@@ -10,14 +10,14 @@ import 'package:zonzacar/widgets/widgets.dart';
 class ChatDetailsScreen extends StatefulWidget {
   const ChatDetailsScreen({
     Key? key,
-    required this.pasajero,
-    required this.conductor,
-    required this.isConductor,
+    required this.passenger,
+    required this.driver,
+    required this.isDriver,
   }) : super(key: key);
 
-  final String pasajero;
-  final String conductor;
-  final bool isConductor;
+  final String passenger;
+  final String driver;
+  final bool isDriver;
 
   @override
   State<ChatDetailsScreen> createState() => _ChatDetailsScreenState();
@@ -25,14 +25,14 @@ class ChatDetailsScreen extends StatefulWidget {
 
 class _ChatDetailsScreenState extends State<ChatDetailsScreen> {
   DatabaseProvider databaseProvider = DatabaseProvider();
-  TextEditingController mensajeController = TextEditingController();
+  TextEditingController messageController = TextEditingController();
 
   String? chatId;
   bool isLoading = false;
-  dynamic pasajero;
-  dynamic conductor;
+  dynamic passenger;
+  dynamic driver;
 
-  void getChatConductorYPasajero() async {
+  void getChatFromDriverAndPassenger() async {
     try {
       setState(() {
         isLoading = true;
@@ -40,8 +40,8 @@ class _ChatDetailsScreenState extends State<ChatDetailsScreen> {
 
       await databaseProvider
           .getChatFromPublication(
-            widget.conductor,
-            widget.pasajero,
+            widget.driver,
+            widget.passenger,
           )
           .then((value) => setState(() {
                 chatId = value[0]['uid'];
@@ -49,18 +49,18 @@ class _ChatDetailsScreenState extends State<ChatDetailsScreen> {
 
       await databaseProvider
           .getUserByUid(
-            widget.conductor,
+            widget.driver,
           )
           .then((value) => setState(() {
-                conductor = value;
+                driver = value;
               }));
 
       await databaseProvider
           .getUserByUid(
-            widget.pasajero,
+            widget.passenger,
           )
           .then((value) => setState(() {
-                pasajero = value;
+                passenger = value;
               }));
       setState(() {
         isLoading = false;
@@ -105,7 +105,7 @@ class _ChatDetailsScreenState extends State<ChatDetailsScreen> {
   void initState() {
     super.initState();
     messageListener();
-    getChatConductorYPasajero();
+    getChatFromDriverAndPassenger();
   }
 
   @override
@@ -123,13 +123,13 @@ class _ChatDetailsScreenState extends State<ChatDetailsScreen> {
             ? null
             : AppBar(
                 elevation: 0,
-                title: widget.isConductor
+                title: widget.isDriver
                     ? Text(
-                        pasajero[0]['nombreCompleto'],
+                        passenger[0]['nombreCompleto'],
                         maxLines: 2,
                       )
                     : Text(
-                        conductor[0]['nombreCompleto'],
+                        driver[0]['nombreCompleto'],
                         maxLines: 2,
                       ),
                 leading: IconButton(
@@ -154,13 +154,13 @@ class _ChatDetailsScreenState extends State<ChatDetailsScreen> {
                 ),
                 centerTitle: true,
                 actions: [
-                  widget.isConductor
+                  widget.isDriver
                       ? Container(
                           margin: const EdgeInsets.only(right: 10),
-                          child: ImagenUsuario(
-                            userImage: pasajero[0]['imagenPerfil'] != '' &&
-                                    pasajero[0]['imagenPerfil'] != null
-                                ? pasajero[0]['imagenPerfil']
+                          child: UserImage(
+                            userImage: passenger[0]['imagenPerfil'] != '' &&
+                                    passenger[0]['imagenPerfil'] != null
+                                ? passenger[0]['imagenPerfil']
                                 : '',
                             radiusOutterCircle: 22,
                             radiusImageCircle: 20,
@@ -169,10 +169,10 @@ class _ChatDetailsScreenState extends State<ChatDetailsScreen> {
                         )
                       : Container(
                           margin: const EdgeInsets.only(right: 10),
-                          child: ImagenUsuario(
-                            userImage: conductor[0]['imagenPerfil'] != '' &&
-                                    conductor[0]['imagenPerfil'] != null
-                                ? conductor[0]['imagenPerfil']
+                          child: UserImage(
+                            userImage: driver[0]['imagenPerfil'] != '' &&
+                                    driver[0]['imagenPerfil'] != null
+                                ? driver[0]['imagenPerfil']
                                 : '',
                             radiusOutterCircle: 22,
                             radiusImageCircle: 20,
@@ -187,7 +187,7 @@ class _ChatDetailsScreenState extends State<ChatDetailsScreen> {
                 child: Column(
                   children: [
                     Flexible(
-                      child: Mensajes(
+                      child: Messages(
                         databaseProvider: databaseProvider,
                         chatId: chatId,
                         widget: widget,
@@ -205,7 +205,7 @@ class _ChatDetailsScreenState extends State<ChatDetailsScreen> {
                           children: [
                             Expanded(
                               child: TextFormField(
-                                controller: mensajeController,
+                                controller: messageController,
                                 style: const TextStyle(
                                   color: Colors.white,
                                 ),
@@ -249,10 +249,10 @@ class _ChatDetailsScreenState extends State<ChatDetailsScreen> {
   }
 
   sendMessage() {
-    final mensaje = mensajeController.text.trim();
-    final emisor = widget.isConductor ? widget.conductor : widget.pasajero;
-    final receptor = widget.isConductor ? widget.pasajero : widget.conductor;
-    if (mensajeController.text.trim().isNotEmpty) {
+    final mensaje = messageController.text.trim();
+    final emisor = widget.isDriver ? widget.driver : widget.passenger;
+    final receptor = widget.isDriver ? widget.passenger : widget.driver;
+    if (messageController.text.trim().isNotEmpty) {
       try {
         databaseProvider.createMessage(
           chatId!,
@@ -268,12 +268,12 @@ class _ChatDetailsScreenState extends State<ChatDetailsScreen> {
       }
     }
 
-    mensajeController.clear();
+    messageController.clear();
   }
 }
 
-class Mensajes extends StatelessWidget {
-  const Mensajes({
+class Messages extends StatelessWidget {
+  const Messages({
     super.key,
     required this.databaseProvider,
     required this.chatId,
@@ -302,8 +302,8 @@ class Mensajes extends StatelessWidget {
             itemBuilder: (context, index) {
               return index == mensajes.length - 1
                   ? Container()
-                  : MensajeTile(
-                      hora: mensajes[index]['fecha'] > today
+                  : MessageTile(
+                      hour: mensajes[index]['fecha'] > today
                           ? DateFormat.Hm().format(
                               DateTime.fromMillisecondsSinceEpoch(
                                 mensajes[index]['fecha'],
@@ -314,11 +314,11 @@ class Mensajes extends StatelessWidget {
                                 mensajes[index]['fecha'],
                               ),
                             ),
-                      mensaje: mensajes[index]['mensaje'],
-                      emisor: mensajes[index]['emisor'],
-                      enviadoPorMi: widget.isConductor
-                          ? mensajes[index]['emisor'] == widget.conductor
-                          : mensajes[index]['emisor'] == widget.pasajero,
+                      message: mensajes[index]['mensaje'],
+                      sender: mensajes[index]['emisor'],
+                      sendByMe: widget.isDriver
+                          ? mensajes[index]['emisor'] == widget.driver
+                          : mensajes[index]['emisor'] == widget.passenger,
                     );
             },
           );

@@ -215,9 +215,9 @@ class _SearchBarState extends State<SearchBar> {
                       context,
                       screen: PublicarTrayectoScreen(
                         isGoingToZonzamas: widget.isGoingToZonzamas,
-                        zona: widget.placeList[index].description,
-                        zonaLat: coords!.lat,
-                        zonaLng: coords!.lng,
+                        zone: widget.placeList[index].description,
+                        zoneLat: coords!.lat,
+                        zoneLng: coords!.lng,
                       ),
                     );
                     FocusScope.of(context).unfocus();

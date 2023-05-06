@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-class ImagenUsuario extends StatelessWidget {
-  const ImagenUsuario({
+class UserImage extends StatelessWidget {
+  const UserImage({
     super.key,
     required this.userImage,
     required this.radiusOutterCircle,

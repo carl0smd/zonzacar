@@ -19,7 +19,7 @@ class RegisterScreen extends StatelessWidget {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: const [
-                Logo(titulo: 'Registro'),
+                Logo(title: 'Registro'),
                 _Form(),
               ],
             ),
@@ -42,7 +42,7 @@ class __FormState extends State<_Form> {
 
   bool _isLoading = false;
 
-  String? nombre = '';
+  String? name = '';
   String? email = '';
   String? password = '';
 
@@ -65,7 +65,7 @@ class __FormState extends State<_Form> {
                         icon: Icons.perm_identity,
                         placeholder: 'Nombre',
                         onChanged: (value) {
-                          nombre = value;
+                          name = value;
                           setState(() {});
                         },
                         validator: (value) {
@@ -108,10 +108,10 @@ class __FormState extends State<_Form> {
                               : 'La contraseña debe tener al menos 6 caracteres sin espacios';
                         },
                       ),
-                      BotonVerde(
+                      CredentialsGreenButton(
                         text: 'Crear cuenta',
                         onPressed: () {
-                          register(nombre, email, password);
+                          register(name, email, password);
                         },
                       ),
                     ],
@@ -121,7 +121,7 @@ class __FormState extends State<_Form> {
                   height: 40,
                 ),
                 const Labels(
-                  ruta: 'login',
+                  route: 'login',
                   text: '¿Ya tienes cuenta?',
                   gestureText: 'Accede desde aquí!',
                 ),

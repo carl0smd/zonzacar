@@ -8,17 +8,17 @@ import 'package:zonzacar/providers/google_services_provider.dart';
 import 'package:zonzacar/screens/screens.dart';
 
 class PublicarTrayectoScreen extends StatefulWidget {
-  final String zona;
-  final double zonaLat;
-  final double zonaLng;
+  final String zone;
+  final double zoneLat;
+  final double zoneLng;
   final bool isGoingToZonzamas;
 
   const PublicarTrayectoScreen({
     Key? key,
     required this.isGoingToZonzamas,
-    required this.zona,
-    required this.zonaLat,
-    required this.zonaLng,
+    required this.zone,
+    required this.zoneLat,
+    required this.zoneLng,
   }) : super(key: key);
 
   @override
@@ -59,11 +59,11 @@ class _PublicarTrayectoScreenState extends State<PublicarTrayectoScreen> {
   @override
   Widget build(BuildContext context) {
     String origin = widget.isGoingToZonzamas
-        ? "${widget.zonaLat.toString()},${widget.zonaLng.toString()}"
+        ? "${widget.zoneLat.toString()},${widget.zoneLng.toString()}"
         : "28.967505747317997,-13.560605681682436";
     String destination = widget.isGoingToZonzamas
         ? "28.967505747317997,-13.560605681682436"
-        : "${widget.zonaLat.toString()},${widget.zonaLng.toString()}";
+        : "${widget.zoneLat.toString()},${widget.zoneLng.toString()}";
 
     GoogleServicesProvider googleServicesProvider = GoogleServicesProvider();
 
@@ -72,16 +72,20 @@ class _PublicarTrayectoScreenState extends State<PublicarTrayectoScreen> {
     //Marcador de origen
     Marker originMarker = Marker(
       markerId: const MarkerId('origin'),
-      position: LatLng(double.parse(origin.split(',')[0]),
-          double.parse(origin.split(',')[1])),
+      position: LatLng(
+        double.parse(origin.split(',')[0]),
+        double.parse(origin.split(',')[1]),
+      ),
       infoWindow: const InfoWindow(title: 'Origen'),
       consumeTapEvents: true,
       icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueGreen),
       onTap: () {
         _controller.future.then((value) {
           value.animateCamera(CameraUpdate.newCameraPosition(CameraPosition(
-            target: LatLng(double.parse(origin.split(',')[0]),
-                double.parse(origin.split(',')[1])),
+            target: LatLng(
+              double.parse(origin.split(',')[0]),
+              double.parse(origin.split(',')[1]),
+            ),
             zoom: 18,
           )));
         });
@@ -91,16 +95,20 @@ class _PublicarTrayectoScreenState extends State<PublicarTrayectoScreen> {
     //Marcador de destino
     Marker destinationMarker = Marker(
       markerId: const MarkerId('destination'),
-      position: LatLng(double.parse(destination.split(',')[0]),
-          double.parse(destination.split(',')[1])),
+      position: LatLng(
+        double.parse(destination.split(',')[0]),
+        double.parse(destination.split(',')[1]),
+      ),
       infoWindow: const InfoWindow(title: 'Destino'),
       icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueRed),
       consumeTapEvents: true,
       onTap: () {
         _controller.future.then((value) {
           value.animateCamera(CameraUpdate.newCameraPosition(CameraPosition(
-            target: LatLng(double.parse(destination.split(',')[0]),
-                double.parse(destination.split(',')[1])),
+            target: LatLng(
+              double.parse(destination.split(',')[0]),
+              double.parse(destination.split(',')[1]),
+            ),
             zoom: 18,
           )));
         });
@@ -142,16 +150,16 @@ class _PublicarTrayectoScreenState extends State<PublicarTrayectoScreen> {
                             context,
                             withNavBar: false,
                             screen: FormularioTrayectoScreen(
-                              distancia: snapshot.data[1],
-                              duracion: snapshot.data[2],
-                              origen: widget.isGoingToZonzamas
-                                  ? widget.zona
+                              distance: snapshot.data[1],
+                              duration: snapshot.data[2],
+                              origin: widget.isGoingToZonzamas
+                                  ? widget.zone
                                   : 'CIFP Zonzamas',
-                              destino: widget.isGoingToZonzamas
+                              destination: widget.isGoingToZonzamas
                                   ? 'CIFP Zonzamas'
-                                  : widget.zona,
-                              coordenadasOrigen: origin,
-                              coordenadasDestino: destination,
+                                  : widget.zone,
+                              coordsOrigin: origin,
+                              coordsDestination: destination,
                             ),
                           );
                         },

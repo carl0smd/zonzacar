@@ -1,18 +1,18 @@
 import 'package:flutter/material.dart';
 
-class MensajeTile extends StatelessWidget {
-  const MensajeTile({
+class MessageTile extends StatelessWidget {
+  const MessageTile({
     super.key,
-    required this.mensaje,
-    required this.emisor,
-    required this.enviadoPorMi,
-    required this.hora,
+    required this.message,
+    required this.sender,
+    required this.sendByMe,
+    required this.hour,
   });
 
-  final String mensaje;
-  final String emisor;
-  final bool enviadoPorMi;
-  final String hora;
+  final String message;
+  final String sender;
+  final bool sendByMe;
+  final String hour;
 
   @override
   Widget build(BuildContext context) {
@@ -23,9 +23,9 @@ class MensajeTile extends StatelessWidget {
         left: 24,
         right: 24,
       ),
-      alignment: enviadoPorMi ? Alignment.centerRight : Alignment.centerLeft,
+      alignment: sendByMe ? Alignment.centerRight : Alignment.centerLeft,
       child: Container(
-        margin: enviadoPorMi
+        margin: sendByMe
             ? const EdgeInsets.only(left: 30)
             : const EdgeInsets.only(right: 30),
         padding: const EdgeInsets.only(
@@ -35,7 +35,7 @@ class MensajeTile extends StatelessWidget {
           right: 20,
         ),
         decoration: BoxDecoration(
-          borderRadius: enviadoPorMi
+          borderRadius: sendByMe
               ? const BorderRadius.only(
                   topLeft: Radius.circular(23),
                   topRight: Radius.circular(23),
@@ -46,14 +46,14 @@ class MensajeTile extends StatelessWidget {
                   topRight: Radius.circular(23),
                   bottomRight: Radius.circular(23),
                 ),
-          color: enviadoPorMi ? Colors.green[400] : Colors.blue[300],
+          color: sendByMe ? Colors.green[400] : Colors.blue[300],
         ),
         child: Column(
           crossAxisAlignment:
-              enviadoPorMi ? CrossAxisAlignment.end : CrossAxisAlignment.start,
+              sendByMe ? CrossAxisAlignment.end : CrossAxisAlignment.start,
           children: [
             Text(
-              hora,
+              hour,
               textAlign: TextAlign.start,
               style: const TextStyle(
                 color: Colors.white,
@@ -63,7 +63,7 @@ class MensajeTile extends StatelessWidget {
             ),
             const SizedBox(height: 10),
             Text(
-              mensaje,
+              message,
               textAlign: TextAlign.start,
               style: const TextStyle(
                 color: Colors.white,

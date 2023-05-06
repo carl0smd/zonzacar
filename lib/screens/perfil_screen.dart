@@ -221,7 +221,7 @@ class _PerfilScreenState extends State<PerfilScreen> {
                       ],
                     ),
                     // Foto de perfil
-                    ImagenUsuario(
+                    UserImage(
                       userImage: userImage,
                       radiusOutterCircle: 52,
                       radiusImageCircle: 50,
@@ -243,7 +243,7 @@ class _PerfilScreenState extends State<PerfilScreen> {
                     style: TextStyle(fontSize: 16, color: Colors.green),
                   ),
                   onPressed: () async {
-                    return editarFotoDialog(context, uploadImage);
+                    return editImageDialog(context, uploadImage);
                   },
                 ),
                 // Botón para editar el nombre
@@ -253,7 +253,7 @@ class _PerfilScreenState extends State<PerfilScreen> {
                     style: TextStyle(fontSize: 16, color: Colors.green),
                   ),
                   onPressed: () async {
-                    return _editarNombreDialog(context, databaseProvider);
+                    return _editNameDialog(context, databaseProvider);
                   },
                 ),
                 const Divider(
@@ -358,7 +358,7 @@ class _PerfilScreenState extends State<PerfilScreen> {
   }
 
   // Dialog para editar nombre
-  Future<void> _editarNombreDialog(
+  Future<void> _editNameDialog(
     BuildContext context,
     DatabaseProvider databaseProvider,
   ) {

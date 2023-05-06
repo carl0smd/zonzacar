@@ -5,7 +5,7 @@ import 'package:zonzacar/providers/database_provider.dart';
 import 'package:zonzacar/shared/constants.dart';
 
 // Dialogos para editar datos
-Future<void> editarFotoDialog(
+Future<void> editImageDialog(
   BuildContext context,
   void Function(dynamic camara) uploadImage,
 ) {
@@ -143,7 +143,7 @@ Future<void> addVehicleDialog(
                         ),
                         const SizedBox(height: 10.0),
                         DropdownButtonFormField(
-                          items: ColoresConstants.colores.map((String value) {
+                          items: ColorsConstants.colors.map((String value) {
                             return DropdownMenuItem<String>(
                               value: value,
                               child: Text(value),
@@ -257,7 +257,7 @@ Future<void> addVehicleDialog(
                         ),
                         const SizedBox(height: 10.0),
                         DropdownButtonFormField(
-                          items: ColoresConstants.colores.map((String value) {
+                          items: ColorsConstants.colors.map((String value) {
                             return DropdownMenuItem<String>(
                               value: value,
                               child: Text(value),

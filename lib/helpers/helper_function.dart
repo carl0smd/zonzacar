@@ -8,7 +8,8 @@ class HelperFunctions {
   final String userEmailKey = "USEREMAILKEY";
   final String userNameKey = "USERNAMEKEY";
 
-  //Guardar los datos en SS
+  //Save data to SecureStorage
+
   Future saveUserLoggedInStatus(isUserLoggedIn) async {
     final writeStatus = await _storage.write(
       key: userLoggedInKey,
@@ -27,7 +28,8 @@ class HelperFunctions {
     return writeName;
   }
 
-  //Obtener los datos de SS
+  //Get data from SecureStorage
+
   Future getUserLoggedInStatus() async {
     final readStatus = await _storage.read(key: userLoggedInKey);
     return readStatus;

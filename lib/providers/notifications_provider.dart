@@ -5,7 +5,7 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:http/http.dart';
 
 class NotificationsProvider {
-  final messageKey = dotenv.env['MESSAGE_API_KEY'];
+  final _messageKey = dotenv.env['MESSAGE_API_KEY'];
 
   Future sendPushNotification(receiver, sender, message) async {
     final body = {
@@ -26,7 +26,7 @@ class NotificationsProvider {
         Uri.parse('https://fcm.googleapis.com/fcm/send'),
         headers: {
           HttpHeaders.contentTypeHeader: 'application/json',
-          HttpHeaders.authorizationHeader: 'key=$messageKey',
+          HttpHeaders.authorizationHeader: 'key=$_messageKey',
         },
         body: jsonEncode(body),
       );

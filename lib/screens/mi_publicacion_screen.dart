@@ -10,9 +10,9 @@ import 'package:zonzacar/screens/screens.dart';
 import 'package:zonzacar/widgets/widgets.dart';
 
 class MiPublicacionScreen extends StatefulWidget {
-  const MiPublicacionScreen({Key? key, this.publicacion}) : super(key: key);
+  const MiPublicacionScreen({Key? key, this.publication}) : super(key: key);
 
-  final dynamic publicacion;
+  final dynamic publication;
 
   @override
   State<MiPublicacionScreen> createState() => _MiPublicacionScreenState();
@@ -24,13 +24,13 @@ class _MiPublicacionScreenState extends State<MiPublicacionScreen> {
   bool isTripFinished = false;
 
   void checkState() {
-    if (widget.publicacion['estado'] == 'En curso' ||
-        widget.publicacion['estado'] == 'Finalizada') {
+    if (widget.publication['estado'] == 'En curso' ||
+        widget.publication['estado'] == 'Finalizada') {
       setState(() {
         isTripStarted = true;
       });
     }
-    if (widget.publicacion['estado'] == 'finalizado') {
+    if (widget.publication['estado'] == 'finalizado') {
       setState(() {
         isTripFinished = true;
       });
@@ -46,29 +46,29 @@ class _MiPublicacionScreenState extends State<MiPublicacionScreen> {
   @override
   Widget build(BuildContext context) {
     DatabaseProvider databaseProvider = DatabaseProvider();
-    String tripState = widget.publicacion['estado'];
+    String tripState = widget.publication['estado'];
 
     CameraPosition kGooglePlex = CameraPosition(
       target: LatLng(
         double.parse(
-          widget.publicacion['coordenadasOrigen'].split(',')[0],
+          widget.publication['coordenadasOrigen'].split(',')[0],
         ),
         double.parse(
-          widget.publicacion['coordenadasOrigen'].split(',')[1],
+          widget.publication['coordenadasOrigen'].split(',')[1],
         ),
       ),
       zoom: 16,
     );
 
     //Marker origen
-    Marker origenMarker = Marker(
+    Marker originMarker = Marker(
       markerId: const MarkerId('marker'),
       position: LatLng(
         double.parse(
-          widget.publicacion['coordenadasOrigen'].split(',')[0],
+          widget.publication['coordenadasOrigen'].split(',')[0],
         ),
         double.parse(
-          widget.publicacion['coordenadasOrigen'].split(',')[1],
+          widget.publication['coordenadasOrigen'].split(',')[1],
         ),
       ),
       icon: BitmapDescriptor.defaultMarkerWithHue(
@@ -123,7 +123,7 @@ class _MiPublicacionScreenState extends State<MiPublicacionScreen> {
               const SizedBox(height: 10.0),
               FutureBuilder(
                 future: databaseProvider
-                    .getPassengersFromPublication(widget.publicacion['uid']),
+                    .getPassengersFromPublication(widget.publication['uid']),
                 builder:
                     (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
                   if (snapshot.hasData && snapshot.data.isNotEmpty) {
@@ -149,7 +149,7 @@ class _MiPublicacionScreenState extends State<MiPublicacionScreen> {
                             ),
                             const SizedBox(width: 5.0),
                             Text(
-                              '${pasajeros.length}/${widget.publicacion['asientosDisponibles']}',
+                              '${pasajeros.length}/${widget.publication['asientosDisponibles']}',
                               style: const TextStyle(
                                 fontSize: 20,
                                 fontWeight: FontWeight.bold,
@@ -175,7 +175,7 @@ class _MiPublicacionScreenState extends State<MiPublicacionScreen> {
                                         Positioned(
                                           left: pasajeros.indexOf(pasajero) *
                                               30.0,
-                                          child: ImagenUsuario(
+                                          child: UserImage(
                                             userImage: pasajero['imagenPerfil'],
                                             radiusOutterCircle: 32,
                                             radiusImageCircle: 30,
@@ -212,7 +212,7 @@ class _MiPublicacionScreenState extends State<MiPublicacionScreen> {
                                     child: FutureBuilder(
                                       future: databaseProvider
                                           .getPassengersFromPublication(
-                                        widget.publicacion['uid'],
+                                        widget.publication['uid'],
                                       ),
                                       builder: (
                                         BuildContext context,
@@ -236,7 +236,7 @@ class _MiPublicacionScreenState extends State<MiPublicacionScreen> {
                                               int index,
                                             ) {
                                               return ListTile(
-                                                leading: ImagenUsuario(
+                                                leading: UserImage(
                                                   userImage: pasajeros[index]
                                                       ['imagenPerfil'],
                                                   radiusOutterCircle: 28,
@@ -259,13 +259,13 @@ class _MiPublicacionScreenState extends State<MiPublicacionScreen> {
                                                         .pushNewScreen(
                                                       context,
                                                       screen: ChatDetailsScreen(
-                                                        conductor:
-                                                            widget.publicacion[
+                                                        driver:
+                                                            widget.publication[
                                                                 'conductor'],
-                                                        pasajero:
+                                                        passenger:
                                                             pasajeros[index]
                                                                 ['uid'],
-                                                        isConductor: true,
+                                                        isDriver: true,
                                                       ),
                                                     );
                                                   },
@@ -359,11 +359,11 @@ class _MiPublicacionScreenState extends State<MiPublicacionScreen> {
                                       final bool isPublicationToday =
                                           await databaseProvider
                                               .checkIfPublicationStartsTripToday(
-                                        widget.publicacion['uid'],
+                                        widget.publication['uid'],
                                       );
 
                                       if (isPublicationToday) {
-                                        if (widget.publicacion['pasajeros']
+                                        if (widget.publication['pasajeros']
                                                 .length >
                                             0) {
                                           setState(() {
@@ -373,7 +373,7 @@ class _MiPublicacionScreenState extends State<MiPublicacionScreen> {
                                           });
                                           await databaseProvider
                                               .updatePublicationState(
-                                            widget.publicacion['uid'],
+                                            widget.publication['uid'],
                                             tripState,
                                           );
                                           if (mounted) Navigator.pop(context);
@@ -447,7 +447,7 @@ class _MiPublicacionScreenState extends State<MiPublicacionScreen> {
                                       });
                                       await databaseProvider
                                           .updatePublicationState(
-                                        widget.publicacion['uid'],
+                                        widget.publication['uid'],
                                         tripState,
                                       );
                                       if (mounted) Navigator.pop(context);
@@ -510,7 +510,7 @@ class _MiPublicacionScreenState extends State<MiPublicacionScreen> {
                   myLocationEnabled: true,
                   compassEnabled: true,
                   scrollGesturesEnabled: true,
-                  markers: {origenMarker},
+                  markers: {originMarker},
                   onMapCreated: (GoogleMapController controller) {
                     _controller.complete(controller);
                   },

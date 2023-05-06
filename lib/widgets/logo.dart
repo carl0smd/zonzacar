@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 
 class Logo extends StatelessWidget {
-  final String titulo;
+  final String title;
 
-  const Logo({super.key, required this.titulo});
+  const Logo({super.key, required this.title});
 
   @override
   Widget build(BuildContext context) {
@@ -17,7 +17,7 @@ class Logo extends StatelessWidget {
               image: AssetImage('assets/logo.png'),
             ),
             Text(
-              titulo,
+              title,
               style: const TextStyle(
                 fontSize: 30,
               ),
