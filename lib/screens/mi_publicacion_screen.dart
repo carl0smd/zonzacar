@@ -20,10 +20,34 @@ class MiPublicacionScreen extends StatefulWidget {
 
 class _MiPublicacionScreenState extends State<MiPublicacionScreen> {
   final Completer<GoogleMapController> _controller = Completer();
+  bool isTripStarted = false;
+  bool isTripFinished = false;
+
+  void checkState() {
+    if (widget.publicacion['estado'] == 'En curso' ||
+        widget.publicacion['estado'] == 'Finalizada') {
+      setState(() {
+        isTripStarted = true;
+      });
+    }
+    if (widget.publicacion['estado'] == 'finalizado') {
+      setState(() {
+        isTripFinished = true;
+      });
+    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    checkState();
+  }
 
   @override
   Widget build(BuildContext context) {
     DatabaseProvider databaseProvider = DatabaseProvider();
+    String tripState = widget.publicacion['estado'];
+
     CameraPosition kGooglePlex = CameraPosition(
       target: LatLng(
         double.parse(
@@ -73,7 +97,15 @@ class _MiPublicacionScreenState extends State<MiPublicacionScreen> {
                   ),
                   IconButton(
                     onPressed: () {
-                      Navigator.pop(context);
+                      Navigator.pushAndRemoveUntil(
+                        context,
+                        MaterialPageRoute(
+                          builder: (BuildContext context) => const MenuScreen(
+                            initialIndex: 2,
+                          ),
+                        ),
+                        (route) => false,
+                      );
                     },
                     icon: const Icon(
                       Icons.close,
@@ -305,8 +337,156 @@ class _MiPublicacionScreenState extends State<MiPublicacionScreen> {
                 height: 20,
               ),
               const SizedBox(),
-              const SizedBox(),
+              //botones circulares para iniciar el viaje en naranja, boton para finalizar el viaje en gris
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  //boton para iniciar el viaje
+                  ElevatedButton(
+                    onPressed: isTripStarted
+                        ? null
+                        : () {
+                            showDialog(
+                              context: context,
+                              builder: (context) => AlertDialog(
+                                title: const Text('Iniciar viaje'),
+                                content: const Text(
+                                  '¿Estás seguro de que quieres iniciar el viaje?',
+                                ),
+                                actions: [
+                                  TextButton(
+                                    onPressed: () async {
+                                      final bool isPublicationToday =
+                                          await databaseProvider
+                                              .checkIfPublicationStartsTripToday(
+                                        widget.publicacion['uid'],
+                                      );
 
+                                      if (isPublicationToday) {
+                                        if (widget.publicacion['pasajeros']
+                                                .length >
+                                            0) {
+                                          setState(() {
+                                            tripState = DatabaseProvider
+                                                .estadoPublicacion['encurso']!;
+                                            isTripStarted = true;
+                                          });
+                                          await databaseProvider
+                                              .updatePublicationState(
+                                            widget.publicacion['uid'],
+                                            tripState,
+                                          );
+                                          if (mounted) Navigator.pop(context);
+                                        } else {
+                                          if (mounted) {
+                                            Navigator.pop(context);
+                                            showSnackbar(
+                                              'No puedes iniciar un viaje sin pasajeros',
+                                              context,
+                                            );
+                                          }
+                                        }
+                                      } else {
+                                        if (mounted) {
+                                          Navigator.pop(context);
+                                          showSnackbar(
+                                            'No puedes iniciar un viaje que no sea hoy',
+                                            context,
+                                          );
+                                        }
+                                      }
+                                    },
+                                    child: const Text('Sí'),
+                                  ),
+                                  TextButton(
+                                    onPressed: () {
+                                      Navigator.pop(context);
+                                    },
+                                    child: const Text('No'),
+                                  ),
+                                ],
+                              ),
+                            );
+                          },
+                    style: ElevatedButton.styleFrom(
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(20.0),
+                      ),
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 20.0,
+                        vertical: 10.0,
+                      ),
+                    ),
+                    child: const Text(
+                      'Iniciar viaje',
+                      style: TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
+
+                  //boton para finalizar el viaje
+                  ElevatedButton(
+                    onPressed: !isTripFinished && isTripStarted
+                        ? () {
+                            showDialog(
+                              context: context,
+                              builder: (context) => AlertDialog(
+                                title: const Text('Finalizar viaje'),
+                                content: const Text(
+                                  '¿Estás seguro de que quieres finalizar el viaje?',
+                                ),
+                                actions: [
+                                  TextButton(
+                                    onPressed: () async {
+                                      setState(() {
+                                        tripState = DatabaseProvider
+                                            .estadoPublicacion['finalizada']!;
+                                        isTripFinished = true;
+                                      });
+                                      await databaseProvider
+                                          .updatePublicationState(
+                                        widget.publicacion['uid'],
+                                        tripState,
+                                      );
+                                      if (mounted) Navigator.pop(context);
+                                    },
+                                    child: const Text('Sí'),
+                                  ),
+                                  TextButton(
+                                    onPressed: () {
+                                      Navigator.pop(context);
+                                    },
+                                    child: const Text('No'),
+                                  ),
+                                ],
+                              ),
+                            );
+                          }
+                        : null,
+                    style: ElevatedButton.styleFrom(
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(20.0),
+                      ),
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 20.0,
+                        vertical: 10.0,
+                      ),
+                    ),
+                    child: const Text(
+                      'Finalizar viaje',
+                      style: TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(
+                height: 20,
+              ),
               Row(
                 children: const [
                   Text(

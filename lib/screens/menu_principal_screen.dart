@@ -5,7 +5,9 @@ import 'package:persistent_bottom_nav_bar/persistent_tab_view.dart';
 import '../screens/screens.dart';
 
 class MenuScreen extends StatefulWidget {
-  const MenuScreen({super.key});
+  const MenuScreen({super.key, this.initialIndex});
+
+  final int? initialIndex;
 
   @override
   State<MenuScreen> createState() => _MenuScreenState();
@@ -26,7 +28,8 @@ class _MenuScreenState extends State<MenuScreen> {
   Widget build(BuildContext context) {
     PersistentTabController controller;
 
-    controller = PersistentTabController(initialIndex: 0);
+    controller =
+        PersistentTabController(initialIndex: widget.initialIndex ?? 0);
     // BottomNavBar persitente
     return PersistentTabView(
       context,

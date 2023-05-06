@@ -318,7 +318,7 @@ class _ReservaDetailsScreenState extends State<ReservaDetailsScreen> {
                       size: 30,
                     ),
                     title: const Text(
-                      'Efectivo',
+                      'Efectivo o Bizum',
                       style: TextStyle(fontSize: 18),
                     ),
                     trailing: const Icon(
@@ -466,7 +466,7 @@ class _ReservaDetailsScreenState extends State<ReservaDetailsScreen> {
                       size: 30,
                     ),
                     title: const Text(
-                      'Tarjeta de crédito/débito (Próximamente)',
+                      'Tarjeta (Próximamente)',
                       style: TextStyle(fontSize: 18, color: Colors.grey),
                     ),
                     trailing: const Icon(

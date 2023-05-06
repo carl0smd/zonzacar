@@ -1,13 +1,11 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
-import 'package:intl/intl.dart';
+
 import 'package:zonzacar/helpers/helper_function.dart';
 import 'package:zonzacar/providers/notifications_provider.dart';
 
 class DatabaseProvider {
-  final DateFormat dateFormat = DateFormat('dd/MM/yyyy');
-
   final String? uid;
   DatabaseProvider({this.uid});
 
@@ -16,6 +14,7 @@ class DatabaseProvider {
     'llena': 'Llena',
     'encurso': 'En curso',
     'finalizada': 'Finalizada',
+    'expulsado': 'Expulsado',
   };
 
   //referencias a las colecciones de la base de datos
@@ -213,6 +212,7 @@ class DatabaseProvider {
       'asientosDisponibles': asientos,
       'precio': precio,
       'vehiculo': uidVehiculo,
+      'deleted': false,
       'conductor': FirebaseAuth.instance.currentUser!.uid,
       'estado': estadoPublicacion['disponible'],
       'uid': id,
@@ -221,6 +221,44 @@ class DatabaseProvider {
     await usuarioCollection.doc(FirebaseAuth.instance.currentUser!.uid).update({
       'publicaciones': FieldValue.arrayUnion([id]),
     });
+  }
+
+  //update publicacion (estado)
+  Future updatePublicationState(String uid, String estado) async {
+    await publicacionesCollection.doc(uid).update({
+      'estado': estado,
+    });
+  }
+
+  //delete passenger from publication
+  Future deletePassengerFromPublication(
+    String uidPublication,
+    String uidPassenger,
+  ) async {
+    await publicacionesCollection.doc(uidPublication).update({
+      'pasajeros': FieldValue.arrayRemove(
+        [uidPassenger],
+      ),
+    });
+  }
+
+  //check if publication starts trip today without the hour
+  Future checkIfPublicationStartsTripToday(String uidPublication) async {
+    QuerySnapshot snapshot = await publicacionesCollection
+        .where('uid', isEqualTo: uidPublication)
+        .get();
+    final publication = snapshot.docs[0];
+    final publicationDate = DateTime.fromMillisecondsSinceEpoch(
+      publication['fecha'],
+    );
+    final today = DateTime.now();
+    if (publicationDate.day == today.day &&
+        publicationDate.month == today.month &&
+        publicationDate.year == today.year) {
+      return true;
+    } else {
+      return false;
+    }
   }
 
   //get publicaciones
@@ -413,6 +451,13 @@ class DatabaseProvider {
     return snapshot.docs;
   }
 
+  //
+  Future softDeletePublication(String uid) async {
+    await publicacionesCollection.doc(uid).update({
+      'deleted': true,
+    });
+  }
+
   //delete publication
   Future deletePublication(String uid) async {
     QuerySnapshot snapshotReservas =
@@ -452,12 +497,12 @@ class DatabaseProvider {
       for (var reserva in snapshotReservas.docs) {
         passengers.add(reserva['pasajero']);
       }
+      QuerySnapshot snapshotUsuarios =
+          await usuarioCollection.where('uid', whereIn: passengers).get();
+      return snapshotUsuarios.docs;
     }
 
-    QuerySnapshot snapshotUsuarios =
-        await usuarioCollection.where('uid', whereIn: passengers).get();
-
-    return snapshotUsuarios.docs;
+    return [];
   }
 
   //comprobar que el viaje no está lleno

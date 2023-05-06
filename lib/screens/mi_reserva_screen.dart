@@ -1,6 +1,5 @@
 import 'dart:async';
 
-import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/gestures.dart';
@@ -77,7 +76,17 @@ class _MiReservaScreenState extends State<MiReservaScreen> {
                   ),
                   IconButton(
                     onPressed: () {
-                      Navigator.pop(context);
+                      Navigator.pushAndRemoveUntil(
+                        context,
+                        MaterialPageRoute(
+                          builder: (BuildContext context) {
+                            return const MenuScreen(
+                              initialIndex: 2,
+                            );
+                          },
+                        ),
+                        (route) => false,
+                      );
                     },
                     icon: const Icon(
                       Icons.close,

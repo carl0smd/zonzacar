@@ -60,7 +60,6 @@ class BusquedaScreen extends StatelessWidget {
           builder: (BuildContext context, AsyncSnapshot snapshot) {
             if (snapshot.hasData && snapshot.data.length != 0) {
               final publications = snapshot.data;
-              print(publications[0]['pasajeros'].length);
               publications.removeWhere((element) =>
                   element['conductor'] ==
                       FirebaseAuth.instance.currentUser!.uid ||

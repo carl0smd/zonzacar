@@ -4,6 +4,7 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:zonzacar/providers/database_provider.dart';
+import 'package:zonzacar/screens/menu_principal_screen.dart';
 import 'package:zonzacar/widgets/widgets.dart';
 
 class ChatDetailsScreen extends StatefulWidget {
@@ -138,7 +139,17 @@ class _ChatDetailsScreenState extends State<ChatDetailsScreen> {
                       chatId!,
                       FirebaseAuth.instance.currentUser!.uid,
                     );
-                    if (mounted) Navigator.pop(context);
+                    if (mounted) {
+                      Navigator.pushAndRemoveUntil(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const MenuScreen(
+                            initialIndex: 3,
+                          ),
+                        ),
+                        (route) => false,
+                      );
+                    }
                   },
                 ),
                 centerTitle: true,
