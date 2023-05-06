@@ -32,6 +32,10 @@ class _FormularioTrayectoScreenState extends State<FormularioTrayectoScreen> {
   final databaseProvider = DatabaseProvider();
   final List vehicles = [];
   bool isLoading = false;
+  final dateCtrl = TextEditingController();
+  final hourCtrl = TextEditingController();
+  final priceCtrl = TextEditingController();
+  final seatsCtrl = TextEditingController();
 
   @override
   void initState() {
@@ -47,13 +51,10 @@ class _FormularioTrayectoScreenState extends State<FormularioTrayectoScreen> {
     return hour + minute / 60.0;
   }
 
+  final GlobalKey<FormState> formKey = GlobalKey<FormState>();
+
   @override
   Widget build(BuildContext context) {
-    final formKey = GlobalKey<FormState>();
-    final dateCtrl = TextEditingController();
-    final hourCtrl = TextEditingController();
-    final priceCtrl = TextEditingController();
-    final seatsCtrl = TextEditingController();
     int date = 0;
     final today = DateTime(
       DateTime.now().year,
@@ -255,7 +256,7 @@ class _FormularioTrayectoScreenState extends State<FormularioTrayectoScreen> {
                           validator: (value) {
                             if (value == null || value.isEmpty) {
                               return 'Por favor, introduce una hora';
-                            } else if (today <= date &&
+                            } else if (today >= date &&
                                 toDouble(hourNow.hour, hourNow.minute) >=
                                     toDouble(
                                       int.parse(

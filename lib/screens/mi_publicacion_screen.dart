@@ -368,7 +368,7 @@ class _MiPublicacionScreenState extends State<MiPublicacionScreen> {
                                             0) {
                                           setState(() {
                                             tripState = DatabaseProvider
-                                                .estadoPublicacion['encurso']!;
+                                                .publicationState['encurso']!;
                                             isTripStarted = true;
                                           });
                                           await databaseProvider
@@ -442,7 +442,7 @@ class _MiPublicacionScreenState extends State<MiPublicacionScreen> {
                                     onPressed: () async {
                                       setState(() {
                                         tripState = DatabaseProvider
-                                            .estadoPublicacion['finalizada']!;
+                                            .publicationState['finalizada']!;
                                         isTripFinished = true;
                                       });
                                       await databaseProvider

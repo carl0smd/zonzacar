@@ -186,37 +186,80 @@ class _MiReservaScreenState extends State<MiReservaScreen> {
                 builder: (context, snapshot) {
                   if (snapshot.hasData) {
                     final vehicle = snapshot.data[0];
-                    return Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    return Column(
                       children: [
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            Text(
-                              vehicle['marca'] + ' ' + vehicle['modelo'],
-                              style: const TextStyle(
-                                fontSize: 20,
-                                fontWeight: FontWeight.bold,
-                                color: Colors.black87,
-                              ),
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  vehicle['marca'] + ' ' + vehicle['modelo'],
+                                  style: const TextStyle(
+                                    fontSize: 20,
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.black87,
+                                  ),
+                                ),
+                                const SizedBox(
+                                  height: 5,
+                                ),
+                                Text(
+                                  vehicle['color'] +
+                                      ' - ' +
+                                      vehicle['matricula'],
+                                  style: const TextStyle(
+                                    fontSize: 20,
+                                    color: Colors.grey,
+                                  ),
+                                ),
+                              ],
                             ),
-                            const SizedBox(
-                              height: 5,
-                            ),
-                            Text(
-                              vehicle['color'] + ' - ' + vehicle['matricula'],
-                              style: const TextStyle(
-                                fontSize: 20,
-                                color: Colors.grey,
-                              ),
+                            const Icon(
+                              Icons.directions_car,
+                              size: 40,
+                              color: Colors.green,
                             ),
                           ],
                         ),
-                        const Icon(
-                          Icons.directions_car,
-                          size: 40,
-                          color: Colors.green,
-                        ),
+                        //button to rate driver
+                        widget.publication['estado'] ==
+                                DatabaseProvider.publicationState['finalizada']
+                            ? Column(
+                                children: [
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    children: [
+                                      const SizedBox(
+                                        height: 20,
+                                      ),
+                                      ElevatedButton(
+                                        onPressed: () {},
+                                        child: const Text(
+                                          'Valorar conductor',
+                                          style: TextStyle(
+                                            fontSize: 20,
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                        ),
+                                        style: ElevatedButton.styleFrom(
+                                          primary: Colors.green,
+                                          padding: const EdgeInsets.symmetric(
+                                            horizontal: 20.0,
+                                            vertical: 10.0,
+                                          ),
+                                          shape: RoundedRectangleBorder(
+                                            borderRadius:
+                                                BorderRadius.circular(20.0),
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ],
+                              )
+                            : const SizedBox(),
                       ],
                     );
                   } else {

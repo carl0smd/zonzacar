@@ -12,7 +12,7 @@ class DatabaseProvider {
 
   HelperFunctions helperFunctions = HelperFunctions();
 
-  static final estadoPublicacion = {
+  static final publicationState = {
     'disponible': 'Disponible',
     'llena': 'Llena',
     'encurso': 'En curso',
@@ -21,25 +21,25 @@ class DatabaseProvider {
   };
 
   //References to the collections
-  final CollectionReference usuarioCollection =
+  final CollectionReference userCollection =
       FirebaseFirestore.instance.collection('usuarios');
 
-  final CollectionReference publicacionesCollection =
+  final CollectionReference publicationsCollection =
       FirebaseFirestore.instance.collection('publicaciones');
 
-  final CollectionReference reservasCollection =
+  final CollectionReference bookingsCollection =
       FirebaseFirestore.instance.collection('reservas');
 
-  final CollectionReference vehiculosCollection =
+  final CollectionReference vehiclesCollection =
       FirebaseFirestore.instance.collection('vehiculos');
 
   final CollectionReference chatsCollection =
       FirebaseFirestore.instance.collection('chats');
 
   //Save user data on register
-  Future savingUserDataOnRegister(String nombreCompleto, String email) async {
-    return await usuarioCollection.doc(uid).set({
-      'nombreCompleto': nombreCompleto,
+  Future savingUserDataOnRegister(String fullName, String email) async {
+    return await userCollection.doc(uid).set({
+      'nombreCompleto': fullName,
       'email': email,
       'publicaciones': [],
       'reservas': [],
@@ -59,31 +59,29 @@ class DatabaseProvider {
   //update user push token
   Future updateUserPushToken() async {
     if (helperFunctions.userLoggedInKey == 'true') {
-      await usuarioCollection
-          .doc(FirebaseAuth.instance.currentUser!.uid)
-          .update({
+      await userCollection.doc(FirebaseAuth.instance.currentUser!.uid).update({
         'pushToken': await FirebaseMessaging.instance.getToken(),
       });
     }
   }
 
   //update user name
-  Future updateUserName(String nombreCompleto) async {
-    await usuarioCollection.doc(FirebaseAuth.instance.currentUser!.uid).update({
-      'nombreCompleto': nombreCompleto,
+  Future updateUserName(String fullName) async {
+    await userCollection.doc(FirebaseAuth.instance.currentUser!.uid).update({
+      'nombreCompleto': fullName,
     });
   }
 
   //search user by email
   Future gettingUserDataByEmail(String email) async {
     QuerySnapshot snapshot =
-        await usuarioCollection.where('email', isEqualTo: email).get();
+        await userCollection.where('email', isEqualTo: email).get();
     return snapshot;
   }
 
   //get usuario actual
   Future getCurrentUser() async {
-    QuerySnapshot snapshot = await usuarioCollection
+    QuerySnapshot snapshot = await userCollection
         .where('uid', isEqualTo: FirebaseAuth.instance.currentUser!.uid)
         .get();
     return snapshot;
@@ -92,7 +90,7 @@ class DatabaseProvider {
   //get user by uid
   Future getUserByUid(String uid) async {
     QuerySnapshot snapshot =
-        await usuarioCollection.where('uid', isEqualTo: uid).get();
+        await userCollection.where('uid', isEqualTo: uid).get();
     return snapshot.docs;
   }
 
@@ -101,7 +99,7 @@ class DatabaseProvider {
     List<DocumentSnapshot> users = [];
     List lastMessageDates = [];
     for (var id in ids) {
-      DocumentSnapshot snapshot = await usuarioCollection.doc(id).get();
+      DocumentSnapshot snapshot = await userCollection.doc(id).get();
       users.add(snapshot);
     }
 
@@ -125,8 +123,10 @@ class DatabaseProvider {
       //search for chats where i'm conductor and user is pasajero and then order users bt fechaUltimoMensaje
       for (var user in users) {
         QuerySnapshot snapshot = await chatsCollection
-            .where('conductor',
-                isEqualTo: FirebaseAuth.instance.currentUser!.uid)
+            .where(
+              'conductor',
+              isEqualTo: FirebaseAuth.instance.currentUser!.uid,
+            )
             .where('pasajero', isEqualTo: user['uid'])
             .get();
         if (snapshot.docs.isNotEmpty) {
@@ -157,7 +157,7 @@ class DatabaseProvider {
 
   //get users that share car in the same publication
   Future getUsersSharingCar(String uidPublication) async {
-    QuerySnapshot snapshotReservas = await reservasCollection
+    QuerySnapshot snapshotReservas = await bookingsCollection
         .where('publicacion', isEqualTo: uidPublication)
         .get();
     List<String> usuarios = [];
@@ -165,13 +165,13 @@ class DatabaseProvider {
       usuarios.add(reserva['pasajero']);
     }
     QuerySnapshot snapshotUsuarios =
-        await usuarioCollection.where('uid', whereIn: usuarios).get();
+        await userCollection.where('uid', whereIn: usuarios).get();
     return snapshotUsuarios.docs;
   }
 
   //save user profile image url on database
   Future storeProfileImage(String userImage) async {
-    await usuarioCollection.doc(FirebaseAuth.instance.currentUser!.uid).update({
+    await userCollection.doc(FirebaseAuth.instance.currentUser!.uid).update({
       'imagenPerfil': userImage,
     });
   }
@@ -215,40 +215,40 @@ class DatabaseProvider {
 
     //delete reservas where user is pasajero
 
-    QuerySnapshot snapshotReservas = await reservasCollection
+    QuerySnapshot snapshotReservas = await bookingsCollection
         .where('pasajero', isEqualTo: FirebaseAuth.instance.currentUser!.uid)
         .get();
 
     for (var reserva in snapshotReservas.docs) {
-      await reservasCollection.doc(reserva.id).delete();
-      await usuarioCollection.doc(reserva['pasajero']).update({
+      await bookingsCollection.doc(reserva.id).delete();
+      await userCollection.doc(reserva['pasajero']).update({
         'reservas': FieldValue.arrayRemove([reserva.id]),
       });
     }
 
     //delete reservas where publicacion is equal to any of the user's publicaciones
 
-    QuerySnapshot snapshotPublicaciones = await publicacionesCollection
+    QuerySnapshot snapshotPublicaciones = await publicationsCollection
         .where('conductor', isEqualTo: FirebaseAuth.instance.currentUser!.uid)
         .get();
 
     for (var publicacion in snapshotPublicaciones.docs) {
-      QuerySnapshot snapshotReservas = await reservasCollection
+      QuerySnapshot snapshotReservas = await bookingsCollection
           .where('publicacion', isEqualTo: publicacion.id)
           .get();
 
       for (var reserva in snapshotReservas.docs) {
-        await reservasCollection.doc(reserva.id).delete();
+        await bookingsCollection.doc(reserva.id).delete();
       }
     }
 
     for (var publicacion in snapshotPublicaciones.docs) {
-      await publicacionesCollection.doc(publicacion.id).delete();
+      await publicationsCollection.doc(publicacion.id).delete();
     }
 
     //delete user from publicaciones where user is pasajero
 
-    QuerySnapshot snapshotPublicaciones2 = await publicacionesCollection
+    QuerySnapshot snapshotPublicaciones2 = await publicationsCollection
         .where(
           'pasajeros',
           arrayContains: FirebaseAuth.instance.currentUser!.uid,
@@ -256,7 +256,7 @@ class DatabaseProvider {
         .get();
 
     for (var publicacion in snapshotPublicaciones2.docs) {
-      await publicacionesCollection.doc(publicacion.id).update({
+      await publicationsCollection.doc(publicacion.id).update({
         'pasajeros': FieldValue.arrayRemove(
           [FirebaseAuth.instance.currentUser!.uid],
         ),
@@ -265,17 +265,17 @@ class DatabaseProvider {
 
     //delete vechicle
 
-    QuerySnapshot snapshotVehiculos = await vehiculosCollection
+    QuerySnapshot snapshotVehiculos = await vehiclesCollection
         .where('conductor', isEqualTo: FirebaseAuth.instance.currentUser!.uid)
         .get();
 
     for (var vehiculo in snapshotVehiculos.docs) {
-      await vehiculosCollection.doc(vehiculo.id).delete();
+      await vehiclesCollection.doc(vehiculo.id).delete();
     }
 
     //delete imagePerfil from firebase storage
 
-    String imagePerfil = await usuarioCollection
+    String imagePerfil = await userCollection
         .doc(FirebaseAuth.instance.currentUser!.uid)
         .get()
         .then((value) => value['imagenPerfil']);
@@ -286,9 +286,7 @@ class DatabaseProvider {
 
     // delete user from firebase auth and db
 
-    await usuarioCollection
-        .doc(FirebaseAuth.instance.currentUser!.uid)
-        .delete();
+    await userCollection.doc(FirebaseAuth.instance.currentUser!.uid).delete();
 
     await FirebaseAuth.instance.currentUser!.delete();
 
@@ -302,8 +300,8 @@ class DatabaseProvider {
     String modelo,
     String color,
   ) async {
-    final id = vehiculosCollection.doc().id;
-    await vehiculosCollection.doc(id).set({
+    final id = vehiclesCollection.doc().id;
+    await vehiclesCollection.doc(id).set({
       'matricula': matricula,
       'marca': marca,
       'modelo': modelo,
@@ -312,7 +310,7 @@ class DatabaseProvider {
       'uid': id,
     });
 
-    await usuarioCollection.doc(FirebaseAuth.instance.currentUser!.uid).update({
+    await userCollection.doc(FirebaseAuth.instance.currentUser!.uid).update({
       'vehiculos': FieldValue.arrayUnion([id]),
     });
   }
@@ -320,13 +318,13 @@ class DatabaseProvider {
   //get vehicle by uid
   Future getVehicleByUid(String uid) async {
     QuerySnapshot snapshot =
-        await vehiculosCollection.where('uid', isEqualTo: uid).get();
+        await vehiclesCollection.where('uid', isEqualTo: uid).get();
     return snapshot.docs;
   }
 
   //get vehicles of user
   Future getVehicles() async {
-    QuerySnapshot snapshot = await vehiculosCollection
+    QuerySnapshot snapshot = await vehiclesCollection
         .where('conductor', isEqualTo: FirebaseAuth.instance.currentUser!.uid)
         .get();
     return snapshot.docs;
@@ -335,15 +333,13 @@ class DatabaseProvider {
   //delete vehicle
   Future deleteVehicle(String uid) async {
     QuerySnapshot snapshotPublicaciones =
-        await publicacionesCollection.where('vehiculo', isEqualTo: uid).get();
+        await publicationsCollection.where('vehiculo', isEqualTo: uid).get();
 
     if (snapshotPublicaciones.docs.isNotEmpty) {
       return false;
     } else {
-      await vehiculosCollection.doc(uid).delete();
-      await usuarioCollection
-          .doc(FirebaseAuth.instance.currentUser!.uid)
-          .update({
+      await vehiclesCollection.doc(uid).delete();
+      await userCollection.doc(FirebaseAuth.instance.currentUser!.uid).update({
         'vehiculos': FieldValue.arrayRemove([uid]),
       });
       return true;
@@ -364,8 +360,8 @@ class DatabaseProvider {
     double precio,
     String uidVehiculo,
   ) async {
-    final id = vehiculosCollection.doc().id;
-    await publicacionesCollection.doc(id).set({
+    final id = vehiclesCollection.doc().id;
+    await publicationsCollection.doc(id).set({
       'pasajeros': [],
       'fecha': fecha,
       'horaSalida': hora,
@@ -379,19 +375,61 @@ class DatabaseProvider {
       'precio': precio,
       'vehiculo': uidVehiculo,
       'conductor': FirebaseAuth.instance.currentUser!.uid,
-      'estado': estadoPublicacion['disponible'],
+      'estado': publicationState['disponible'],
       'valoraciones': [],
+      'observaciones': '',
       'uid': id,
     });
 
-    await usuarioCollection.doc(FirebaseAuth.instance.currentUser!.uid).update({
+    await userCollection.doc(FirebaseAuth.instance.currentUser!.uid).update({
       'publicaciones': FieldValue.arrayUnion([id]),
+    });
+  }
+
+  //create rating
+  Future rateDriver(int stars, String uidPublication, String uidDriver) async {
+    await publicationsCollection.doc(uidPublication).update({
+      'valoraciones':
+          FieldValue.arrayUnion([FirebaseAuth.instance.currentUser!.uid]),
+    });
+
+    await userCollection.doc(uidDriver).update({
+      if (stars == 1)
+        'unaEstrella': FieldValue.increment(1)
+      else if (stars == 2)
+        'dosEstrellas': FieldValue.increment(1)
+      else if (stars == 3)
+        'tresEstrellas': FieldValue.increment(1)
+      else if (stars == 4)
+        'cuatroEstrellas': FieldValue.increment(1)
+      else if (stars == 5)
+        'cincoEstrellas': FieldValue.increment(1),
+    });
+
+    //do the average of the stars
+    await userCollection.doc(uidDriver).get().then((value) async {
+      int totalStars = value['unaEstrella'] +
+          value['dosEstrellas'] +
+          value['tresEstrellas'] +
+          value['cuatroEstrellas'] +
+          value['cincoEstrellas'];
+
+      double average = (value['unaEstrella'] +
+              value['dosEstrellas'] * 2 +
+              value['tresEstrellas'] * 3 +
+              value['cuatroEstrellas'] * 4 +
+              value['cincoEstrellas'] * 5) /
+          totalStars;
+
+      await userCollection.doc(uidDriver).update({
+        'mediaValoraciones': average,
+      });
     });
   }
 
   //update publication (estado)
   Future updatePublicationState(String uid, String estado) async {
-    await publicacionesCollection.doc(uid).update({
+    await publicationsCollection.doc(uid).update({
       'estado': estado,
     });
   }
@@ -401,7 +439,7 @@ class DatabaseProvider {
     String uidPublication,
     String uidPassenger,
   ) async {
-    await publicacionesCollection.doc(uidPublication).update({
+    await publicationsCollection.doc(uidPublication).update({
       'pasajeros': FieldValue.arrayRemove(
         [uidPassenger],
       ),
@@ -410,7 +448,7 @@ class DatabaseProvider {
 
   //check if publication starts trip today without the hour
   Future checkIfPublicationStartsTripToday(String uidPublication) async {
-    QuerySnapshot snapshot = await publicacionesCollection
+    QuerySnapshot snapshot = await publicationsCollection
         .where('uid', isEqualTo: uidPublication)
         .get();
     final publication = snapshot.docs[0];
@@ -430,18 +468,18 @@ class DatabaseProvider {
   //get publications by uid
   Future getPublications(String id) async {
     QuerySnapshot snapshot =
-        await publicacionesCollection.where('uid', isEqualTo: id).get();
+        await publicationsCollection.where('uid', isEqualTo: id).get();
     return snapshot.docs;
   }
 
   //get publications to zonzamas
   Future getPublicationsToZonzamas([dynamic fecha]) async {
     if (fecha != null) {
-      QuerySnapshot snapshot = await publicacionesCollection
+      QuerySnapshot snapshot = await publicationsCollection
           .where('fecha', isGreaterThanOrEqualTo: fecha)
           .where('fecha', isLessThanOrEqualTo: fecha + 86399000)
           .where('destino', isEqualTo: 'CIFP Zonzamas')
-          .where('estado', isEqualTo: estadoPublicacion['disponible'])
+          .where('estado', isEqualTo: publicationState['disponible'])
           .orderBy('fecha')
           .orderBy('horaSalida')
           .orderBy('origen')
@@ -450,10 +488,10 @@ class DatabaseProvider {
     } else {
       DateTime today = DateTime.now();
       final dateToSearch = today.millisecondsSinceEpoch;
-      QuerySnapshot snapshot = await publicacionesCollection
+      QuerySnapshot snapshot = await publicationsCollection
           .where('fecha', isGreaterThanOrEqualTo: dateToSearch)
           .where('destino', isEqualTo: 'CIFP Zonzamas')
-          .where('estado', isEqualTo: estadoPublicacion['disponible'])
+          .where('estado', isEqualTo: publicationState['disponible'])
           .orderBy('fecha')
           .orderBy('horaSalida')
           .orderBy('origen')
@@ -465,11 +503,11 @@ class DatabaseProvider {
   //get publications from zonzamas
   Future getPublicationsFromZonzamas([dynamic fecha]) async {
     if (fecha != null) {
-      QuerySnapshot snapshot = await publicacionesCollection
+      QuerySnapshot snapshot = await publicationsCollection
           .where('fecha', isGreaterThanOrEqualTo: fecha)
           .where('fecha', isLessThanOrEqualTo: fecha + 86399000)
           .where('origen', isEqualTo: 'CIFP Zonzamas')
-          .where('estado', isEqualTo: estadoPublicacion['disponible'])
+          .where('estado', isEqualTo: publicationState['disponible'])
           .orderBy('fecha')
           .orderBy('horaSalida')
           .orderBy('destino')
@@ -478,10 +516,10 @@ class DatabaseProvider {
     } else {
       DateTime today = DateTime.now();
       final dateToSearch = today.millisecondsSinceEpoch;
-      QuerySnapshot snapshot = await publicacionesCollection
+      QuerySnapshot snapshot = await publicationsCollection
           .where('fecha', isGreaterThanOrEqualTo: dateToSearch)
           .where('origen', isEqualTo: 'CIFP Zonzamas')
-          .where('estado', isEqualTo: estadoPublicacion['disponible'])
+          .where('estado', isEqualTo: publicationState['disponible'])
           .orderBy('fecha')
           .orderBy('horaSalida')
           .orderBy('destino')
@@ -492,16 +530,27 @@ class DatabaseProvider {
 
   //get publications where I am passenger
   Future getPublicationsByDriver() async {
-    QuerySnapshot snapshot = await publicacionesCollection
+    QuerySnapshot snapshot = await publicationsCollection
         .where('conductor', isEqualTo: FirebaseAuth.instance.currentUser!.uid)
         .orderBy('fecha')
         .get();
-    return snapshot.docs;
+    List<DocumentSnapshot> publications = snapshot.docs;
+    List<DocumentSnapshot> publicationsFinalizadas = [];
+    List<DocumentSnapshot> publicationsNoFinalizadas = [];
+    for (var publication in publications) {
+      if (publication['estado'] == publicationState['finalizada']) {
+        publicationsFinalizadas.add(publication);
+      } else {
+        publicationsNoFinalizadas.add(publication);
+      }
+    }
+    publicationsNoFinalizadas.addAll(publicationsFinalizadas);
+    return publicationsNoFinalizadas;
   }
 
   //get passengers from my publications
   Future<List<String>> getAllMyPassengers() async {
-    QuerySnapshot snapshot = await publicacionesCollection
+    QuerySnapshot snapshot = await publicationsCollection
         .where('conductor', isEqualTo: FirebaseAuth.instance.currentUser!.uid)
         .get();
 
@@ -520,7 +569,7 @@ class DatabaseProvider {
 
   //get all my drivers
   Future<List<String>> getAllMyDrivers() async {
-    QuerySnapshot snapshot = await publicacionesCollection
+    QuerySnapshot snapshot = await publicationsCollection
         .where(
           'pasajeros',
           arrayContains: FirebaseAuth.instance.currentUser!.uid,
@@ -540,19 +589,31 @@ class DatabaseProvider {
 
   //get publicactions where I am passenger
   Future getPublicationsByPassenger() async {
-    QuerySnapshot snapshot = await publicacionesCollection
+    QuerySnapshot snapshot = await publicationsCollection
         .where(
           'pasajeros',
           arrayContains: FirebaseAuth.instance.currentUser!.uid,
         )
         .orderBy('fecha')
         .get();
-    return snapshot.docs;
+    //if publication is finalizada, show it last
+    List<DocumentSnapshot> publications = snapshot.docs;
+    List<DocumentSnapshot> publicationsFinalizadas = [];
+    List<DocumentSnapshot> publicationsNoFinalizadas = [];
+    for (var publication in publications) {
+      if (publication['estado'] == publicationState['finalizada']) {
+        publicationsFinalizadas.add(publication);
+      } else {
+        publicationsNoFinalizadas.add(publication);
+      }
+    }
+    publicationsNoFinalizadas.addAll(publicationsFinalizadas);
+    return publicationsNoFinalizadas;
   }
 
   //
   Future softDeletePublication(String uid) async {
-    await publicacionesCollection.doc(uid).update({
+    await publicationsCollection.doc(uid).update({
       'deleted': true,
     });
   }
@@ -560,35 +621,35 @@ class DatabaseProvider {
   //delete publication
   Future deletePublication(String uid) async {
     QuerySnapshot snapshotReservas =
-        await reservasCollection.where('publicacion', isEqualTo: uid).get();
+        await bookingsCollection.where('publicacion', isEqualTo: uid).get();
 
     if (snapshotReservas.docs.isNotEmpty) {
       for (var reserva in snapshotReservas.docs) {
-        await usuarioCollection.doc(reserva['pasajero']).update({
+        await userCollection.doc(reserva['pasajero']).update({
           'reservas': FieldValue.arrayRemove([reserva['uid']]),
         });
       }
     }
 
-    await reservasCollection.where('publicacion', isEqualTo: uid).get().then(
+    await bookingsCollection.where('publicacion', isEqualTo: uid).get().then(
       (snapshot) {
         for (var reserva in snapshot.docs) {
-          reservasCollection.doc(reserva['uid']).delete();
+          bookingsCollection.doc(reserva['uid']).delete();
         }
       },
     );
 
-    await usuarioCollection.doc(FirebaseAuth.instance.currentUser!.uid).update({
+    await userCollection.doc(FirebaseAuth.instance.currentUser!.uid).update({
       'publicaciones': FieldValue.arrayRemove([uid]),
     });
 
-    await publicacionesCollection.doc(uid).delete();
+    await publicationsCollection.doc(uid).delete();
   }
 
   //get passengers from a publication
   Future getPassengersFromPublication(String uid) async {
     QuerySnapshot snapshotReservas =
-        await reservasCollection.where('publicacion', isEqualTo: uid).get();
+        await bookingsCollection.where('publicacion', isEqualTo: uid).get();
 
     List<String> passengers = [];
 
@@ -597,7 +658,7 @@ class DatabaseProvider {
         passengers.add(reserva['pasajero']);
       }
       QuerySnapshot snapshotUsuarios =
-          await usuarioCollection.where('uid', whereIn: passengers).get();
+          await userCollection.where('uid', whereIn: passengers).get();
       return snapshotUsuarios.docs;
     }
 
@@ -606,7 +667,7 @@ class DatabaseProvider {
 
   //check if publication is full
   Future<bool> checkIfFull(String uid) async {
-    DocumentSnapshot snapshot = await publicacionesCollection.doc(uid).get();
+    DocumentSnapshot snapshot = await publicationsCollection.doc(uid).get();
     final asientosDisponibles = snapshot['asientosDisponibles'];
     final pasajeros = snapshot['pasajeros'];
     if (asientosDisponibles > pasajeros.length) {
@@ -618,47 +679,48 @@ class DatabaseProvider {
 
   //save reservation
   Future saveReservation(String uidPublicacion, String uidPasajero) async {
-    final id = reservasCollection.doc().id;
-    await reservasCollection.doc(id).set({
+    final id = bookingsCollection.doc().id;
+    await bookingsCollection.doc(id).set({
       'publicacion': uidPublicacion,
       'pasajero': FirebaseAuth.instance.currentUser!.uid,
+      'expulsado': false,
       'uid': id,
     });
 
-    await usuarioCollection.doc(FirebaseAuth.instance.currentUser!.uid).update({
+    await userCollection.doc(FirebaseAuth.instance.currentUser!.uid).update({
       'reservas': FieldValue.arrayUnion([id]),
     });
 
-    await publicacionesCollection.doc(uidPublicacion).update({
+    await publicationsCollection.doc(uidPublicacion).update({
       'pasajeros': FieldValue.arrayUnion([uidPasajero]),
     });
 
     if (await checkIfFull(uidPublicacion)) {
-      await publicacionesCollection.doc(uidPublicacion).update({
-        'estado': estadoPublicacion['llena'],
+      await publicationsCollection.doc(uidPublicacion).update({
+        'estado': publicationState['llena'],
       });
     }
   }
 
   //delete reservation
   Future deleteReservation(String uidPublicacion) async {
-    QuerySnapshot snapshot = await reservasCollection
+    QuerySnapshot snapshot = await bookingsCollection
         .where('publicacion', isEqualTo: uidPublicacion)
         .where('pasajero', isEqualTo: FirebaseAuth.instance.currentUser!.uid)
         .get();
 
     final uid = snapshot.docs[0]['uid'];
 
-    await reservasCollection.doc(uid).delete();
+    await bookingsCollection.doc(uid).delete();
 
-    await usuarioCollection.doc(FirebaseAuth.instance.currentUser!.uid).update({
+    await userCollection.doc(FirebaseAuth.instance.currentUser!.uid).update({
       'reservas': FieldValue.arrayRemove([uid]),
     });
 
-    await publicacionesCollection.doc(uidPublicacion).update({
+    await publicationsCollection.doc(uidPublicacion).update({
       'pasajeros':
           FieldValue.arrayRemove([FirebaseAuth.instance.currentUser!.uid]),
-      'estado': estadoPublicacion['disponible'],
+      'estado': publicationState['disponible'],
     });
   }
 
@@ -802,8 +864,8 @@ class DatabaseProvider {
     //check if receptor is in chat
     if (snapshot['conductor'] == receptor && !snapshot['conductorEnChat'] ||
         snapshot['pasajero'] == receptor && !snapshot['pasajeroEnChat']) {
-      final receiver = await usuarioCollection.doc(receptor).get();
-      final sender = await usuarioCollection.doc(emisor).get();
+      final receiver = await userCollection.doc(receptor).get();
+      final sender = await userCollection.doc(emisor).get();
       NotificationsProvider().sendPushNotification(
         receiver['pushToken'],
         sender['nombreCompleto'],

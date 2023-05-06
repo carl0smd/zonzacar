@@ -133,7 +133,10 @@ class _ChatDetailsScreenState extends State<ChatDetailsScreen> {
                         maxLines: 2,
                       ),
                 leading: IconButton(
-                  icon: const Icon(Icons.arrow_back),
+                  icon: const Icon(
+                    Icons.arrow_back,
+                    size: 40,
+                  ),
                   onPressed: () async {
                     await databaseProvider.exitChat(
                       chatId!,
