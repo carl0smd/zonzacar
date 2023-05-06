@@ -145,8 +145,10 @@ class MyBookingsAndPublications extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder(
-      future: futureBookings ?? futurePublications,
+    return StreamBuilder(
+      stream: futureBookings != null
+          ? futureBookings!.asStream()
+          : futurePublications!.asStream(),
       builder: (context, snapshot) {
         if (snapshot.hasData && snapshot.data.length > 0) {
           List myList = snapshot.data;

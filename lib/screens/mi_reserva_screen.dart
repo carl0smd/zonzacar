@@ -4,6 +4,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:persistent_bottom_nav_bar/persistent_tab_view.dart';
 import 'package:zonzacar/providers/database_provider.dart';
@@ -23,6 +24,7 @@ class MiReservaScreen extends StatefulWidget {
 class _MiReservaScreenState extends State<MiReservaScreen> {
   //completer
   final Completer<GoogleMapController> _controller = Completer();
+  bool isRatingLoading = false;
 
   @override
   Widget build(BuildContext context) {
@@ -226,36 +228,150 @@ class _MiReservaScreenState extends State<MiReservaScreen> {
                         //button to rate driver
                         widget.publication['estado'] ==
                                 DatabaseProvider.publicationState['finalizada']
-                            ? Column(
+                            ? const SizedBox(
+                                height: 20,
+                              )
+                            : Container(),
+                        widget.publication['estado'] ==
+                                DatabaseProvider.publicationState['finalizada']
+                            ? Row(
+                                mainAxisAlignment: MainAxisAlignment.start,
                                 children: [
-                                  Row(
-                                    mainAxisAlignment: MainAxisAlignment.start,
-                                    children: [
-                                      const SizedBox(
-                                        height: 20,
+                                  ElevatedButton(
+                                    onPressed: () {
+                                      double stars = 0;
+
+                                      //show dialog to rate driver with stars
+                                      showDialog(
+                                        context: context,
+                                        builder: (context) {
+                                          return AlertDialog(
+                                            title: const Text(
+                                              'Valorar conductor',
+                                              style: TextStyle(
+                                                fontWeight: FontWeight.bold,
+                                              ),
+                                              textAlign: TextAlign.center,
+                                            ),
+                                            content: Column(
+                                              mainAxisSize: MainAxisSize.min,
+                                              children: [
+                                                const Text(
+                                                  '¿Cómo valorarías al tu conductor?',
+                                                  style: TextStyle(
+                                                    fontSize: 16,
+                                                  ),
+                                                  textAlign: TextAlign.center,
+                                                ),
+                                                const SizedBox(
+                                                  height: 30,
+                                                ),
+                                                RatingBar.builder(
+                                                  initialRating: 0,
+                                                  minRating: 1,
+                                                  direction: Axis.horizontal,
+                                                  allowHalfRating: false,
+                                                  itemCount: 5,
+                                                  itemPadding:
+                                                      const EdgeInsets.only(
+                                                          right: 4.0),
+                                                  itemBuilder: (context, _) =>
+                                                      const Icon(
+                                                    Icons.star,
+                                                    color: Colors.amber,
+                                                  ),
+                                                  onRatingUpdate: (rating) {
+                                                    setState(() {
+                                                      stars = rating;
+                                                    });
+                                                  },
+                                                ),
+                                              ],
+                                            ),
+                                            actions: [
+                                              TextButton(
+                                                onPressed: () {
+                                                  Navigator.pop(context);
+                                                },
+                                                child: const Text(
+                                                  'Cancelar',
+                                                  style: TextStyle(
+                                                    color: Colors.red,
+                                                    fontSize: 16,
+                                                  ),
+                                                ),
+                                              ),
+                                              TextButton(
+                                                onPressed: () async {
+                                                  if (stars == 0) {
+                                                    showSnackbar(
+                                                      'Debes valorar al conductor',
+                                                      context,
+                                                    );
+                                                    return;
+                                                  }
+                                                  setState(() {
+                                                    isRatingLoading = true;
+                                                  });
+                                                  await databaseProvider
+                                                      .rateDriver(
+                                                    stars,
+                                                    widget.publication['uid'],
+                                                    widget.publication[
+                                                        'conductor'],
+                                                  );
+                                                  if (mounted) {
+                                                    setState(() {
+                                                      isRatingLoading = false;
+                                                    });
+                                                    showSnackbar(
+                                                      'Conductor valorado correctamente',
+                                                      context,
+                                                    );
+                                                    Navigator
+                                                        .pushAndRemoveUntil(
+                                                      context,
+                                                      MaterialPageRoute(
+                                                        builder: (context) =>
+                                                            const MenuScreen(
+                                                          initialIndex: 2,
+                                                        ),
+                                                      ),
+                                                      (route) => false,
+                                                    );
+                                                  }
+                                                },
+                                                child: const Text(
+                                                  'Aceptar',
+                                                  style: TextStyle(
+                                                    color: Colors.green,
+                                                    fontSize: 16,
+                                                  ),
+                                                ),
+                                              ),
+                                            ],
+                                          );
+                                        },
+                                      );
+                                    },
+                                    style: ElevatedButton.styleFrom(
+                                      backgroundColor: Colors.green,
+                                      padding: const EdgeInsets.symmetric(
+                                        horizontal: 20.0,
+                                        vertical: 10.0,
                                       ),
-                                      ElevatedButton(
-                                        onPressed: () {},
-                                        child: const Text(
-                                          'Valorar conductor',
-                                          style: TextStyle(
-                                            fontSize: 20,
-                                            fontWeight: FontWeight.bold,
-                                          ),
-                                        ),
-                                        style: ElevatedButton.styleFrom(
-                                          primary: Colors.green,
-                                          padding: const EdgeInsets.symmetric(
-                                            horizontal: 20.0,
-                                            vertical: 10.0,
-                                          ),
-                                          shape: RoundedRectangleBorder(
-                                            borderRadius:
-                                                BorderRadius.circular(20.0),
-                                          ),
-                                        ),
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius:
+                                            BorderRadius.circular(20.0),
                                       ),
-                                    ],
+                                    ),
+                                    child: const Text(
+                                      'Valorar conductor',
+                                      style: TextStyle(
+                                        fontSize: 20,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
                                   ),
                                 ],
                               )

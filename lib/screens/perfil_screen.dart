@@ -229,6 +229,9 @@ class _PerfilScreenState extends State<PerfilScreen> {
                     ),
                   ],
                 ),
+                const SizedBox(
+                  height: 10,
+                ),
                 const Divider(
                   thickness: 1,
                 ),
@@ -258,6 +261,9 @@ class _PerfilScreenState extends State<PerfilScreen> {
                 ),
                 const Divider(
                   thickness: 1,
+                ),
+                const SizedBox(
+                  height: 10,
                 ),
                 const Text(
                   'Vehículos',
@@ -332,6 +338,67 @@ class _PerfilScreenState extends State<PerfilScreen> {
                 const Divider(
                   thickness: 1,
                 ),
+                const SizedBox(
+                  height: 10,
+                ),
+                const Text(
+                  'Valoración',
+                  style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold),
+                ),
+                //rating
+                const SizedBox(
+                  height: 10,
+                ),
+                StreamBuilder(
+                  stream: databaseProvider.getCurrentUser().asStream(),
+                  builder: (context, snapshot) {
+                    if (snapshot.hasData) {
+                      final rating = snapshot.data.docs[0]['mediaValoraciones'];
+                      return Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                          const Icon(
+                            Icons.star,
+                            color: Colors.green,
+                          ),
+                          const SizedBox(
+                            width: 5,
+                          ),
+                          rating != 0
+                              ? Text(
+                                  rating.toStringAsFixed(2),
+                                  style: const TextStyle(
+                                    fontSize: 20,
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.grey,
+                                  ),
+                                )
+                              : const Text(
+                                  'Publica para obtener valoraciones',
+                                  style: TextStyle(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.grey,
+                                  ),
+                                ),
+                        ],
+                      );
+                    } else {
+                      return const Center(
+                        child: CircularProgressIndicator(),
+                      );
+                    }
+                  },
+                ),
+                const SizedBox(
+                  height: 10,
+                ),
+                const Divider(
+                  thickness: 1,
+                ),
+                const SizedBox(
+                  height: 10,
+                ),
                 // Botón para eliminar la cuenta
                 TextButton(
                   child: const Text(
@@ -343,8 +410,9 @@ class _PerfilScreenState extends State<PerfilScreen> {
                       context: context,
                       builder: (context) {
                         return DeleteAccountDialog(
-                            authProvider: authProvider,
-                            databaseProvider: databaseProvider);
+                          authProvider: authProvider,
+                          databaseProvider: databaseProvider,
+                        );
                       },
                     );
                   },

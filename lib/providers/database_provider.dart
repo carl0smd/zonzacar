@@ -387,7 +387,8 @@ class DatabaseProvider {
   }
 
   //create rating
-  Future rateDriver(int stars, String uidPublication, String uidDriver) async {
+  Future rateDriver(
+      double stars, String uidPublication, String uidDriver) async {
     await publicationsCollection.doc(uidPublication).update({
       'valoraciones':
           FieldValue.arrayUnion([FirebaseAuth.instance.currentUser!.uid]),
