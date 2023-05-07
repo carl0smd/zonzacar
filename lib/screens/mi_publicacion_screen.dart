@@ -24,13 +24,12 @@ class _MiPublicacionScreenState extends State<MiPublicacionScreen> {
   bool isTripFinished = false;
 
   void checkState() {
-    if (widget.publication['estado'] == 'En curso' ||
-        widget.publication['estado'] == 'Finalizada') {
+    if (widget.publication['estado'] == 'En curso') {
       setState(() {
         isTripStarted = true;
       });
     }
-    if (widget.publication['estado'] == 'finalizado') {
+    if (widget.publication['estado'] == 'Finalizada') {
       setState(() {
         isTripFinished = true;
       });
@@ -343,7 +342,7 @@ class _MiPublicacionScreenState extends State<MiPublicacionScreen> {
                 children: [
                   //boton para iniciar el viaje
                   ElevatedButton(
-                    onPressed: isTripStarted
+                    onPressed: isTripStarted || isTripFinished
                         ? null
                         : () {
                             showDialog(
