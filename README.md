@@ -33,11 +33,16 @@ Para instalar ZonzaCar, sigue estos pasos:
 GOOGLE_API_KEY=<tu-clave-api-de-google-maps>\
 MESSAGE_API_KEY=<tu-clave-api-de-messaging-de-firebase>
 
-7. En la ruta `android/app/src/main/AndroidManifest.xml` añade la siguiente línea de código con tu API Key de Google
+6. En la ruta `android/app/src/main/AndroidManifest.xml` añade la siguiente línea de código con tu API Key de Google
 
-`<meta-data`\ 
-            `android:name="com.google.android.geo.API_KEY"`\
-            `android:value="GOOGLE_API_KEY"/>`
+`<meta-data
+       android:name="com.google.android.geo.API_KEY"
+       android:value="GOOGLE_API_KEY"/>`
+
+7. En la ruta `ios/Runner/AppDelegate.swift` añade la siguiente línea de código con tu API Key de Google
+            
+![image](https://user-images.githubusercontent.com/94843020/236702639-354026ae-678f-463e-9158-3c0188226a08.png)
+            
 
 8. Ejecuta la aplicación en tu emulador o dispositivo físico: `flutter run`
 
