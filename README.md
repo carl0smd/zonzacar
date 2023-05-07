@@ -7,6 +7,7 @@ ZonzaCar es una plataforma que permite a sus usuarios publicar o reservar trayec
 - [Características](#características)
 - [Instalación](#instalación)
 - [Uso](#uso)
+- [Enlaces y descargas] (#enlaces)
 
 ## Características
 
@@ -47,3 +48,7 @@ Para usar ZonzaCar, sigue estos pasos:
 5. Reserva un coche.
 6. Utiliza la mensajería dentro de la aplicación para comunicarte con el propietario del coche y coordinar la recogida y entrega.
 7. Gestiona tus reservas y publicaciones en la aplicación.
+
+## Enlaces
+
+[Fase de análisis] (https://docs.google.com/document/d/14CK8XM1k-dHkf6uLCWiHcmMnxwWX5XMX_tMFQRRyRSE/edit?usp=sharing)
