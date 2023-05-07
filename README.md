@@ -7,7 +7,7 @@ ZonzaCar es una plataforma que permite a sus usuarios publicar o reservar trayec
 - [Características](#características)
 - [Instalación](#instalación)
 - [Uso](#uso)
-- [Enlaces y descargas](#enlaces y descargas)
+- [Enlaces](#enlaces)
 
 ## Características
 
@@ -51,5 +51,5 @@ Para usar ZonzaCar, sigue estos pasos:
 
 ## Enlaces y descargas
 
-[Fase de análisis](https://docs.google.com/document/d/14CK8XM1k-dHkf6uLCWiHcmMnxwWX5XMX_tMFQRRyRSE/edit?usp=sharing)
-[Diagráma de clases UML](https://drive.google.com/file/d/1DVjSWmkDRvXYcMOwM_TE0vweYVYE_oxK/view?usp=share_link)
+[Fase de análisis](https://docs.google.com/document/d/14CK8XM1k-dHkf6uLCWiHcmMnxwWX5XMX_tMFQRRyRSE/edit?usp=sharing).
+[Diagráma de clases UML](https://drive.google.com/file/d/1DVjSWmkDRvXYcMOwM_TE0vweYVYE_oxK/view?usp=share_link).
