@@ -252,7 +252,6 @@ class _CardInfoState extends State<CardInfo> {
   @override
   Widget build(BuildContext context) {
     final DatabaseProvider databaseProvider = DatabaseProvider();
-    bool isLoading = false;
 
     return Card(
       margin: const EdgeInsets.symmetric(
@@ -470,97 +469,99 @@ class _CardInfoState extends State<CardInfo> {
                                   children: [
                                     const SizedBox(width: 10.0),
                                     ElevatedButton(
-                                      onPressed: () async {
+                                      onPressed: () {
+                                        bool isLoading = false;
                                         showDialog(
                                           context: context,
                                           builder: (context) {
                                             return AlertDialog(
                                               title: const Text(
-                                                'Cancelar publicación',
+                                                'Cancelar',
                                               ),
-                                              content: const Text(
-                                                '¿Está seguro de cancelar su reserva?',
-                                              ),
+                                              content: isLoading
+                                                  ? const CircularProgressIndicator()
+                                                  : const Text(
+                                                      '¿Está seguro de cancelar?',
+                                                    ),
                                               actions: [
                                                 TextButton(
                                                   onPressed: () {
                                                     Navigator.pop(context);
                                                   },
-                                                  child: const Text(
-                                                    'No',
-                                                    style: TextStyle(
-                                                      color: Colors.grey,
-                                                    ),
-                                                  ),
+                                                  child: isLoading
+                                                      ? Container()
+                                                      : const Text(
+                                                          'No',
+                                                          style: TextStyle(
+                                                            color: Colors.grey,
+                                                          ),
+                                                        ),
                                                 ),
                                                 TextButton(
-                                                  onPressed: isLoading
-                                                      ? null
-                                                      : () async {
-                                                          setState(() {
-                                                            isLoading = true;
-                                                          });
-                                                          try {
-                                                            if (widget
-                                                                .isPassenger) {
-                                                              await databaseProvider
-                                                                  .deleteReservation(
-                                                                widget.publicacion[
-                                                                    'uid'],
-                                                              );
-                                                            } else {
-                                                              await databaseProvider
-                                                                  .deletePublication(
-                                                                widget.publicacion[
-                                                                    'uid'],
-                                                              );
-                                                            }
-                                                            setState(() {
-                                                              isLoading = false;
-                                                            });
-                                                            if (mounted) {
-                                                              Navigator
-                                                                  .pushNamedAndRemoveUntil(
-                                                                context,
-                                                                'home',
-                                                                (route) =>
-                                                                    false,
-                                                              );
-                                                              if (widget
-                                                                  .isPassenger) {
-                                                                showSnackbar(
-                                                                  'Reserva cancelada con éxito',
-                                                                  context,
-                                                                );
-                                                              } else {
-                                                                showSnackbar(
-                                                                  'Publicación cancelada con éxito',
-                                                                  context,
-                                                                );
-                                                              }
-                                                            }
-                                                          } catch (e) {
-                                                            setState(() {
-                                                              isLoading = false;
-                                                            });
-                                                            Navigator.pop(
-                                                              context,
-                                                            );
-                                                            if (widget
-                                                                .isPassenger) {
-                                                              showSnackbar(
-                                                                'Error al cancelar la reserva, inténtelo más tarde',
-                                                                context,
-                                                              );
-                                                            } else {
-                                                              showSnackbar(
-                                                                'Error al cancelar la publicación, inténtelo más tarde',
-                                                                context,
-                                                              );
-                                                            }
-                                                          }
-                                                        },
-                                                  child: const Text('Si'),
+                                                  onPressed: () async {
+                                                    setState(() {
+                                                      isLoading = true;
+                                                    });
+                                                    try {
+                                                      if (widget.isPassenger) {
+                                                        await databaseProvider
+                                                            .deleteReservation(
+                                                          widget.publicacion[
+                                                              'uid'],
+                                                        );
+                                                      } else {
+                                                        await databaseProvider
+                                                            .deletePublication(
+                                                          widget.publicacion[
+                                                              'uid'],
+                                                        );
+                                                      }
+                                                      setState(() {
+                                                        isLoading = false;
+                                                      });
+                                                      if (mounted) {
+                                                        Navigator
+                                                            .pushNamedAndRemoveUntil(
+                                                          context,
+                                                          'home',
+                                                          (route) => false,
+                                                        );
+                                                        if (widget
+                                                            .isPassenger) {
+                                                          showSnackbar(
+                                                            'Reserva cancelada con éxito',
+                                                            context,
+                                                          );
+                                                        } else {
+                                                          showSnackbar(
+                                                            'Publicación cancelada con éxito',
+                                                            context,
+                                                          );
+                                                        }
+                                                      }
+                                                    } catch (e) {
+                                                      setState(() {
+                                                        isLoading = false;
+                                                      });
+                                                      Navigator.pop(
+                                                        context,
+                                                      );
+                                                      if (widget.isPassenger) {
+                                                        showSnackbar(
+                                                          'Error al cancelar la reserva, inténtelo más tarde',
+                                                          context,
+                                                        );
+                                                      } else {
+                                                        showSnackbar(
+                                                          'Error al cancelar la publicación, inténtelo más tarde',
+                                                          context,
+                                                        );
+                                                      }
+                                                    }
+                                                  },
+                                                  child: isLoading
+                                                      ? Container()
+                                                      : const Text('Si'),
                                                 ),
                                               ],
                                             );

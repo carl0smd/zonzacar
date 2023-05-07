@@ -101,6 +101,7 @@ class BusquedaScreen extends StatelessWidget {
                                   publication: publications[index],
                                   userName: user['nombreCompleto'],
                                   userImage: user['imagenPerfil'],
+                                  rating: user['mediaValoraciones'],
                                   isGoingToZonzamas: isGoingToZonzamas,
                                 );
                               } else {
@@ -161,11 +162,13 @@ class BookingCard extends StatelessWidget {
     required this.userName,
     required this.userImage,
     required this.isGoingToZonzamas,
+    required this.rating,
   });
 
   final dynamic publication;
   final String userName;
   final String userImage;
+  final dynamic rating;
   final bool isGoingToZonzamas;
 
   @override
@@ -203,7 +206,7 @@ class BookingCard extends StatelessWidget {
                   ),
                   const SizedBox(width: 10.0),
                   SizedBox(
-                    width: 220,
+                    width: 120,
                     child: Text(
                       userName,
                       style: const TextStyle(
@@ -211,8 +214,29 @@ class BookingCard extends StatelessWidget {
                         fontSize: 16.0,
                       ),
                       overflow: TextOverflow.ellipsis,
+                      maxLines: 2,
                     ),
                   ),
+                  rating != 0
+                      ? SizedBox(
+                          width: 100,
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.end,
+                            children: [
+                              //Icono de estrella
+                              const Icon(Icons.star, color: Colors.green),
+                              //Valoración
+                              Text(
+                                rating.toStringAsFixed(1),
+                                style: const TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 16.0,
+                                ),
+                              ),
+                            ],
+                          ),
+                        )
+                      : Container(),
                 ],
               ),
               const SizedBox(height: 10.0),

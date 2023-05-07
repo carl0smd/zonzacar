@@ -56,6 +56,7 @@ class _FormularioTrayectoScreenState extends State<FormularioTrayectoScreen> {
   @override
   Widget build(BuildContext context) {
     int date = 0;
+    int hour = 0;
     final today = DateTime(
       DateTime.now().year,
       DateTime.now().month,
@@ -251,6 +252,8 @@ class _FormularioTrayectoScreenState extends State<FormularioTrayectoScreen> {
                             if (nuevaHora == null) return;
                             if (mounted) {
                               hourCtrl.text = nuevaHora.format(context);
+                              hour = nuevaHora.hour * 3600000 +
+                                  nuevaHora.minute * 60000;
                             }
                           },
                           validator: (value) {
@@ -424,7 +427,7 @@ class _FormularioTrayectoScreenState extends State<FormularioTrayectoScreen> {
                                       );
                                       try {
                                         await databaseProvider.savePublication(
-                                          date,
+                                          date + hour,
                                           widget.duration,
                                           widget.distance,
                                           hourCtrl.text,

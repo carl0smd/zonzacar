@@ -489,6 +489,7 @@ class DatabaseProvider {
     } else {
       DateTime today = DateTime.now();
       final dateToSearch = today.millisecondsSinceEpoch;
+      print(dateToSearch);
       QuerySnapshot snapshot = await publicationsCollection
           .where('fecha', isGreaterThanOrEqualTo: dateToSearch)
           .where('destino', isEqualTo: 'CIFP Zonzamas')

@@ -86,6 +86,51 @@ class _PerfilScreenState extends State<PerfilScreen> {
     }
   }
 
+  void uploadImage(camara) async {
+    if (camara && _isCameraPermissionGranted == false) {
+      _askForCameraPermission();
+      if (_isCameraPermissionGranted == false) return;
+    }
+    if (!camara && Platform.isAndroid) {
+      final androidInfo = await DeviceInfoPlugin().androidInfo;
+      if (androidInfo.version.sdkInt <= 32) {
+        if (_isStoragePermissionGranted == false) {
+          _askForStoragePermission();
+          if (_isStoragePermissionGranted == false) return;
+        }
+      } else {
+        if (_isPhotosPermissionGranted == false) {
+          _askForPhotosPermission();
+          if (_isPhotosPermissionGranted == false) return;
+        }
+      }
+    }
+
+    if (!camara && Platform.isIOS && _isPhotosPermissionGranted == false) {
+      _askForPhotosPermission();
+      if (_isPhotosPermissionGranted == false) return;
+    }
+
+    final image = await ImagePicker().pickImage(
+      source: camara == true ? ImageSource.camera : ImageSource.gallery,
+      maxHeight: 512,
+      maxWidth: 512,
+      imageQuality: 75,
+    );
+
+    if (image == null) return;
+    Reference ref =
+        FirebaseStorage.instance.ref().child("fotoperfil$userEmail.jpg");
+
+    await ref.putFile(File(image.path));
+    ref.getDownloadURL().then((value) {
+      setState(() {
+        userImage = value;
+        databaseProvider.storeProfileImage(userImage);
+      });
+    });
+  }
+
   @override
   void initState() {
     super.initState();
@@ -105,51 +150,6 @@ class _PerfilScreenState extends State<PerfilScreen> {
 
   @override
   Widget build(BuildContext context) {
-    void uploadImage(camara) async {
-      if (camara && _isCameraPermissionGranted == false) {
-        _askForCameraPermission();
-        if (_isCameraPermissionGranted == false) return;
-      }
-      if (!camara && Platform.isAndroid) {
-        final androidInfo = await DeviceInfoPlugin().androidInfo;
-        if (androidInfo.version.sdkInt <= 32) {
-          if (_isStoragePermissionGranted == false) {
-            _askForStoragePermission();
-            if (_isStoragePermissionGranted == false) return;
-          }
-        } else {
-          if (_isPhotosPermissionGranted == false) {
-            _askForPhotosPermission();
-            if (_isPhotosPermissionGranted == false) return;
-          }
-        }
-      }
-
-      if (!camara && Platform.isIOS && _isPhotosPermissionGranted == false) {
-        _askForPhotosPermission();
-        if (_isPhotosPermissionGranted == false) return;
-      }
-
-      final image = await ImagePicker().pickImage(
-        source: camara == true ? ImageSource.camera : ImageSource.gallery,
-        maxHeight: 512,
-        maxWidth: 512,
-        imageQuality: 75,
-      );
-
-      if (image == null) return;
-      Reference ref =
-          FirebaseStorage.instance.ref().child("fotoperfil$userEmail.jpg");
-
-      await ref.putFile(File(image.path));
-      ref.getDownloadURL().then((value) {
-        setState(() {
-          userImage = value;
-          databaseProvider.storeProfileImage(userImage);
-        });
-      });
-    }
-
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.transparent,

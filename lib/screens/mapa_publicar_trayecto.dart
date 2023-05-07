@@ -266,15 +266,18 @@ class _PublicarTrayectoScreenState extends State<PublicarTrayectoScreen> {
               elevation: 0,
               backgroundColor: Theme.of(context).primaryColor,
               foregroundColor: Colors.black,
-              iconTheme: IconThemeData(
-                color: Theme.of(context).primaryColor,
+              iconTheme: const IconThemeData(
+                color: Colors.white,
                 size: 40,
               ),
             ),
-            body: const Center(
+            body: Center(
               child: Text(
                 'Lo sentimos actualmente no permitimos trayectos entre Lanzarote y La Graciosa',
-                style: TextStyle(fontSize: 20.0, color: Colors.white),
+                style: TextStyle(
+                  fontSize: 20.0,
+                  color: Theme.of(context).primaryColor,
+                ),
                 overflow: TextOverflow.clip,
                 textAlign: TextAlign.center,
               ),
