@@ -30,10 +30,20 @@ Para instalar ZonzaCar, sigue estos pasos:
 4. Crea un archivo `.env` en el directorio raíz.
 5. Agrega las siguientes variables de entorno al archivo `.env`:
 
-GOOGLE_API_KEY=<tu-clave-api-de-google-maps>
+GOOGLE_API_KEY=<tu-clave-api-de-google-maps>\
 MESSAGE_API_KEY=<tu-clave-api-de-messaging-de-firebase>
 
-6. Ejecuta la aplicación en tu emulador o dispositivo físico: `flutter run`
+6. En la ruta `android/app/src/main/AndroidManifest.xml` añade el siguiente código con tu API Key de Google
+
+![image](https://user-images.githubusercontent.com/94843020/236702702-b0cbfd73-d169-49c0-8ee3-a4ca20f2f5a9.png)
+
+
+7. En la ruta `ios/Runner/AppDelegate.swift` añade la siguiente línea de código con tu API Key de Google
+            
+![image](https://user-images.githubusercontent.com/94843020/236702639-354026ae-678f-463e-9158-3c0188226a08.png)
+            
+
+8. Ejecuta la aplicación en tu emulador o dispositivo físico: `flutter run`
 
 Nota: Deberás obtener tu propia clave de API de Google Maps y los valores de configuración de Firebase para que la aplicación funcione correctamente.
 
@@ -41,7 +51,7 @@ Nota: Deberás obtener tu propia clave de API de Google Maps y los valores de co
 
 Para usar ZonzaCar, sigue estos pasos:
 
-1. Ejecuta la aplicación en tu emulador o dispositivo físico: `flutter run` || opcionalmente también podrás descargar la apk: 
+1. Ejecuta la aplicación en tu emulador o dispositivo físico: `flutter run` || opcionalmente también podrás descargar la [apk](https://drive.google.com/file/d/1rUiRuVp0Wgq6v336U99WZWU0eUOug8pu/view?usp=share_link)
 2. Accede a la página de inicio de sesión y registra una nueva cuenta o inicia sesión con una existente.
 3. Busca coches disponibles por ubicación y rango de fechas.
 4. Selecciona una publicación para ver más detalles e información de precios.
@@ -53,5 +63,7 @@ Para usar ZonzaCar, sigue estos pasos:
 
 [Fase de análisis](https://docs.google.com/document/d/14CK8XM1k-dHkf6uLCWiHcmMnxwWX5XMX_tMFQRRyRSE/edit?usp=sharing)\
 [Diagrama de clases UML](https://drive.google.com/file/d/1DVjSWmkDRvXYcMOwM_TE0vweYVYE_oxK/view?usp=share_link)\
+[Diseño](https://wireframepro.mockflow.com/view/MU2Ioh1mgpb)\
 [JSON Estructura BBDD](https://drive.google.com/file/d/1LV9SxkmxYlW5IrEQlCl38TbS98glXJtg/view?usp=share_link)\
-[Vídeo presentación](https://www.youtube.com/watch?v=WlRWOvd4sd0)
+[Vídeo presentación](https://www.youtube.com/watch?v=WlRWOvd4sd0)\
+[APK Zonzacar](https://drive.google.com/file/d/1rUiRuVp0Wgq6v336U99WZWU0eUOug8pu/view?usp=share_link)
