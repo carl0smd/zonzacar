@@ -1,5 +1,5 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.zonzacar">
+    package="com.carl0smd.zonzacar">
     <!-- Notification when phone is locked  -->
     <uses-permission android:name="android.permission.WAKE_LOCK" />
     <!-- Notification full screen -->
