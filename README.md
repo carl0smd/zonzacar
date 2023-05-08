@@ -36,34 +36,39 @@ ZonzaCar es una plataforma que permite a sus usuarios publicar o reservar trayec
 Para instalar ZonzaCar, sigue estos pasos:
 
 1. Clona el repositorio: `git clone https://github.com/carl0smd/zonzacar.git`
+
 2. Instala las dependencias: `flutter pub get`
 
 Los pasos 3 y 4 son opcionales, podrás conectarte a mi proyecto de Firebase sin tener que crear uno. Sin embargo si no haces esto no podrás usar la funcionalidad de notificaciones, ya que necesitarás una API key la cuál no proporcionaré.
 
 3. (*Opcional*) Configura un proyecto de Firebase y vincúlalo a tu app, puedes seguir [este tutorial](https://www.youtube.com/watch?v=sz4slPFwEvs) y sustituye los archivos de google-services.json por los generados.
+
 4. (*Opcional*) En tu proyecto de Firebase habilita Firebase Authentication, Firebase Storage, Firebase Firestore Database y Firebase Cloud Messaging (Obtén una Api key de este)
+
 5. Si ya tienes cuenta como google developer ve a la cloud.console en caso contrario procede a crear una cuenta.
+
 6. En la cloud console crea un nuevo proyecto o en caso de haber creado el proyecto de firebase podrás utilizarlo desde ahí. Con el proyecto seleccionado ve a Credenciales -> Crear credenciales -> Clave de API
 
 ![image](https://user-images.githubusercontent.com/94843020/236816773-25e4fbfe-71ce-4b55-8c80-be2a7a36c2d5.png)
 
 
 7. Crea un archivo `.env` en el directorio raíz.
+
 8. Agrega las siguientes variables de entorno al archivo `.env`:
 
 ![image](https://user-images.githubusercontent.com/94843020/236706857-d94a221e-e31e-4aa4-937c-d68cee817436.png)
 
-7. En la ruta `android/app/src/main/AndroidManifest.xml` añade el siguiente código con tu API Key de Google
+9. En la ruta `android/app/src/main/AndroidManifest.xml` añade el siguiente código con tu API Key de Google
 
 ![image](https://user-images.githubusercontent.com/94843020/236702702-b0cbfd73-d169-49c0-8ee3-a4ca20f2f5a9.png)
 
 
-8. En la ruta `ios/Runner/AppDelegate.swift` añade la siguiente línea de código con tu API Key de Google
+10. En la ruta `ios/Runner/AppDelegate.swift` añade la siguiente línea de código con tu API Key de Google
             
 ![image](https://user-images.githubusercontent.com/94843020/236702639-354026ae-678f-463e-9158-3c0188226a08.png)
             
 
-9. Ejecuta la aplicación en tu emulador o dispositivo físico: `flutter run`
+11. Ejecuta la aplicación en tu emulador o dispositivo físico: `flutter run`
 
 Nota: Deberás obtener tu propia clave de API de Google Maps y los valores de configuración de Firebase para que la aplicación funcione correctamente.
 
