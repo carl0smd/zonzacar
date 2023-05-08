@@ -71,8 +71,8 @@ Para usar ZonzaCar, sigue estos pasos:
 
 ## Capturas
 
-![1683498121350](https://user-images.githubusercontent.com/94843020/236709871-bd2e3444-ae39-486a-9dee-fb7b8d60d442.jpg)
-![1683498121373](https://user-images.githubusercontent.com/94843020/236709874-37ec4ff0-65ef-48e6-81f8-ccca5ae42a24.jpg)
+![1683498121350](https://user-images.githubusercontent.com/94843020/236709871-bd2e3444-ae39-486a-9dee-fb7b8d60d442.jpg) ![1683498121373](https://user-images.githubusercontent.com/94843020/236709874-37ec4ff0-65ef-48e6-81f8-ccca5ae42a24.jpg)
+
 ![1683498121395](https://user-images.githubusercontent.com/94843020/236709875-18e8385f-989f-4c26-a908-3c0ae9ca1f2e.jpg)
 ![1683498121418](https://user-images.githubusercontent.com/94843020/236709876-ad201829-ad11-4aa9-bc17-9b18e2f48ab4.jpg)
 ![1683498121440](https://user-images.githubusercontent.com/94843020/236709878-2398ead6-af2d-489d-841a-b8d7efd434d4.jpg)
