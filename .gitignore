@@ -45,6 +45,3 @@ app.*.map.json
 
 # .env
 .env
-
-#firebase config
-/android/app/google-services.json
