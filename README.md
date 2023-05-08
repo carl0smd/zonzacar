@@ -30,8 +30,7 @@ Para instalar ZonzaCar, sigue estos pasos:
 4. Crea un archivo `.env` en el directorio raíz.
 5. Agrega las siguientes variables de entorno al archivo `.env`:
 
-GOOGLE_API_KEY=<tu-clave-api-de-google-maps>\
-MESSAGE_API_KEY=<tu-clave-api-de-messaging-de-firebase>
+![image](https://user-images.githubusercontent.com/94843020/236706857-d94a221e-e31e-4aa4-937c-d68cee817436.png)
 
 6. En la ruta `android/app/src/main/AndroidManifest.xml` añade el siguiente código con tu API Key de Google
 
