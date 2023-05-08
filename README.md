@@ -1,5 +1,7 @@
 # ZonzaCar
 
+![logo](https://user-images.githubusercontent.com/94843020/236709677-0bc50ff7-ed39-4dba-9bb0-d7df8dfdd21a.png)
+
 ZonzaCar es una plataforma que permite a sus usuarios publicar o reservar trayectos para compartir coche, se creó para intentar reducir la huella de carbono de los estudiantes del CIFP Zonzamas (Arrecife, Lanzarote, España) así como para brindarles otra alternativa de transporte.
 
 ## Tabla de contenidos
@@ -10,6 +12,14 @@ ZonzaCar es una plataforma que permite a sus usuarios publicar o reservar trayec
 - [Enlaces](#enlaces)
 
 ## Características
+
+![1683498121373](https://user-images.githubusercontent.com/94843020/236709712-817c95ed-efeb-4664-a0dc-3f293154fc28.jpg)
+![1683498121395](https://user-images.githubusercontent.com/94843020/236709715-6237c1c9-a536-45e9-9370-7bc9c0e2e17d.jpg)
+![1683498121418](https://user-images.githubusercontent.com/94843020/236709717-3cbf9236-f361-4cf5-aa22-11d70c037354.jpg)
+![1683498121440](https://user-images.githubusercontent.com/94843020/236709718-6fcf36dc-440c-401d-9b77-5f145d508bef.jpg)
+![1683498121465](https://user-images.githubusercontent.com/94843020/236709719-bdf797b6-2811-44e9-8509-92258b3b6775.jpg)
+![1683498121327](https://user-images.githubusercontent.com/94843020/236709721-02d8b4be-4d9f-4a4a-a556-8278f4f524a7.jpg)
+![1683498121350](https://user-images.githubusercontent.com/94843020/236709722-4c51a3c0-8a3c-498c-be38-111effdf6f96.jpg)
 
 - Autenticación y registro de usuarios
 - Búsqueda de coches disponibles por ubicación y rango de fechas
