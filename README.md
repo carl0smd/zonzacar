@@ -41,9 +41,15 @@ Para instalar ZonzaCar, sigue estos pasos:
 Los pasos 3 y 4 son opcionales, podrás conectarte a mi proyecto de Firebase sin tener que crear uno. Sin embargo si no haces esto no podrás usar la funcionalidad de notificaciones, ya que necesitarás una API key la cuál no proporcionaré.
 
 3. (*Opcional*) Configura un proyecto de Firebase y vincúlalo a tu app, puedes seguir [este tutorial](https://www.youtube.com/watch?v=sz4slPFwEvs) y sustituye los archivos de google-services.json por los generados.
-4. (*Opcional*) En tu proyecto de Firebase habilita Firebase Authentication, Firebase Storage, Firebase Firestore Database y Firebase Cloud Messaging (Obtén una apiKey de este)  
-5. Crea un archivo `.env` en el directorio raíz.
-6. Agrega las siguientes variables de entorno al archivo `.env`:
+4. (*Opcional*) En tu proyecto de Firebase habilita Firebase Authentication, Firebase Storage, Firebase Firestore Database y Firebase Cloud Messaging (Obtén una Api key de este)
+5. Si ya tienes cuenta como google developer ve a la cloud.console en caso contrario procede a crear una cuenta.
+6. En la cloud console crea un nuevo proyecto o en caso de haber creado el proyecto de firebase podrás utilizarlo desde ahí. Con el proyecto seleccionado ve a Credenciales -> Crear credenciales -> Clave de API
+
+![image](https://user-images.githubusercontent.com/94843020/236816773-25e4fbfe-71ce-4b55-8c80-be2a7a36c2d5.png)
+
+
+7. Crea un archivo `.env` en el directorio raíz.
+8. Agrega las siguientes variables de entorno al archivo `.env`:
 
 ![image](https://user-images.githubusercontent.com/94843020/236706857-d94a221e-e31e-4aa4-937c-d68cee817436.png)
 
