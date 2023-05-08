@@ -37,8 +37,8 @@ Para instalar ZonzaCar, sigue estos pasos:
 
 1. Clona el repositorio: `git clone https://github.com/carl0smd/zonzacar.git`
 2. Instala las dependencias: `flutter pub get`
-3. Configura un proyecto de Firebase y vincúlalo a tu app, puedes seguir [este tutorial](https://www.youtube.com/watch?v=sz4slPFwEvs)
-4. En tu proyecto de Firebase habilita Firebase Authentication, Firebase Storage, Firebase Firestore Database y Firebase Cloud Messaging
+3. *(Opcional, si prefieres usar mi proyecto salta este paso) Configura un proyecto de Firebase y vincúlalo a tu app, puedes seguir [este tutorial](https://www.youtube.com/watch?v=sz4slPFwEvs)
+4. *(Opcional, si prefieres usar mi proyecto salta este paso) En tu proyecto de Firebase habilita Firebase Authentication, Firebase Storage, Firebase Firestore Database y Firebase Cloud Messaging
 5. Crea un archivo `.env` en el directorio raíz.
 6. Agrega las siguientes variables de entorno al archivo `.env`:
 
