@@ -37,23 +37,24 @@ Para instalar ZonzaCar, sigue estos pasos:
 
 1. Clona el repositorio: `git clone https://github.com/carl0smd/zonzacar.git`
 2. Instala las dependencias: `flutter pub get`
-3. Configura un proyecto de Firebase y habilita Firebase Auth, Firebase Cloud Messaging y Firebase Cloud Firestore
-4. Crea un archivo `.env` en el directorio raíz.
-5. Agrega las siguientes variables de entorno al archivo `.env`:
+3. Configura un proyecto de Firebase y vincúlalo a tu app, puedes seguir [este tutorial](https://www.youtube.com/watch?v=sz4slPFwEvs)
+4. En tu proyecto de Firebase habilita Firebase Authentication, Firebase Storage, Firebase Firestore Database y Firebase Cloud Messaging
+5. Crea un archivo `.env` en el directorio raíz.
+6. Agrega las siguientes variables de entorno al archivo `.env`:
 
 ![image](https://user-images.githubusercontent.com/94843020/236706857-d94a221e-e31e-4aa4-937c-d68cee817436.png)
 
-6. En la ruta `android/app/src/main/AndroidManifest.xml` añade el siguiente código con tu API Key de Google
+7. En la ruta `android/app/src/main/AndroidManifest.xml` añade el siguiente código con tu API Key de Google
 
 ![image](https://user-images.githubusercontent.com/94843020/236702702-b0cbfd73-d169-49c0-8ee3-a4ca20f2f5a9.png)
 
 
-7. En la ruta `ios/Runner/AppDelegate.swift` añade la siguiente línea de código con tu API Key de Google
+8. En la ruta `ios/Runner/AppDelegate.swift` añade la siguiente línea de código con tu API Key de Google
             
 ![image](https://user-images.githubusercontent.com/94843020/236702639-354026ae-678f-463e-9158-3c0188226a08.png)
             
 
-8. Ejecuta la aplicación en tu emulador o dispositivo físico: `flutter run`
+9. Ejecuta la aplicación en tu emulador o dispositivo físico: `flutter run`
 
 Nota: Deberás obtener tu propia clave de API de Google Maps y los valores de configuración de Firebase para que la aplicación funcione correctamente.
 
