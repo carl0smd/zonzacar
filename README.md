@@ -43,7 +43,7 @@ Los pasos 3 y 4 son opcionales, podrás conectarte a mi proyecto de Firebase sin
 
 3. (*Opcional*) Configura un proyecto de Firebase y vincúlalo a tu app, puedes seguir [este tutorial](https://www.youtube.com/watch?v=sz4slPFwEvs) y sustituye los archivos de google-services.json por los generados.
 
-4. (*Opcional*) En tu proyecto de Firebase habilita Firebase Authentication, Firebase Storage, Firebase Firestore Database y Firebase Cloud Messaging (Obtén una Api key de este)
+4. (*Opcional*) En tu proyecto de Firebase habilita Firebase Authentication, Firebase Storage, Firebase Firestore Database y Firebase Cloud Messaging (Obtén una Api key de este). [Cómo obtener una API key de Cloud Messaging](https://youtu.be/6hSrjp3dqCo?t=38)
 
 5. Si ya tienes cuenta como google developer ve a la cloud.console en caso contrario procede a crear una cuenta.
 
@@ -62,15 +62,15 @@ Los pasos 3 y 4 son opcionales, podrás conectarte a mi proyecto de Firebase sin
 
 ![image](https://user-images.githubusercontent.com/94843020/236702702-b0cbfd73-d169-49c0-8ee3-a4ca20f2f5a9.png)
 
-
-10. En la ruta `ios/Runner/AppDelegate.swift` añade la siguiente línea de código con tu API Key de Google
+10. (Opcional si quieres probar la app en iOs) En la ruta `ios/Runner/AppDelegate.swift` añade la siguiente línea de código con tu API Key de Google
             
 ![image](https://user-images.githubusercontent.com/94843020/236702639-354026ae-678f-463e-9158-3c0188226a08.png)
             
+11. En `android/app/build.gradle` aumenta el minSdkVersion a `21`
 
-11. Ejecuta la aplicación en tu emulador o dispositivo físico: `flutter run`
+![image](https://user-images.githubusercontent.com/94843020/236817701-179f6b3f-14c4-424f-93dc-4d734c695bed.png)
 
-Nota: Deberás obtener tu propia clave de API de Google Maps y los valores de configuración de Firebase para que la aplicación funcione correctamente.
+12. Ejecuta la aplicación en tu emulador o dispositivo físico: `flutter run`
 
 ## Uso
 
