@@ -229,7 +229,8 @@ class __FormState extends State<_Form> {
             await helper.saveUserLoggedInStatus(true);
             await helper.saveUserEmail(email);
             await helper.saveUserName(snapshot.docs[0].get('nombreCompleto'));
-            if (context.mounted) {
+
+            if (mounted) {
               Navigator.pushReplacement(
                 context,
                 MaterialPageRoute(builder: (context) => const MenuScreen()),

@@ -52,7 +52,7 @@ android {
 
     defaultConfig {
         // TODO: Specify your own unique Application ID (https://developer.android.com/studio/build/application-id.html).
-        applicationId "com.example.zonzacar"
+        applicationId "com.carl0smd.zonzacar"
         // You can update the following values to match your application needs.
         // For more information, see: https://docs.flutter.dev/deployment/android#reviewing-the-gradle-build-configuration.
         minSdkVersion 21
@@ -61,6 +61,7 @@ android {
         versionName flutterVersionName
         multiDexEnabled true
         archivesBaseName = "zonzacar-$versionName"
+        android.defaultConfig.ndk.debugSymbolLevel = 'FULL'
     }
 
     signingConfigs {
