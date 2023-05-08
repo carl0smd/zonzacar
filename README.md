@@ -45,9 +45,9 @@ Los pasos 3 y 4 son opcionales, podrás conectarte a mi proyecto de Firebase sin
 
 4. (*Opcional*) En tu proyecto de Firebase habilita Firebase Authentication, Firebase Storage, Firebase Firestore Database y Firebase Cloud Messaging (Obtén una Api key de este). [Cómo obtener una API key de Cloud Messaging](https://youtu.be/6hSrjp3dqCo?t=38)
 
-5. Si ya tienes cuenta como google developer ve a la cloud.console en caso contrario procede a crear una cuenta.
+5. Si ya tienes cuenta como Google developer ve a la cloud.console en caso contrario procede a crear una cuenta.
 
-6. En la cloud console crea un nuevo proyecto o en caso de haber creado el proyecto de firebase podrás utilizarlo desde ahí. Con el proyecto seleccionado ve a Credenciales -> Crear credenciales -> Clave de API
+6. En la cloud console crea un nuevo proyecto o en caso de haber creado el proyecto de Firebase podrás utilizarlo desde ahí. Con el proyecto seleccionado ve a Credenciales -> Crear credenciales -> Clave de API, y genera tu API key de Google
 
 ![image](https://user-images.githubusercontent.com/94843020/236816773-25e4fbfe-71ce-4b55-8c80-be2a7a36c2d5.png)
 
