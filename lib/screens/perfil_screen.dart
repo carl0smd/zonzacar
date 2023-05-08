@@ -11,6 +11,8 @@ import 'package:zonzacar/providers/database_provider.dart';
 import 'package:zonzacar/screens/login_screen.dart';
 import 'package:zonzacar/widgets/widgets.dart';
 
+// SCREEN TO SHOW THE USER PROFILE
+
 class PerfilScreen extends StatefulWidget {
   const PerfilScreen({Key? key}) : super(key: key);
 
@@ -29,6 +31,7 @@ class _PerfilScreenState extends State<PerfilScreen> {
   bool _isPhotosPermissionGranted = false;
   bool _isStoragePermissionGranted = false;
 
+  // FUNCTION TO ASK FOR THE CAMERA PERMISSION
   void _askForCameraPermission() async {
     final status = await Permission.camera.request();
     switch (status) {
@@ -47,6 +50,8 @@ class _PerfilScreenState extends State<PerfilScreen> {
         openAppSettings();
     }
   }
+
+  // FUNCTION TO ASK FOR THE PHOTOS PERMISSION
 
   void _askForPhotosPermission() async {
     final status = await Permission.photos.request();
@@ -67,6 +72,8 @@ class _PerfilScreenState extends State<PerfilScreen> {
     }
   }
 
+  // FUNCTION TO ASK FOR THE STORAGE PERMISSION
+
   void _askForStoragePermission() async {
     final status = await Permission.storage.request();
     switch (status) {
@@ -85,6 +92,8 @@ class _PerfilScreenState extends State<PerfilScreen> {
         openAppSettings();
     }
   }
+
+  // FUNCTION TO UPLOAD THE IMAGE TO FIREBASE STORAGE
 
   void uploadImage(camara) async {
     if (camara && _isCameraPermissionGranted == false) {
@@ -156,7 +165,7 @@ class _PerfilScreenState extends State<PerfilScreen> {
         elevation: 0,
         foregroundColor: Colors.black,
         actions: [
-          // Botón para salir de la sesión
+          // BUTTON TO LOG OUT
           Row(
             children: [
               IconButton(
@@ -183,14 +192,13 @@ class _PerfilScreenState extends State<PerfilScreen> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                // Nombre de usuario, email y foto de perfil
+                // NAME, EMAIL AND IMAGE
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        // Nombre de usuario
                         SizedBox(
                           width: 220,
                           child: Text(
@@ -206,7 +214,6 @@ class _PerfilScreenState extends State<PerfilScreen> {
                         const SizedBox(
                           height: 10,
                         ),
-                        // Email
                         SizedBox(
                           width: 220,
                           child: Text(
@@ -220,7 +227,6 @@ class _PerfilScreenState extends State<PerfilScreen> {
                         ),
                       ],
                     ),
-                    // Foto de perfil
                     UserImage(
                       userImage: userImage,
                       radiusOutterCircle: 52,
@@ -239,7 +245,6 @@ class _PerfilScreenState extends State<PerfilScreen> {
                   'Datos',
                   style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold),
                 ),
-                // Botón para editar la foto de perfil
                 TextButton(
                   child: const Text(
                     'Editar foto de perfil',
@@ -249,7 +254,6 @@ class _PerfilScreenState extends State<PerfilScreen> {
                     return editImageDialog(context, uploadImage);
                   },
                 ),
-                // Botón para editar el nombre
                 TextButton(
                   child: const Text(
                     'Editar nombre',
@@ -269,7 +273,6 @@ class _PerfilScreenState extends State<PerfilScreen> {
                   'Vehículos',
                   style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold),
                 ),
-                // Botón para añadir un vehículo
                 TextButton(
                   child: const Text(
                     'Añadir vehículo',
@@ -277,7 +280,6 @@ class _PerfilScreenState extends State<PerfilScreen> {
                   ),
                   onPressed: () async {
                     await addVehicleDialog(context, databaseProvider);
-                    // Actualizar la lista de vehículos después de añadir uno nuevo
                     await databaseProvider.getVehicles().then((value) {
                       setState(() {
                         vehicles.clear();
@@ -286,7 +288,7 @@ class _PerfilScreenState extends State<PerfilScreen> {
                     });
                   },
                 ),
-                // Lista de vehículos
+                // LIST OF VEHICLES
                 Flexible(
                   child: ListView.builder(
                     itemCount: vehicles.length,
@@ -345,10 +347,10 @@ class _PerfilScreenState extends State<PerfilScreen> {
                   'Valoración',
                   style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold),
                 ),
-                //rating
                 const SizedBox(
                   height: 10,
                 ),
+                // STREAMBUILDER TO GET RATINGS
                 StreamBuilder(
                   stream: databaseProvider.getCurrentUser().asStream(),
                   builder: (context, snapshot) {
@@ -399,7 +401,7 @@ class _PerfilScreenState extends State<PerfilScreen> {
                 const SizedBox(
                   height: 10,
                 ),
-                // Botón para eliminar la cuenta
+                // BUTTON TO DELETE ACCOUNT
                 TextButton(
                   child: const Text(
                     'Eliminar cuenta',
@@ -425,7 +427,7 @@ class _PerfilScreenState extends State<PerfilScreen> {
     );
   }
 
-  // Dialog para editar nombre
+  // DIALOG TO EDIT NAME
   Future<void> _editNameDialog(
     BuildContext context,
     DatabaseProvider databaseProvider,
@@ -545,6 +547,7 @@ class _PerfilScreenState extends State<PerfilScreen> {
   }
 }
 
+// DIALOG TO DELETE ACCOUNT
 class DeleteAccountDialog extends StatefulWidget {
   const DeleteAccountDialog({
     super.key,

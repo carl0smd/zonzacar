@@ -7,6 +7,8 @@ import 'package:zonzacar/widgets/widgets.dart';
 
 import '../providers/database_provider.dart';
 
+// SCREEN TO SHOW PUBLICATIONS RESULTS
+
 class BusquedaScreen extends StatelessWidget {
   final String? origin;
   final String? destination;
@@ -30,8 +32,6 @@ class BusquedaScreen extends StatelessWidget {
           'Resultados',
           style: TextStyle(color: Colors.white),
         ),
-
-        //change icon action
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
           onPressed: () {
@@ -48,7 +48,7 @@ class BusquedaScreen extends StatelessWidget {
         iconTheme: const IconThemeData(size: 40, color: Colors.white),
       ),
       body: SafeArea(
-        //FutureBuilder para obtener los trayectos de la base de datos
+        //FutureBuilder to get the publications
         child: FutureBuilder(
           future: isGoingToZonzamas
               ? date != null
@@ -82,19 +82,18 @@ class BusquedaScreen extends StatelessWidget {
                       : null;
               return publications.length != 0
                   ?
-                  //ListView para mostrar los trayectos
+                  //ListView to show the publications
 
                   Center(
                       child: ListView.builder(
                         itemCount: publications.length,
                         itemBuilder: (BuildContext context, int index) {
-                          //FutureBuilder para obtener el usuario que ha publicado el trayecto
+                          //FutureBuilder to get the user
                           return FutureBuilder(
                             future: databaseProvider.getUserByUid(
                               publications[index]['conductor'],
                             ),
                             builder: (context, snapshot) {
-                              //Si se obtiene el usuario, se muestra el trayecto
                               if (snapshot.hasData) {
                                 final user = snapshot.data[0];
                                 return BookingCard(
@@ -111,7 +110,6 @@ class BusquedaScreen extends StatelessWidget {
                           );
                         },
                       ),
-                      //Si no hay trayectos que coincidan con la búsqueda, se muestra un mensaje
                     )
                   : const NoResults();
             } else if (snapshot.hasData && snapshot.data.length == 0) {
@@ -126,7 +124,7 @@ class BusquedaScreen extends StatelessWidget {
   }
 }
 
-//Widget que se muestra cuando no hay resultados
+//Widget that shows a message when there are no results
 class NoResults extends StatelessWidget {
   const NoResults({
     super.key,
@@ -154,7 +152,7 @@ class NoResults extends StatelessWidget {
   }
 }
 
-//Widget que muestra un trayecto
+//Widget that shows a publication
 class BookingCard extends StatelessWidget {
   const BookingCard({
     super.key,
@@ -174,7 +172,6 @@ class BookingCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      //Al pulsar en el trayecto, se muestra la pantalla de detalles del trayecto
       onTap: () => PersistentNavBarNavigator.pushNewScreen(
         context,
         screen: ReservaDetailsScreen(
@@ -184,7 +181,6 @@ class BookingCard extends StatelessWidget {
           isGoingToZonzamas: isGoingToZonzamas,
         ),
       ),
-      //Card que muestra el trayecto
       child: Card(
         margin: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),
         shape:
@@ -195,7 +191,7 @@ class BookingCard extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              //Nombre del conductor y foto de perfil
+              //Name of the user, image and rating
               Row(
                 children: [
                   UserImage(
@@ -223,9 +219,7 @@ class BookingCard extends StatelessWidget {
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.end,
                             children: [
-                              //Icono de estrella
                               const Icon(Icons.star, color: Colors.green),
-                              //Valoración
                               Text(
                                 rating.toStringAsFixed(1),
                                 style: const TextStyle(
@@ -240,7 +234,7 @@ class BookingCard extends StatelessWidget {
                 ],
               ),
               const SizedBox(height: 10.0),
-              //Origen
+              //Origin
               Text(
                 publication['origen'],
                 style: TextStyle(
@@ -250,18 +244,16 @@ class BookingCard extends StatelessWidget {
                 ),
               ),
               const SizedBox(height: 10.0),
-              //Fecha, hora de salida y pasajeros permitidos
+              //Date, time and max passengers
               Row(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  //Linea vertical
                   Container(
                     margin: const EdgeInsets.symmetric(horizontal: 20.0),
                     width: 3.0,
                     height: 50.0,
                     color: Colors.green,
                   ),
-                  //fecha
                   const Icon(Icons.calendar_today, color: Colors.green),
                   const SizedBox(width: 10.0),
                   Text(
@@ -276,7 +268,6 @@ class BookingCard extends StatelessWidget {
                     ),
                   ),
                   const SizedBox(width: 10.0),
-                  //hora de salida
                   const Icon(Icons.access_time, color: Colors.green),
                   const SizedBox(width: 10.0),
                   Text(
@@ -287,7 +278,6 @@ class BookingCard extends StatelessWidget {
                     ),
                   ),
                   const SizedBox(width: 10.0),
-                  //maximo de pasajeros
                   const Icon(Icons.people, color: Colors.green),
                   const SizedBox(width: 10.0),
                   Text(
@@ -299,7 +289,7 @@ class BookingCard extends StatelessWidget {
                   ),
                 ],
               ),
-              //Destino
+              //Destination
               const SizedBox(height: 10.0),
               Text(
                 publication['destino'],
@@ -310,7 +300,7 @@ class BookingCard extends StatelessWidget {
                 ),
               ),
               const SizedBox(height: 10.0),
-              //Botón para reservar
+              //Button to book
               Container(
                 margin: const EdgeInsets.symmetric(horizontal: 10.0),
                 width: double.infinity,

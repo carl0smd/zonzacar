@@ -8,6 +8,8 @@ import 'package:flutter/material.dart';
 import '../helpers/helper_function.dart';
 import '../providers/auth_provider.dart';
 
+// LOGIN SCREEN
+
 class LoginScreen extends StatelessWidget {
   const LoginScreen({Key? key}) : super(key: key);
 
@@ -34,7 +36,8 @@ class LoginScreen extends StatelessWidget {
   }
 }
 
-//Formulario de login
+//FORM
+
 class _Form extends StatefulWidget {
   const _Form();
 
@@ -66,7 +69,7 @@ class __FormState extends State<_Form> {
                 children: [
                   Column(
                     children: [
-                      //Campo de correo
+                      //FIELD EMAIL
                       CustomInput(
                         icon: Icons.mail_outline,
                         placeholder: 'Correo',
@@ -83,7 +86,7 @@ class __FormState extends State<_Form> {
                               : 'Introduce un correo válido';
                         },
                       ),
-                      //Campo de contraseña
+                      //FIELD PASSWORD
                       CustomInput(
                         icon: Icons.lock_outline,
                         placeholder: 'Contraseña',
@@ -93,21 +96,20 @@ class __FormState extends State<_Form> {
                           setState(() {});
                         },
                         validator: (value) {
-                          //la contraseña tener al menos  6 caracteres sin espacios
+                          //PASSWORD MUST HAVE AT LEAST 6 CHARACTERS WITHOUT SPACES
                           return RegExp(r"^\S{6,}$").hasMatch(value!)
                               ? null
                               : 'La contraseña debe tener al menos 6 caracteres sin espacios';
                         },
                       ),
-                      //Botón de acceso
+                      //ACCESS BUTTON
                       CredentialsGreenButton(
                         text: 'Acceder',
                         onPressed: () {
                           login(email, password);
-                          // Navigator.pushReplacementNamed(context, 'home');
                         },
                       ),
-                      //He olvidado mi contraseña
+                      //FORGOT PASSWORD BUTTON
                       const SizedBox(
                         height: 10,
                       ),
@@ -150,6 +152,7 @@ class __FormState extends State<_Form> {
                                       const SizedBox(
                                         height: 20,
                                       ),
+                                      //SEND EMAIL BUTTON
                                       CredentialsGreenButton(
                                         text: 'Enviar',
                                         onPressed: () async {
@@ -211,7 +214,7 @@ class __FormState extends State<_Form> {
     );
   }
 
-  //Función para iniciar sesión
+  //FUNCTION LOGIN
   login(email, password) async {
     if (formKey.currentState!.validate()) {
       setState(() {});

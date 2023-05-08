@@ -6,6 +6,8 @@ import 'package:zonzacar/widgets/widgets.dart';
 
 import '../providers/database_provider.dart';
 
+// SCREEN TO SHOW THE ALL THE CHATS
+
 class ChatScreen extends StatefulWidget {
   const ChatScreen({Key? key}) : super(key: key);
 
@@ -19,6 +21,8 @@ class _ChatScreenState extends State<ChatScreen> {
   bool isLoading = false;
   List<String> driversId = [];
   List<String> passengersId = [];
+
+  // FUNCTION TO GET ALL THE DRIVERS AND PASSENGERS ID
 
   void getDriversAndPassengers() async {
     try {
@@ -82,6 +86,7 @@ class _ChatScreenState extends State<ChatScreen> {
                 Expanded(
                   child: TabBarView(
                     children: [
+                      // MY DRIVERS
                       isLoading
                           ? const Center(child: CircularProgressIndicator())
                           : driversId.isEmpty
@@ -102,7 +107,7 @@ class _ChatScreenState extends State<ChatScreen> {
                                   ],
                                 ),
 
-                      // Mis pasajeros
+                      // MY PASSENGERS
                       isLoading
                           ? const Center(child: CircularProgressIndicator())
                           : passengersId.isEmpty
@@ -133,6 +138,8 @@ class _ChatScreenState extends State<ChatScreen> {
     );
   }
 }
+
+// WIDGET TO SHOW THE USERS
 
 class Users extends StatelessWidget {
   const Users({
@@ -208,6 +215,8 @@ class Users extends StatelessWidget {
   }
 }
 
+// WIDGET TO SHOW THE LAST MESSAGE OF THE USER
+
 class UserLastMessage extends StatelessWidget {
   const UserLastMessage({
     super.key,
@@ -268,6 +277,8 @@ class UserLastMessage extends StatelessWidget {
     );
   }
 }
+
+// WIDGET TO SHOW THAT YOU DON'T HAVE CHATS
 
 class NoUsers extends StatelessWidget {
   const NoUsers({

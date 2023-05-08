@@ -16,6 +16,8 @@ class MisTrayectosScreen extends StatefulWidget {
   State<MisTrayectosScreen> createState() => _MisTrayectosScreenState();
 }
 
+// SCREEN TO SHOW THE BOOKINGS AND PUBLICATIONS OF THE USER
+
 class _MisTrayectosScreenState extends State<MisTrayectosScreen> {
   bool _isPermissionGranted = false;
 
@@ -133,6 +135,8 @@ class _MisTrayectosScreenState extends State<MisTrayectosScreen> {
   }
 }
 
+// WIDGET TO SHOW THE BOOKINGS AND PUBLICATIONS OF THE USER
+
 class MyBookingsAndPublications extends StatelessWidget {
   const MyBookingsAndPublications({
     super.key,
@@ -224,6 +228,7 @@ class _CardInfoState extends State<CardInfo> {
     'finalizada': Colors.grey[300],
   };
 
+// FUNCTION TO GET THE COLOR OF THE CARD DEPENDING ON THE STATE OF THE PUBLICATION
   getColores(estado) {
     switch (estado) {
       case 'Disponible':
@@ -279,6 +284,7 @@ class _CardInfoState extends State<CardInfo> {
                     ),
                   ),
                 ),
+                // STREAMBUILDER TO GET THE PUBLICATION DATA
                 StreamBuilder(
                   stream: databaseProvider
                       .getPublications(widget.publicacion['uid'])
@@ -329,11 +335,9 @@ class _CardInfoState extends State<CardInfo> {
               ),
             ),
             const SizedBox(height: 10.0),
-            //Fecha, hora de salida y pasajeros permitidos
             Row(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                //Linea vertical
                 Container(
                   margin: const EdgeInsets.symmetric(
                     horizontal: 20.0,
@@ -342,7 +346,6 @@ class _CardInfoState extends State<CardInfo> {
                   height: 50.0,
                   color: Colors.green,
                 ),
-                //fecha
                 const Icon(
                   Icons.calendar_today,
                   color: Colors.green,
@@ -360,7 +363,6 @@ class _CardInfoState extends State<CardInfo> {
                   ),
                 ),
                 const SizedBox(width: 8.0),
-                //hora de salida
                 const Icon(
                   Icons.access_time,
                   color: Colors.green,
@@ -374,7 +376,6 @@ class _CardInfoState extends State<CardInfo> {
                   ),
                 ),
                 const SizedBox(width: 8.0),
-                //pasajeros permitidos
                 const Icon(
                   Icons.people,
                   color: Colors.green,
@@ -389,7 +390,6 @@ class _CardInfoState extends State<CardInfo> {
                 ),
               ],
             ),
-            //Destino
             const SizedBox(height: 10.0),
             Text(
               widget.publicacion['destino'],
@@ -399,7 +399,6 @@ class _CardInfoState extends State<CardInfo> {
                 color: Colors.grey[600],
               ),
             ),
-            //Row button ver y cancelar
             const SizedBox(height: 10.0),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -422,6 +421,8 @@ class _CardInfoState extends State<CardInfo> {
                     ),
                   ],
                 ),
+
+                // STREAMBUILDER TO GET THE PUBLICATION STATE
                 StreamBuilder(
                   stream: databaseProvider
                       .getPublications(widget.publicacion['uid'])
@@ -450,7 +451,6 @@ class _CardInfoState extends State<CardInfo> {
                                     );
                             },
                             style: ElevatedButton.styleFrom(
-                              //height 20
                               minimumSize: const Size(80.0, 35.0),
                               elevation: 1,
                               backgroundColor: Colors.green,

@@ -5,6 +5,8 @@ import 'package:zonzacar/widgets/snackbar.dart';
 import '../providers/database_provider.dart';
 import '../shared/constants.dart';
 
+// SCREEN TO SHOW THE FORM TO PUBLISH A TRIP
+
 class FormularioTrayectoScreen extends StatefulWidget {
   final String distance;
   final String origin;
@@ -46,6 +48,8 @@ class _FormularioTrayectoScreenState extends State<FormularioTrayectoScreen> {
       });
     });
   }
+
+  // FUNCTION TO CONVERT THE DATE AND HOUR TO A TIMESTAMP
 
   toDouble(hour, minute) {
     return hour + minute / 60.0;
@@ -94,7 +98,7 @@ class _FormularioTrayectoScreenState extends State<FormularioTrayectoScreen> {
               margin: const EdgeInsets.all(20.0),
               child: Column(
                 children: [
-                  //Info del trayecto
+                  //INFO DEL TRAYECTO
                   Container(
                     padding: const EdgeInsets.symmetric(
                       vertical: 20.0,
@@ -112,7 +116,7 @@ class _FormularioTrayectoScreenState extends State<FormularioTrayectoScreen> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        //Origen
+                        //ORIGIN
                         Container(
                           margin: const EdgeInsets.only(bottom: 10.0),
                           child: Text(
@@ -127,7 +131,7 @@ class _FormularioTrayectoScreenState extends State<FormularioTrayectoScreen> {
                         Row(
                           crossAxisAlignment: CrossAxisAlignment.center,
                           children: [
-                            //Linea vertical
+                            //VERTICAL LINE
                             Container(
                               margin:
                                   const EdgeInsets.symmetric(horizontal: 20.0),
@@ -141,7 +145,7 @@ class _FormularioTrayectoScreenState extends State<FormularioTrayectoScreen> {
                               color: Theme.of(context).primaryColor,
                             ),
                             const SizedBox(width: 10.0),
-                            //Distancia
+                            //DISTANCE
                             Text(
                               widget.distance,
                               style: TextStyle(
@@ -155,7 +159,7 @@ class _FormularioTrayectoScreenState extends State<FormularioTrayectoScreen> {
                               color: Theme.of(context).primaryColor,
                             ),
                             const SizedBox(width: 10.0),
-                            //Duración
+                            //DURATION
                             Text(
                               widget.duration,
                               style: TextStyle(
@@ -165,7 +169,7 @@ class _FormularioTrayectoScreenState extends State<FormularioTrayectoScreen> {
                             ),
                           ],
                         ),
-                        //Destino
+                        //DESTINATION
                         Container(
                           margin: const EdgeInsets.only(top: 10.0),
                           child: Text(
@@ -180,13 +184,13 @@ class _FormularioTrayectoScreenState extends State<FormularioTrayectoScreen> {
                     ),
                   ),
                   const SizedBox(height: 20.0),
-                  //Formulario
+                  //FORM
                   Form(
                     key: formKey,
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        //Campo fecha
+                        //DATE PICKER
                         TextFormField(
                           controller: dateCtrl,
                           maxLength: 10,
@@ -200,16 +204,16 @@ class _FormularioTrayectoScreenState extends State<FormularioTrayectoScreen> {
                           ),
                           onTap: () async {
                             DateFormat dateFormat = DateFormat('dd/MM/yyyy');
-                            DateTime? nuevaFecha = await showDatePicker(
+                            DateTime? newDate = await showDatePicker(
                               context: context,
                               initialEntryMode:
                                   DatePickerEntryMode.calendarOnly,
-                              //not on july and august and weekends
                               initialDate: DateConstants.initialDate,
                               firstDate: DateConstants.initialDate,
                               lastDate: DateConstants.initialDate
                                   .add(const Duration(days: 365)),
                               selectableDayPredicate: (DateTime val) {
+                                //DISABLE WEEKENDS AND SUMMER
                                 if (val.weekday == 6 || val.weekday == 7) {
                                   return false;
                                 }
@@ -219,9 +223,9 @@ class _FormularioTrayectoScreenState extends State<FormularioTrayectoScreen> {
                                 return true;
                               },
                             );
-                            if (nuevaFecha == null) return;
-                            dateCtrl.text = dateFormat.format(nuevaFecha);
-                            date = nuevaFecha.millisecondsSinceEpoch;
+                            if (newDate == null) return;
+                            dateCtrl.text = dateFormat.format(newDate);
+                            date = newDate.millisecondsSinceEpoch;
                           },
                           validator: (value) {
                             if (value == null || value.isEmpty) {
@@ -231,7 +235,7 @@ class _FormularioTrayectoScreenState extends State<FormularioTrayectoScreen> {
                           },
                         ),
                         const SizedBox(height: 20.0),
-                        //Campo hora
+                        //TIME PICKER
                         TextFormField(
                           controller: hourCtrl,
                           maxLength: 5,
@@ -244,16 +248,16 @@ class _FormularioTrayectoScreenState extends State<FormularioTrayectoScreen> {
                             fillColor: Colors.white,
                           ),
                           onTap: () async {
-                            TimeOfDay? nuevaHora = await showTimePicker(
+                            TimeOfDay? newHour = await showTimePicker(
                               context: context,
                               initialEntryMode: TimePickerEntryMode.dialOnly,
                               initialTime: TimeOfDay.now(),
                             );
-                            if (nuevaHora == null) return;
+                            if (newHour == null) return;
                             if (mounted) {
-                              hourCtrl.text = nuevaHora.format(context);
-                              hour = nuevaHora.hour * 3600000 +
-                                  nuevaHora.minute * 60000;
+                              hourCtrl.text = newHour.format(context);
+                              hour = newHour.hour * 3600000 +
+                                  newHour.minute * 60000;
                             }
                           },
                           validator: (value) {
@@ -276,7 +280,7 @@ class _FormularioTrayectoScreenState extends State<FormularioTrayectoScreen> {
                           },
                         ),
                         const SizedBox(height: 20.0),
-                        //Campo vehiculo
+                        //VEHICLE PICKER
                         DropdownButtonFormField(
                           items: vehicles.map((e) {
                             return DropdownMenuItem(
@@ -307,7 +311,7 @@ class _FormularioTrayectoScreenState extends State<FormularioTrayectoScreen> {
 
                         const SizedBox(height: 20.0),
 
-                        //Campo asientos
+                        //FIELD FOR SEATS
                         TextFormField(
                           controller: seatsCtrl,
                           maxLength: 1,
@@ -347,7 +351,7 @@ class _FormularioTrayectoScreenState extends State<FormularioTrayectoScreen> {
                         ),
                         const SizedBox(height: 20.0),
 
-                        //Campo precio
+                        //PRICE FIELD
                         TextFormField(
                           controller: priceCtrl,
                           maxLength: 5,
@@ -395,7 +399,7 @@ class _FormularioTrayectoScreenState extends State<FormularioTrayectoScreen> {
 
                         const SizedBox(height: 20.0),
 
-                        //Botón publicar
+                        //BUTTON TO PUBLISH
                         ElevatedButtonTheme(
                           data: ElevatedButtonThemeData(
                             style: ElevatedButton.styleFrom(
@@ -427,6 +431,7 @@ class _FormularioTrayectoScreenState extends State<FormularioTrayectoScreen> {
                                       );
                                       try {
                                         await databaseProvider.savePublication(
+                                          //DATE + HOUR IN MILLISECONDS TO GET FINAL DATE
                                           date + hour,
                                           widget.duration,
                                           widget.distance,

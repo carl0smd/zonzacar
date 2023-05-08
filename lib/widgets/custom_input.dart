@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+// WIDGET TO SHOW A CUSTOM INPUT
 class CustomInput extends StatelessWidget {
   final IconData icon;
   final String placeholder;

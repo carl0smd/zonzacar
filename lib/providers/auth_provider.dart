@@ -2,6 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:zonzacar/helpers/helper_function.dart';
 import 'package:zonzacar/providers/database_provider.dart';
 
+//CLASS TO HELP WITH AUTHENTICATION
 class AuthProvider {
   final FirebaseAuth firebaseAuth = FirebaseAuth.instance;
 
@@ -26,7 +27,10 @@ class AuthProvider {
 
   //register
   Future registerUser(
-      String nombreCompleto, String email, String password) async {
+    String nombreCompleto,
+    String email,
+    String password,
+  ) async {
     try {
       User? user = (await firebaseAuth.createUserWithEmailAndPassword(
         email: email,

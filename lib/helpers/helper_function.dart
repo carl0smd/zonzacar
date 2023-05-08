@@ -1,5 +1,7 @@
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
+//CLASS TO HELP WITH SAVING AND GETTING DATA FROM SECURE STORAGE
+
 class HelperFunctions {
   final _storage = const FlutterSecureStorage();
 
@@ -8,7 +10,7 @@ class HelperFunctions {
   final String userEmailKey = "USEREMAILKEY";
   final String userNameKey = "USERNAMEKEY";
 
-  //Save data to SecureStorage
+  // SAVE DATA TO SECURE STORAGE
 
   Future saveUserLoggedInStatus(isUserLoggedIn) async {
     final writeStatus = await _storage.write(
@@ -28,7 +30,7 @@ class HelperFunctions {
     return writeName;
   }
 
-  //Get data from SecureStorage
+  //GET DATA FROM SECURE STORAGE
 
   Future getUserLoggedInStatus() async {
     final readStatus = await _storage.read(key: userLoggedInKey);

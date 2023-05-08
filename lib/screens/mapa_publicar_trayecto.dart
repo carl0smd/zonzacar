@@ -7,6 +7,7 @@ import 'package:zonzacar/providers/database_provider.dart';
 import 'package:zonzacar/providers/google_services_provider.dart';
 import 'package:zonzacar/screens/screens.dart';
 
+// SCREEN TO SHOW THE MAP TO PUBLISH A TRIP
 class PublicarTrayectoScreen extends StatefulWidget {
   final String zone;
   final double zoneLat;
@@ -37,7 +38,7 @@ class _PublicarTrayectoScreenState extends State<PublicarTrayectoScreen> {
   void initState() {
     super.initState();
     _checkIfUserHasCar();
-    //Variable que contiene el tema del mapa
+    //VARIABLE THAT CONTAINS THE MAP THEME
     DefaultAssetBundle.of(context)
         .loadString('assets/map_theme/classic_no_labels.json')
         .then((string) {
@@ -45,7 +46,7 @@ class _PublicarTrayectoScreenState extends State<PublicarTrayectoScreen> {
     });
   }
 
-  //Función para comprobar si el usuario tiene un coche
+  //FUNCTION TO CHECK IF THE USER HAS A CAR
   void _checkIfUserHasCar() async {
     await databaseProvider.getVehicles().then((value) {
       if (value.isNotEmpty) {
@@ -69,7 +70,7 @@ class _PublicarTrayectoScreenState extends State<PublicarTrayectoScreen> {
 
     List<PointLatLng> result = [];
 
-    //Marcador de origen
+    //ORIGIN MARKER
     Marker originMarker = Marker(
       markerId: const MarkerId('origin'),
       position: LatLng(
@@ -92,7 +93,7 @@ class _PublicarTrayectoScreenState extends State<PublicarTrayectoScreen> {
       },
     );
 
-    //Marcador de destino
+    //DESTINATION MARKER
     Marker destinationMarker = Marker(
       markerId: const MarkerId('destination'),
       position: LatLng(
@@ -115,7 +116,7 @@ class _PublicarTrayectoScreenState extends State<PublicarTrayectoScreen> {
       },
     );
 
-    //Posición de la cámara
+    //CAMERA POSITION
     CameraPosition kGooglePlex = CameraPosition(
       target: LatLng(
         double.parse(origin.split(',')[0]),
@@ -124,7 +125,7 @@ class _PublicarTrayectoScreenState extends State<PublicarTrayectoScreen> {
       zoom: 16,
     );
 
-    //FutureBuilder para obtener la polyline y la distancia entre los dos puntos
+    //FUTURE BUILDER TO GET THE POLYLINE
     return FutureBuilder(
       future: googleServicesProvider.getPolylineAndDistanceAndDuration(
         origin,
@@ -178,7 +179,7 @@ class _PublicarTrayectoScreenState extends State<PublicarTrayectoScreen> {
                     )
                   : null,
               actions: [
-                // Botón para cerrar el mapa
+                // BUTTON TO CLOSE THE SCREEN
                 Container(
                   margin: const EdgeInsets.only(right: 5.0),
                   child: IconButton(
@@ -191,7 +192,7 @@ class _PublicarTrayectoScreenState extends State<PublicarTrayectoScreen> {
                 ),
               ],
             ),
-            // Si el usuario tiene un coche se muestra el mapa, si no se muestra un mensaje
+            // IF USER HAS CAR SHOW THE MAP
             body: _userHasCar
                 ? Column(
                     children: [
@@ -225,8 +226,8 @@ class _PublicarTrayectoScreenState extends State<PublicarTrayectoScreen> {
                         color: Theme.of(context).primaryColor,
                         padding: const EdgeInsets.all(10.0),
                         child: Column(
-                          children: [
-                            const Text(
+                          children: const [
+                            Text(
                               '* Esta ruta es solo orientativa, el conductor podrá tomar otro camino siempre que llegue a su destino',
                               style: TextStyle(
                                 fontSize: 14.0,
@@ -259,7 +260,7 @@ class _PublicarTrayectoScreenState extends State<PublicarTrayectoScreen> {
                     ),
                   ),
           );
-          // Si el origen o el destino es La Graciosa se muestra un mensaje
+          // IF ORIGIN OR DESTINATION IS IN LA GRACIOSA
         } else if (snapshot.hasData && snapshot.data[0] == '') {
           return Scaffold(
             appBar: AppBar(

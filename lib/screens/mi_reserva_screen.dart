@@ -12,6 +12,8 @@ import 'package:zonzacar/screens/screens.dart';
 
 import '../widgets/widgets.dart';
 
+// SCREEN TO SHOW THE RESERVATION DETAILS
+
 class MiReservaScreen extends StatefulWidget {
   const MiReservaScreen({Key? key, this.publication}) : super(key: key);
 
@@ -22,7 +24,6 @@ class MiReservaScreen extends StatefulWidget {
 }
 
 class _MiReservaScreenState extends State<MiReservaScreen> {
-  //completer
   final Completer<GoogleMapController> _controller = Completer();
   bool isRatingLoading = false;
 
@@ -41,7 +42,7 @@ class _MiReservaScreenState extends State<MiReservaScreen> {
       zoom: 16,
     );
 
-    //Marker origen
+    //ORIGIN MARKER
     Marker originMarker = Marker(
       markerId: const MarkerId('marker'),
       position: LatLng(
@@ -98,12 +99,12 @@ class _MiReservaScreenState extends State<MiReservaScreen> {
                   ),
                 ],
               ),
-              //divider
               const Divider(
                 thickness: 1.0,
                 color: Colors.grey,
               ),
               const SizedBox(height: 10.0),
+              // FUTURE BUILDER TO GET THE USER DATA
               FutureBuilder(
                 future: databaseProvider
                     .getUserByUid(widget.publication['conductor']),
@@ -138,8 +139,6 @@ class _MiReservaScreenState extends State<MiReservaScreen> {
                             ),
                           ],
                         ),
-
-                        //icon button for chat
                         IconButton(
                           onPressed: () {
                             Navigator.pop(context);
@@ -182,6 +181,8 @@ class _MiReservaScreenState extends State<MiReservaScreen> {
               const SizedBox(
                 height: 20,
               ),
+
+              // FUTURE BUILDER TO GET THE VEHICLE DATA
               FutureBuilder(
                 future: databaseProvider
                     .getVehicleByUid(widget.publication['vehiculo']),
@@ -225,7 +226,7 @@ class _MiReservaScreenState extends State<MiReservaScreen> {
                             ),
                           ],
                         ),
-                        //button to rate driver
+                        //BUTTON TO RATE THE DRIVER
                         widget.publication['estado'] ==
                                 DatabaseProvider.publicationState['Finalizada']
                             ? const SizedBox(
@@ -274,7 +275,8 @@ class _MiReservaScreenState extends State<MiReservaScreen> {
                                                   itemCount: 5,
                                                   itemPadding:
                                                       const EdgeInsets.only(
-                                                          right: 4.0),
+                                                    right: 4.0,
+                                                  ),
                                                   itemBuilder: (context, _) =>
                                                       const Icon(
                                                     Icons.star,

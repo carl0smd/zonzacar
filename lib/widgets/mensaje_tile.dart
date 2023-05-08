@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+// WIDGET TO SHOW A MESSAGE IN CHAT DETAILS SCREEN
 class MessageTile extends StatelessWidget {
   const MessageTile({
     super.key,

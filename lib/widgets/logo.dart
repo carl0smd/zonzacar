@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+// WIDGET FOR LOGO
 class Logo extends StatelessWidget {
   final String title;
 

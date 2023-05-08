@@ -7,6 +7,7 @@ import 'package:zonzacar/providers/database_provider.dart';
 import 'package:zonzacar/screens/menu_principal_screen.dart';
 import 'package:zonzacar/widgets/widgets.dart';
 
+// SCRREN TO SHOW THE CHAT MESSAGES
 class ChatDetailsScreen extends StatefulWidget {
   const ChatDetailsScreen({
     Key? key,
@@ -32,6 +33,7 @@ class _ChatDetailsScreenState extends State<ChatDetailsScreen> {
   dynamic passenger;
   dynamic driver;
 
+  // FUNCTION TO GET THE CHAT ID
   void getChatFromDriverAndPassenger() async {
     try {
       setState(() {
@@ -77,6 +79,7 @@ class _ChatDetailsScreenState extends State<ChatDetailsScreen> {
     }
   }
 
+  // FUNCTION TO SEND THE NOTIFICATION
   void messageListener() {
     FirebaseMessaging.onMessage.listen((RemoteMessage message) {
       String? title = message.notification!.title;
@@ -251,6 +254,7 @@ class _ChatDetailsScreenState extends State<ChatDetailsScreen> {
     );
   }
 
+// FUNCTION TO SEND THE MESSAGE
   sendMessage() {
     final mensaje = messageController.text.trim();
     final emisor = widget.isDriver ? widget.driver : widget.passenger;
@@ -274,6 +278,8 @@ class _ChatDetailsScreenState extends State<ChatDetailsScreen> {
     messageController.clear();
   }
 }
+
+// WIDGET TO SHOW THE MESSAGES
 
 class Messages extends StatelessWidget {
   const Messages({

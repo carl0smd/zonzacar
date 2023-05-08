@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:zonzacar/providers/database_provider.dart';
 import 'package:zonzacar/shared/constants.dart';
 
-// Dialogos para editar datos
+// EDIT IMAGE DIALOG
 Future<void> editImageDialog(
   BuildContext context,
   void Function(dynamic camara) uploadImage,
@@ -74,7 +74,7 @@ Future<void> editImageDialog(
   );
 }
 
-// Dialogos para añadir vehiculo
+// ADD VEHICLE DIALOG
 Future<void> addVehicleDialog(
   BuildContext context,
   DatabaseProvider databaseProvider,

@@ -12,6 +12,7 @@ import 'package:zonzacar/routes/routes.dart';
 
 import 'screens/screens.dart';
 
+// BACKGROUND MESSAGE HANDLER
 Future<void> backgroundHandler(RemoteMessage message) async {
   String? title = message.notification!.title;
   String? body = message.notification!.body;

@@ -5,6 +5,7 @@ import 'package:zonzacar/screens/screens.dart';
 
 import '../shared/constants.dart';
 
+// SCREEN TO LOOK FOR PUBLICATIONS
 class ReservasScreen extends StatelessWidget {
   const ReservasScreen({Key? key}) : super(key: key);
 
@@ -52,6 +53,8 @@ class ReservasScreen extends StatelessWidget {
     );
   }
 }
+
+// WIDGET TO SHOW THE SEARCH BOX
 
 class _CajaDeBusqueda extends StatefulWidget {
   final Size size;

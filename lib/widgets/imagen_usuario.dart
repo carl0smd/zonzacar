@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+// WIDGET TO SHOW A USER IMAGE
 class UserImage extends StatelessWidget {
   const UserImage({
     super.key,

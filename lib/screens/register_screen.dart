@@ -4,6 +4,8 @@ import 'package:flutter/material.dart';
 import '../providers/auth_provider.dart';
 import 'dart:io' show Platform;
 
+// SCREEN TO REGISTER A NEW USER
+
 class RegisterScreen extends StatelessWidget {
   const RegisterScreen({Key? key}) : super(key: key);
 
@@ -29,6 +31,8 @@ class RegisterScreen extends StatelessWidget {
     );
   }
 }
+
+// FORM TO REGISTER A NEW USER
 
 class _Form extends StatefulWidget {
   const _Form();
@@ -87,6 +91,7 @@ class __FormState extends State<_Form> {
                         },
                         validator: (value) {
                           return RegExp(
+                            // regex to validate email
                             r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+",
                           ).hasMatch(value!.trim())
                               ? null
@@ -102,7 +107,7 @@ class __FormState extends State<_Form> {
                           setState(() {});
                         },
                         validator: (value) {
-                          //la contraseña tener al menos 6 caracteres sin espacios
+                          //password regex, at least 6 characters, no spaces
                           return RegExp(r"^\S{6,}$").hasMatch(value!)
                               ? null
                               : 'La contraseña debe tener al menos 6 caracteres sin espacios';
@@ -125,12 +130,12 @@ class __FormState extends State<_Form> {
                   text: '¿Ya tienes cuenta?',
                   gestureText: 'Accede desde aquí!',
                 ),
-                // const SizedBox(height: 40,),
-                // const Text('Términos y condiciones de uso', style: TextStyle(fontWeight: FontWeight.w200),),
               ],
             ),
     );
   }
+
+  // FUNCTION TO REGISTER A NEW USER
 
   register(nombreCompleto, email, password) async {
     if (formKey.currentState!.validate()) {
@@ -154,6 +159,8 @@ class __FormState extends State<_Form> {
     }
   }
 }
+
+// DIALOG TO VERIFY EMAIL
 
 Future _verificarEmailDialog(BuildContext context) async {
   return showDialog(

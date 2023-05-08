@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-//optional duration
 
+// SHOW CUSTOM SNACKBAR
 void showSnackbar(String message, BuildContext context, {Duration? duration}) {
   final snackbar = SnackBar(
     content: Text(message, style: const TextStyle(color: Colors.black)),

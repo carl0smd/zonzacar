@@ -9,6 +9,7 @@ import 'package:intl/intl.dart';
 import 'package:zonzacar/providers/database_provider.dart';
 import 'package:zonzacar/widgets/widgets.dart';
 
+// SCREEN TO SHOW THE DETAILS OF A BOOKING
 class ReservaDetailsScreen extends StatefulWidget {
   final String id;
   final String userImage;
@@ -50,6 +51,7 @@ class _ReservaDetailsScreenState extends State<ReservaDetailsScreen> {
       body: SingleChildScrollView(
         physics: const BouncingScrollPhysics(),
         child: SafeArea(
+          // FUTURE BUILDER TO GET THE PUBLICATION DATA
           child: FutureBuilder(
             future: databaseProvider.getPublications(widget.id),
             builder: (context, snapshot) {
@@ -115,6 +117,7 @@ class _ReservaDetailsScreenState extends State<ReservaDetailsScreen> {
     );
   }
 
+  // WIDGET FOR BUY BUTTON
   Container buyButton(BuildContext context, DatabaseProvider databaseProvider) {
     return Container(
       margin: const EdgeInsets.only(bottom: 20),
@@ -153,6 +156,7 @@ class _ReservaDetailsScreenState extends State<ReservaDetailsScreen> {
     );
   }
 
+  // WIDGET FOR DRIVER INFO
   Container infoConductor(
     DatabaseProvider databaseProvider,
     publication,
@@ -266,9 +270,9 @@ class _ReservaDetailsScreenState extends State<ReservaDetailsScreen> {
     );
   }
 
+  // FUNCTION TO BUILD BOOTOOM SHEET
   buildSheet(DatabaseProvider databaseProvider) {
     return Container(
-      //pay with card, cash or cancel
       height: 300,
       padding: const EdgeInsets.symmetric(vertical: 20),
       color: Colors.white,
@@ -485,6 +489,7 @@ class _ReservaDetailsScreenState extends State<ReservaDetailsScreen> {
   }
 }
 
+// WIDGET TO SHOW MAP IN RESERVA DETAILS SCREEN
 class InfoMapa extends StatelessWidget {
   const InfoMapa({
     super.key,
@@ -513,7 +518,6 @@ class InfoMapa extends StatelessWidget {
         ],
       ),
       padding: const EdgeInsets.all(20),
-      //show googlemaps with marker in publication['coordenadasOrigen']
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -546,6 +550,8 @@ class InfoMapa extends StatelessWidget {
     );
   }
 }
+
+// WIDGET TO SHOW PRICE INFO IN RESERVA DETAILS SCREEN
 
 class PriceInfo extends StatelessWidget {
   const PriceInfo({
@@ -589,6 +595,8 @@ class PriceInfo extends StatelessWidget {
     );
   }
 }
+
+// WIDGET TO SHOW INFO DETAILS IN RESERVA DETAILS SCREEN
 
 class InfoTrip extends StatelessWidget {
   const InfoTrip({

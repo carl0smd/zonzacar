@@ -1,11 +1,15 @@
 import 'package:flutter/material.dart';
 
+// BUTTON TO RESET PASSWORD
 class CredentialsGreenButton extends StatelessWidget {
   final String text;
   final void Function() onPressed;
 
-  const CredentialsGreenButton(
-      {super.key, required this.text, required this.onPressed});
+  const CredentialsGreenButton({
+    super.key,
+    required this.text,
+    required this.onPressed,
+  });
 
   @override
   Widget build(BuildContext context) {

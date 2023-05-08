@@ -6,6 +6,7 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:zonzacar/helpers/helper_function.dart';
 import 'package:zonzacar/providers/notifications_provider.dart';
 
+//CLASS TO HELP WITH DATABASE
 class DatabaseProvider {
   final String? uid;
   DatabaseProvider({this.uid});
@@ -157,15 +158,15 @@ class DatabaseProvider {
 
   //get users that share car in the same publication
   Future getUsersSharingCar(String uidPublication) async {
-    QuerySnapshot snapshotReservas = await bookingsCollection
+    QuerySnapshot snapshotBookings = await bookingsCollection
         .where('publicacion', isEqualTo: uidPublication)
         .get();
-    List<String> usuarios = [];
-    for (var reserva in snapshotReservas.docs) {
-      usuarios.add(reserva['pasajero']);
+    List<String> users = [];
+    for (var reserva in snapshotBookings.docs) {
+      users.add(reserva['pasajero']);
     }
     QuerySnapshot snapshotUsuarios =
-        await userCollection.where('uid', whereIn: usuarios).get();
+        await userCollection.where('uid', whereIn: users).get();
     return snapshotUsuarios.docs;
   }
 
@@ -388,7 +389,10 @@ class DatabaseProvider {
 
   //create rating
   Future rateDriver(
-      double stars, String uidPublication, String uidDriver) async {
+    double stars,
+    String uidPublication,
+    String uidDriver,
+  ) async {
     await publicationsCollection.doc(uidPublication).update({
       'valoraciones':
           FieldValue.arrayUnion([FirebaseAuth.instance.currentUser!.uid]),
@@ -489,7 +493,6 @@ class DatabaseProvider {
     } else {
       DateTime today = DateTime.now();
       final dateToSearch = today.millisecondsSinceEpoch;
-      print(dateToSearch);
       QuerySnapshot snapshot = await publicationsCollection
           .where('fecha', isGreaterThanOrEqualTo: dateToSearch)
           .where('destino', isEqualTo: 'CIFP Zonzamas')

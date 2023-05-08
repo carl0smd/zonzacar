@@ -1,6 +1,4 @@
-// To parse this JSON data, do
-//
-//     final directionsResponse = directionsResponseFromJson(jsonString);
+//MODEL FOR DIRECTIONS API RESPONSE
 
 import 'dart:convert';
 

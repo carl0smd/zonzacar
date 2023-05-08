@@ -14,6 +14,8 @@ class PublicacionesScreen extends StatefulWidget {
   State<PublicacionesScreen> createState() => _PublicacionesScreenState();
 }
 
+// SCREEN TO CHOOSE THE PLACE WHERE YOU ARE GOING TO AND WHERE YOU ARE GOING FROM TO CREATE A NEW POST
+
 class _PublicacionesScreenState extends State<PublicacionesScreen> {
   final _goToZonzamasSearchController = TextEditingController();
   final _goFromZonzamasSearchController = TextEditingController();
@@ -38,6 +40,7 @@ class _PublicacionesScreenState extends State<PublicacionesScreen> {
     });
   }
 
+  // FUNCTION TO KNOW WHEN THE USER IS TYPING TO CALL THE GOOGLE PLACES API
   _onChangedGoZonzamasToController() async {
     if (_sessionToken == null) {
       setState(() {
@@ -50,11 +53,11 @@ class _PublicacionesScreenState extends State<PublicacionesScreen> {
         _goToZonzamasSearchController.text,
         _sessionToken,
       );
-      print('Estoy llamando a la API');
       setState(() {});
     });
   }
 
+  // FUNCTION TO KNOW WHEN THE USER IS TYPING TO CALL THE GOOGLE PLACES API
   _onChangedGoFromZonzamasController() async {
     if (_sessionToken == null) {
       setState(() {
@@ -67,7 +70,6 @@ class _PublicacionesScreenState extends State<PublicacionesScreen> {
         _goFromZonzamasSearchController.text,
         _sessionToken,
       );
-      print('Estoy llamando a la API');
       setState(() {});
     });
   }
@@ -125,6 +127,8 @@ class _PublicacionesScreenState extends State<PublicacionesScreen> {
     );
   }
 }
+
+// WIDGET TO SHOW THE SEARCH BAR AND THE LIST OF PLACES
 
 class SearchBar extends StatefulWidget {
   const SearchBar({

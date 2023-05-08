@@ -4,9 +4,11 @@ import 'dart:io';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:http/http.dart';
 
+//CLASS TO HELP WITH NOTIFICATIONS
 class NotificationsProvider {
   final _messageKey = dotenv.env['MESSAGE_API_KEY'];
 
+  //send push notification
   Future sendPushNotification(receiver, sender, message) async {
     final body = {
       'notification': <String, dynamic>{

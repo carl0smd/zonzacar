@@ -4,6 +4,7 @@ import 'package:zonzacar/models/models.dart';
 
 import '../models/directions_response.dart';
 
+//CLASS TO HELP WITH GOOGLE SERVICES
 class GoogleServicesProvider {
   final String _apiKey = dotenv.env['GOOGLE_API_KEY']!;
   final String authority = "maps.googleapis.com";
@@ -11,6 +12,8 @@ class GoogleServicesProvider {
   final String location = '29.03576,-13.65051';
   final String components = "country:es";
   final String language = "es";
+
+  //get predictions
 
   Future<List<Prediction>> placeAutocomplete(String input, String token) async {
     const String unencodedPath = "/maps/api/place/autocomplete/json";
@@ -29,12 +32,13 @@ class GoogleServicesProvider {
     if (response.statusCode == 200) {
       final predictionsResponse =
           PredictionsResponse.fromRawJson(response.body);
-      // predictionsResponse.predictions.removeWhere((element) => element.description.toLowerCase().contains('graciosa'));
       return predictionsResponse.predictions;
     } else {
       throw Exception('Failed to load predictions');
     }
   }
+
+  // get place coordinates
 
   Future<Location> placeCoordinates(String placeId) async {
     Uri request = Uri.https(authority, '/maps/api/place/details/json', {
@@ -51,6 +55,8 @@ class GoogleServicesProvider {
       throw Exception('Failed to load predictions');
     }
   }
+
+  // get polyline, distance and duration
 
   Future<List<String>> getPolylineAndDistanceAndDuration(
     String origin,
@@ -73,6 +79,7 @@ class GoogleServicesProvider {
           directionsResponse.routes[0].legs[0].duration.text,
         ];
       } else {
+        // this is to handle the case where the user enters a place that is not reachable by car for example La Graciosa
         return ['', ''];
       }
     } else {

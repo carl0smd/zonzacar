@@ -30,7 +30,7 @@ class _MenuScreenState extends State<MenuScreen> {
 
     controller =
         PersistentTabController(initialIndex: widget.initialIndex ?? 0);
-    // BottomNavBar persitente
+    // BOTTOM NAVIGATION BAR
     return PersistentTabView(
       context,
       controller: controller,

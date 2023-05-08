@@ -1,4 +1,4 @@
-//Contantes para los colores de los coches
+//CONSTANTS FOR COLORS
 class ColorsConstants {
   static List<String> colors = [
     'Amarillo',
@@ -18,15 +18,14 @@ class ColorsConstants {
   ];
 }
 
-//Constantes para los precios
+//CONSTANT FOR PRICE
 class PriceConstants {
-  //Precio medio de gasolina por kilómetro España 2023
+  //AVERAGE PRICE PER KM IN SPAIN IN 2023
   static double pricePerKm = 0.20;
 }
 
-//Constantes para las fechas
+//CONSTANTS FOR DATES
 class DateConstants {
-  //Si el día de la semana es sábado o domingo pasa al lunes
   static DateTime initialDate = DateTime.now().weekday == 6
       ? DateTime.now().add(const Duration(days: 2))
       : DateTime.now().weekday == 7

@@ -9,6 +9,7 @@ import 'package:zonzacar/providers/database_provider.dart';
 import 'package:zonzacar/screens/screens.dart';
 import 'package:zonzacar/widgets/widgets.dart';
 
+// SCREEN TO SHOW THE PUBLICATIONS CREATED BY THE USER
 class MiPublicacionScreen extends StatefulWidget {
   const MiPublicacionScreen({Key? key, this.publication}) : super(key: key);
 
@@ -23,6 +24,7 @@ class _MiPublicacionScreenState extends State<MiPublicacionScreen> {
   bool isTripStarted = false;
   bool isTripFinished = false;
 
+  // FUNCTION TO CHECK THE TRIP STATE
   void checkState() {
     if (widget.publication['estado'] == 'En curso') {
       setState(() {
@@ -59,7 +61,7 @@ class _MiPublicacionScreenState extends State<MiPublicacionScreen> {
       zoom: 16,
     );
 
-    //Marker origen
+    //ORIGIN MARKER
     Marker originMarker = Marker(
       markerId: const MarkerId('marker'),
       position: LatLng(
@@ -114,12 +116,12 @@ class _MiPublicacionScreenState extends State<MiPublicacionScreen> {
                   ),
                 ],
               ),
-              //divider
               const Divider(
                 thickness: 1.0,
                 color: Colors.grey,
               ),
               const SizedBox(height: 10.0),
+              //FUTURE BUILDER TO GET PASSENGERS FROM THE PUBLICATION
               FutureBuilder(
                 future: databaseProvider
                     .getPassengersFromPublication(widget.publication['uid']),
@@ -170,7 +172,6 @@ class _MiPublicacionScreenState extends State<MiPublicacionScreen> {
                                   child: Stack(
                                     children: [
                                       for (var pasajero in pasajeros)
-                                        //imagen de usuario en forma de stack para que se vean todas las imagenes un poco superpuestas
                                         Positioned(
                                           left: pasajeros.indexOf(pasajero) *
                                               30.0,
@@ -186,11 +187,9 @@ class _MiPublicacionScreenState extends State<MiPublicacionScreen> {
                                 ),
                               ],
                             ),
-
-                            //icon button for chat
                             IconButton(
                               onPressed: () {
-                                //return a list of users and when you click on one of them, it opens the chat screen
+                                //MODAL BOTTOM SHEET TO SHOW PASSENGERS TO CHAT WITH
 
                                 showModalBottomSheet(
                                   context: context,
@@ -336,11 +335,10 @@ class _MiPublicacionScreenState extends State<MiPublicacionScreen> {
                 height: 20,
               ),
               const SizedBox(),
-              //botones circulares para iniciar el viaje en naranja, boton para finalizar el viaje en gris
+              //BUTTONS TO START AND FINISH TRIP
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
-                  //boton para iniciar el viaje
                   ElevatedButton(
                     onPressed: isTripStarted || isTripFinished
                         ? null

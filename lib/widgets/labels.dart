@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+// WIDGET FOR LABELS IN LOGIN AND REGISTER SCREENS
 class Labels extends StatelessWidget {
   final String route;
   final String text;
