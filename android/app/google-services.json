@@ -7,20 +7,12 @@
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:1068722437145:android:422fab00e351a1c17ffe88",
+        "mobilesdk_app_id": "1:1068722437145:android:d17dbd3e64a5345e7ffe88",
         "android_client_info": {
-          "package_name": "com.example.zonzacar"
+          "package_name": "com.carl0smd.zonzacar"
         }
       },
       "oauth_client": [
-        {
-          "client_id": "1068722437145-4ahbl6kvpc9h5d727dlj8e0r7e3u5cea.apps.googleusercontent.com",
-          "client_type": 1,
-          "android_info": {
-            "package_name": "com.example.zonzacar",
-            "certificate_hash": "a0e20041bd9ebaa5cc9ad096ce184f2361a09841"
-          }
-        },
         {
           "client_id": "1068722437145-uj8q3qbj6rncao9c67lsfltts09vsjbk.apps.googleusercontent.com",
           "client_type": 3
@@ -37,6 +29,13 @@
             {
               "client_id": "1068722437145-uj8q3qbj6rncao9c67lsfltts09vsjbk.apps.googleusercontent.com",
               "client_type": 3
+            },
+            {
+              "client_id": "1068722437145-25vsk7ufks19j6lqdhkbh524bjiqvc3f.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.zonzacar"
+              }
             }
           ]
         }
