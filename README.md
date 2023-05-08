@@ -4,12 +4,21 @@
 
 ZonzaCar es una plataforma que permite a sus usuarios publicar o reservar trayectos para compartir coche, se creó para intentar reducir la huella de carbono de los estudiantes del CIFP Zonzamas (Arrecife, Lanzarote, España) así como para brindarles otra alternativa de transporte.
 
+# Enlaces y descargas
+
+[Fase de análisis](https://docs.google.com/document/d/14CK8XM1k-dHkf6uLCWiHcmMnxwWX5XMX_tMFQRRyRSE/edit?usp=sharing)\
+[Diagrama de clases UML](https://drive.google.com/file/d/1DVjSWmkDRvXYcMOwM_TE0vweYVYE_oxK/view?usp=share_link)\
+[Diseño](https://wireframepro.mockflow.com/view/MU2Ioh1mgpb)\
+[JSON Estructura BBDD](https://drive.google.com/file/d/1LV9SxkmxYlW5IrEQlCl38TbS98glXJtg/view?usp=share_link)\
+[Vídeo presentación](https://www.youtube.com/watch?v=WlRWOvd4sd0)\
+[APK Zonzacar](https://drive.google.com/file/d/1rUiRuVp0Wgq6v336U99WZWU0eUOug8pu/view?usp=share_link)
+
 ## Tabla de contenidos
 
 - [Características](#características)
 - [Instalación](#instalación)
 - [Uso](#uso)
-- [Enlaces](#enlaces)
+- [Capturas](#capturas)
 
 ## Características
 
@@ -60,11 +69,13 @@ Para usar ZonzaCar, sigue estos pasos:
 6. Utiliza la mensajería dentro de la aplicación para comunicarte con el propietario del coche y coordinar la recogida y entrega.
 7. Gestiona tus reservas y publicaciones en la aplicación.
 
-## Enlaces y descargas
+## Capturas
 
-[Fase de análisis](https://docs.google.com/document/d/14CK8XM1k-dHkf6uLCWiHcmMnxwWX5XMX_tMFQRRyRSE/edit?usp=sharing)\
-[Diagrama de clases UML](https://drive.google.com/file/d/1DVjSWmkDRvXYcMOwM_TE0vweYVYE_oxK/view?usp=share_link)\
-[Diseño](https://wireframepro.mockflow.com/view/MU2Ioh1mgpb)\
-[JSON Estructura BBDD](https://drive.google.com/file/d/1LV9SxkmxYlW5IrEQlCl38TbS98glXJtg/view?usp=share_link)\
-[Vídeo presentación](https://www.youtube.com/watch?v=WlRWOvd4sd0)\
-[APK Zonzacar](https://drive.google.com/file/d/1rUiRuVp0Wgq6v336U99WZWU0eUOug8pu/view?usp=share_link)
+![1683498121350](https://user-images.githubusercontent.com/94843020/236709871-bd2e3444-ae39-486a-9dee-fb7b8d60d442.jpg)
+![1683498121373](https://user-images.githubusercontent.com/94843020/236709874-37ec4ff0-65ef-48e6-81f8-ccca5ae42a24.jpg)
+![1683498121395](https://user-images.githubusercontent.com/94843020/236709875-18e8385f-989f-4c26-a908-3c0ae9ca1f2e.jpg)
+![1683498121418](https://user-images.githubusercontent.com/94843020/236709876-ad201829-ad11-4aa9-bc17-9b18e2f48ab4.jpg)
+![1683498121440](https://user-images.githubusercontent.com/94843020/236709878-2398ead6-af2d-489d-841a-b8d7efd434d4.jpg)
+![1683498121465](https://user-images.githubusercontent.com/94843020/236709879-22e0d810-3b3b-4132-8eae-0eb2c341d9a8.jpg)
+![1683498121327](https://user-images.githubusercontent.com/94843020/236709880-b35f605d-f4b1-49c2-8784-485e53ad931a.jpg)
+
