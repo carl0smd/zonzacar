@@ -77,7 +77,7 @@ Los pasos 3 y 4 son opcionales, podrás conectarte a mi proyecto de Firebase sin
 
 Para usar ZonzaCar, sigue estos pasos:
 
-1. Ejecuta la aplicación en tu emulador o dispositivo físico: `flutter run` || opcionalmente también podrás descargar la [apk](https://drive.google.com/file/d/1rUiRuVp0Wgq6v336U99WZWU0eUOug8pu/view?usp=share_link)
+1. Ejecuta la aplicación en tu emulador o dispositivo físico: `flutter run` || opcionalmente también podrás descargar la [apk](https://play.google.com/store/apps/details?id=com.carl0smd.zonzacar&hl=es_419)
 2. Accede a la página de inicio de sesión y registra una nueva cuenta o inicia sesión con una existente.
 3. Busca coches disponibles por ubicación y rango de fechas.
 4. Selecciona una publicación para ver más detalles e información de precios.
