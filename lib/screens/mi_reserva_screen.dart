@@ -228,13 +228,13 @@ class _MiReservaScreenState extends State<MiReservaScreen> {
                         ),
                         //BUTTON TO RATE THE DRIVER
                         widget.publication['estado'] ==
-                                DatabaseProvider.publicationState['Finalizada']
+                                DatabaseProvider.publicationState['finalizada']
                             ? const SizedBox(
                                 height: 20,
                               )
                             : Container(),
                         widget.publication['estado'] ==
-                                DatabaseProvider.publicationState['Finalizada']
+                                DatabaseProvider.publicationState['finalizada']
                             ? Row(
                                 mainAxisAlignment: MainAxisAlignment.start,
                                 children: [
