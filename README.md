@@ -12,7 +12,6 @@ ZonzaCar es una plataforma que permite a sus usuarios publicar o reservar trayec
 [JSON Estructura BBDD](https://drive.google.com/file/d/1LV9SxkmxYlW5IrEQlCl38TbS98glXJtg/view?usp=share_link)\
 [Vídeo presentación](https://www.youtube.com/watch?v=WlRWOvd4sd0)\
 [Descargar APK desde Play Store](https://play.google.com/store/apps/details?id=com.carl0smd.zonzacar&hl=es_419)\
-[Descargar APK desde Google Drive](https://drive.google.com/file/d/1rUiRuVp0Wgq6v336U99WZWU0eUOug8pu/view?usp=share_link)
 
 ## Tabla de contenidos
 
