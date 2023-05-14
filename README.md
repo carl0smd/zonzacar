@@ -11,7 +11,8 @@ ZonzaCar es una plataforma que permite a sus usuarios publicar o reservar trayec
 [Diseño](https://wireframepro.mockflow.com/view/MU2Ioh1mgpb)\
 [JSON Estructura BBDD](https://drive.google.com/file/d/1LV9SxkmxYlW5IrEQlCl38TbS98glXJtg/view?usp=share_link)\
 [Vídeo presentación](https://www.youtube.com/watch?v=WlRWOvd4sd0)\
-[APK Zonzacar](https://drive.google.com/file/d/1rUiRuVp0Wgq6v336U99WZWU0eUOug8pu/view?usp=share_link)
+[Descargar APK desde Play Store](https://play.google.com/store/apps/details?id=com.carl0smd.zonzacar&hl=es_419)\
+[Descargar APK desde Google Drive](https://drive.google.com/file/d/1rUiRuVp0Wgq6v336U99WZWU0eUOug8pu/view?usp=share_link)
 
 ## Tabla de contenidos
 
@@ -45,9 +46,9 @@ Los pasos 3 y 4 son opcionales, podrás conectarte a mi proyecto de Firebase sin
 
 4. (*Opcional*) En tu proyecto de Firebase habilita Firebase Authentication, Firebase Storage, Firebase Firestore Database y Firebase Cloud Messaging (Obtén una Api key de este). [Cómo obtener una API key de Cloud Messaging](https://youtu.be/6hSrjp3dqCo?t=38)
 
-5. Si ya tienes cuenta como google developer ve a la cloud.console en caso contrario procede a crear una cuenta.
+5. Si ya tienes cuenta como Google developer ve a la cloud.console en caso contrario procede a crear una cuenta.
 
-6. En la cloud console crea un nuevo proyecto o en caso de haber creado el proyecto de firebase podrás utilizarlo desde ahí. Con el proyecto seleccionado ve a Credenciales -> Crear credenciales -> Clave de API
+6. En la cloud console crea un nuevo proyecto o en caso de haber creado el proyecto de Firebase podrás utilizarlo desde ahí. Con el proyecto seleccionado ve a Credenciales -> Crear credenciales -> Clave de API, y genera tu API key de Google
 
 ![image](https://user-images.githubusercontent.com/94843020/236816773-25e4fbfe-71ce-4b55-8c80-be2a7a36c2d5.png)
 
@@ -76,7 +77,7 @@ Los pasos 3 y 4 son opcionales, podrás conectarte a mi proyecto de Firebase sin
 
 Para usar ZonzaCar, sigue estos pasos:
 
-1. Ejecuta la aplicación en tu emulador o dispositivo físico: `flutter run` || opcionalmente también podrás descargar la [apk](https://drive.google.com/file/d/1rUiRuVp0Wgq6v336U99WZWU0eUOug8pu/view?usp=share_link)
+1. Ejecuta la aplicación en tu emulador o dispositivo físico: `flutter run` || opcionalmente también podrás descargar la [apk](https://play.google.com/store/apps/details?id=com.carl0smd.zonzacar&hl=es_419)
 2. Accede a la página de inicio de sesión y registra una nueva cuenta o inicia sesión con una existente.
 3. Busca coches disponibles por ubicación y rango de fechas.
 4. Selecciona una publicación para ver más detalles e información de precios.
