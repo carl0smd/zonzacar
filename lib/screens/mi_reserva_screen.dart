@@ -258,7 +258,7 @@ class _MiReservaScreenState extends State<MiReservaScreen> {
                                               mainAxisSize: MainAxisSize.min,
                                               children: [
                                                 const Text(
-                                                  '¿Cómo valorarías al tu conductor?',
+                                                  '¿Cómo valorarías a tu conductor?',
                                                   style: TextStyle(
                                                     fontSize: 16,
                                                   ),
