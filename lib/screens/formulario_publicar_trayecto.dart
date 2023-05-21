@@ -61,6 +61,7 @@ class _FormularioTrayectoScreenState extends State<FormularioTrayectoScreen> {
   Widget build(BuildContext context) {
     int date = 0;
     int hour = 0;
+    double carbonFootprint = 0;
     final today = DateTime(
       DateTime.now().year,
       DateTime.now().month,
@@ -300,6 +301,50 @@ class _FormularioTrayectoScreenState extends State<FormularioTrayectoScreen> {
                           ),
                           onChanged: (value) {
                             vehicle = value;
+                            //check combustible and do a switch
+                            vehicles.forEach((element) {
+                              if (element['uid'] == value) {
+                                switch (element['combustible']) {
+                                  case 'Gasolina':
+                                    {
+                                      carbonFootprint =
+                                          FuelConstants.emitions['gasolina']! *
+                                              double.parse(
+                                                widget.distance.split(' ')[0],
+                                              );
+                                      break;
+                                    }
+                                  case 'Diésel':
+                                    {
+                                      carbonFootprint =
+                                          FuelConstants.emitions['diesel']! *
+                                              double.parse(
+                                                widget.distance.split(' ')[0],
+                                              );
+                                      break;
+                                    }
+                                  case 'Híbrido':
+                                    {
+                                      carbonFootprint =
+                                          FuelConstants.emitions['hibrido']! *
+                                              double.parse(
+                                                widget.distance.split(' ')[0],
+                                              );
+                                      break;
+                                    }
+                                  case 'Eléctrico':
+                                    {
+                                      carbonFootprint =
+                                          FuelConstants.emitions['electrico']! *
+                                              double.parse(
+                                                widget.distance.split(' ')[0],
+                                              );
+                                      break;
+                                    }
+                                }
+                              }
+                            });
+                            print(carbonFootprint);
                           },
                           validator: (value) {
                             if (value == null) {
@@ -441,6 +486,7 @@ class _FormularioTrayectoScreenState extends State<FormularioTrayectoScreen> {
                                           widget.coordsOrigin,
                                           widget.coordsDestination,
                                           int.parse(seatsCtrl.text),
+                                          carbonFootprint,
                                           double.parse(priceCtrl.text),
                                           vehicle,
                                         );

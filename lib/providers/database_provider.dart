@@ -51,6 +51,7 @@ class DatabaseProvider {
       'tresEstrellas': 0,
       'cuatroEstrellas': 0,
       'cincoEstrellas': 0,
+      'huellaCarbono': 0,
       'imagenPerfil': '',
       'uid': uid,
       'pushToken': await FirebaseMessaging.instance.getToken(),
@@ -71,6 +72,26 @@ class DatabaseProvider {
     await userCollection.doc(FirebaseAuth.instance.currentUser!.uid).update({
       'nombreCompleto': fullName,
     });
+  }
+
+  //update carbon footprint
+  Future updateDriverAndPassengerCarbonFootprint(
+    huellaCarbono,
+    uidPublicacion,
+  ) async {
+    await userCollection.doc(FirebaseAuth.instance.currentUser!.uid).update({
+      'huellaCarbono': FieldValue.increment(huellaCarbono),
+    });
+
+    QuerySnapshot snapshot = await bookingsCollection
+        .where('publicacion', isEqualTo: uidPublicacion)
+        .get();
+
+    for (var reserva in snapshot.docs) {
+      await userCollection.doc(reserva['pasajero']).update({
+        'huellaCarbono': FieldValue.increment(huellaCarbono),
+      });
+    }
   }
 
   //search user by email
@@ -300,6 +321,7 @@ class DatabaseProvider {
     String marca,
     String modelo,
     String color,
+    String combustible,
   ) async {
     final id = vehiclesCollection.doc().id;
     await vehiclesCollection.doc(id).set({
@@ -307,6 +329,7 @@ class DatabaseProvider {
       'marca': marca,
       'modelo': modelo,
       'color': color,
+      'combustible': combustible,
       'conductor': FirebaseAuth.instance.currentUser!.uid,
       'uid': id,
     });
@@ -358,6 +381,7 @@ class DatabaseProvider {
     String coordenadasOrigen,
     String coordenadasDestino,
     int asientos,
+    double huellaCarbono,
     double precio,
     String uidVehiculo,
   ) async {
@@ -373,6 +397,7 @@ class DatabaseProvider {
       'coordenadasOrigen': coordenadasOrigen,
       'coordenadasDestino': coordenadasDestino,
       'asientosDisponibles': asientos,
+      'huellaCarbono': huellaCarbono,
       'precio': precio,
       'vehiculo': uidVehiculo,
       'conductor': FirebaseAuth.instance.currentUser!.uid,
@@ -430,6 +455,24 @@ class DatabaseProvider {
         'mediaValoraciones': average,
       });
     });
+  }
+
+  //check if user has already rated the driver
+  Future<bool> checkIfUserHasAlreadyRatedDriver(
+    String uidPublication,
+  ) async {
+    DocumentSnapshot snapshot = await publicationsCollection
+        .doc(uidPublication)
+        .get()
+        .then((value) => value);
+
+    List<String> valoraciones = snapshot['valoraciones'].cast<String>();
+
+    if (valoraciones.contains(FirebaseAuth.instance.currentUser!.uid)) {
+      return true;
+    } else {
+      return false;
+    }
   }
 
   //update publication (estado)

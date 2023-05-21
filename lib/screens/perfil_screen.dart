@@ -188,7 +188,6 @@ class _PerfilScreenState extends State<PerfilScreen> {
           physics: const BouncingScrollPhysics(),
           child: Container(
             margin: const EdgeInsets.only(left: 20, right: 20),
-            height: MediaQuery.of(context).size.height * 0.8,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -243,7 +242,7 @@ class _PerfilScreenState extends State<PerfilScreen> {
                 ),
                 const Text(
                   'Datos',
-                  style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold),
+                  style: TextStyle(fontSize: 26, fontWeight: FontWeight.bold),
                 ),
                 TextButton(
                   child: const Text(
@@ -271,7 +270,7 @@ class _PerfilScreenState extends State<PerfilScreen> {
                 ),
                 const Text(
                   'Vehículos',
-                  style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold),
+                  style: TextStyle(fontSize: 26, fontWeight: FontWeight.bold),
                 ),
                 TextButton(
                   child: const Text(
@@ -289,54 +288,55 @@ class _PerfilScreenState extends State<PerfilScreen> {
                   },
                 ),
                 // LIST OF VEHICLES
-                Flexible(
-                  child: ListView.builder(
-                    itemCount: vehicles.length,
-                    shrinkWrap: true,
-                    physics: const BouncingScrollPhysics(),
-                    itemBuilder: (context, index) {
-                      return ListTile(
-                        leading: const Icon(
-                          Icons.directions_car,
-                          color: Colors.green,
-                        ),
-                        title: Text(vehicles[index]['marca'] +
-                            ' ' +
-                            vehicles[index]['modelo'] +
-                            ' - ' +
-                            vehicles[index]['color']),
-                        subtitle: Text(vehicles[index]['matricula']),
-                        trailing: IconButton(
-                          onPressed: () async {
-                            if (await databaseProvider
-                                .deleteVehicle(vehicles[index]['uid'])) {
-                              setState(() {
-                                vehicles.removeAt(index);
-                              });
-                              if (mounted) {
-                                showSnackbar(
-                                  'Vehículo eliminado correctamente',
-                                  context,
-                                );
-                              }
-                            } else {
-                              if (mounted) {
-                                showSnackbar(
-                                  'Error al eliminar, aún tienes publicaciones activas con este vehículo',
-                                  context,
-                                );
-                              }
+                ListView.builder(
+                  itemCount: vehicles.length,
+                  shrinkWrap: true,
+                  physics: const NeverScrollableScrollPhysics(),
+                  itemBuilder: (context, index) {
+                    return ListTile(
+                      leading: const Icon(
+                        Icons.directions_car,
+                        color: Colors.green,
+                      ),
+                      title: Text(vehicles[index]['marca'] +
+                          ' ' +
+                          vehicles[index]['modelo'] +
+                          ' - ' +
+                          vehicles[index]['color']),
+                      subtitle: Text(vehicles[index]['matricula'] +
+                          ' - ' +
+                          vehicles[index]['combustible']),
+                      trailing: IconButton(
+                        onPressed: () async {
+                          if (await databaseProvider
+                              .deleteVehicle(vehicles[index]['uid'])) {
+                            setState(() {
+                              vehicles.removeAt(index);
+                            });
+                            if (mounted) {
+                              showSnackbar(
+                                'Vehículo eliminado correctamente',
+                                context,
+                              );
                             }
-                          },
-                          icon: const Icon(
-                            Icons.delete,
-                            color: Colors.red,
-                          ),
+                          } else {
+                            if (mounted) {
+                              showSnackbar(
+                                'Error al eliminar, aún tienes publicaciones activas con este vehículo',
+                                context,
+                              );
+                            }
+                          }
+                        },
+                        icon: const Icon(
+                          Icons.delete,
+                          color: Colors.red,
                         ),
-                      );
-                    },
-                  ),
+                      ),
+                    );
+                  },
                 ),
+
                 const Divider(
                   thickness: 1,
                 ),
@@ -345,7 +345,7 @@ class _PerfilScreenState extends State<PerfilScreen> {
                 ),
                 const Text(
                   'Valoración',
-                  style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold),
+                  style: TextStyle(fontSize: 26, fontWeight: FontWeight.bold),
                 ),
                 const SizedBox(
                   height: 10,
@@ -398,8 +398,69 @@ class _PerfilScreenState extends State<PerfilScreen> {
                 const Divider(
                   thickness: 1,
                 ),
+
+                // TOTAL CARBON FOOTPRINT
+
                 const SizedBox(
                   height: 10,
+                ),
+                const Text(
+                  'Huella de carbono',
+                  style: TextStyle(fontSize: 26, fontWeight: FontWeight.bold),
+                ),
+                const SizedBox(
+                  height: 10,
+                ),
+                // STREAMBUILDER TO GET TOTAL CARBON FOOTPRINT
+                StreamBuilder(
+                  stream: databaseProvider.getCurrentUser().asStream(),
+                  builder: (context, snapshot) {
+                    if (snapshot.hasData) {
+                      final carbonFootprint =
+                          snapshot.data.docs[0]['huellaCarbono'];
+                      return Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                          const Icon(
+                            Icons.eco,
+                            color: Colors.green,
+                          ),
+                          const SizedBox(
+                            width: 5,
+                          ),
+                          carbonFootprint != 0
+                              ? Text(
+                                  carbonFootprint.toStringAsFixed(2) +
+                                      ' kg CO2',
+                                  style: const TextStyle(
+                                    fontSize: 20,
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.grey,
+                                  ),
+                                )
+                              : const Text(
+                                  'Aún no has realizado ningún viaje',
+                                  style: TextStyle(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.grey,
+                                  ),
+                                ),
+                        ],
+                      );
+                    } else {
+                      return const Center(
+                        child: CircularProgressIndicator(),
+                      );
+                    }
+                  },
+                ),
+                const SizedBox(
+                  height: 10,
+                ),
+
+                const Divider(
+                  thickness: 1,
                 ),
                 // BUTTON TO DELETE ACCOUNT
                 TextButton(

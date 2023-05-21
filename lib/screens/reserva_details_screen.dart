@@ -88,6 +88,7 @@ class _ReservaDetailsScreenState extends State<ReservaDetailsScreen> {
                 return Column(
                   children: [
                     InfoTrip(publication: publication),
+                    CarbonFootprint(publication: publication),
                     PriceInfo(publication: publication),
                     infoConductor(
                       databaseProvider,
@@ -227,7 +228,11 @@ class _ReservaDetailsScreenState extends State<ReservaDetailsScreen> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          vehicle['marca'] + ' ' + vehicle['modelo'],
+                          vehicle['marca'] +
+                              ' ' +
+                              vehicle['modelo'] +
+                              ' - ' +
+                              vehicle['combustible'],
                           style: const TextStyle(
                             fontSize: 20,
                             fontWeight: FontWeight.bold,
@@ -543,6 +548,50 @@ class InfoMapa extends StatelessWidget {
               onMapCreated: (GoogleMapController controller) {
                 _controller.complete(controller);
               },
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+// WIDGET TO SHOW CARBON FOOTPRINT
+class CarbonFootprint extends StatelessWidget {
+  const CarbonFootprint({
+    super.key,
+    required this.publication,
+  });
+
+  final publication;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      margin: const EdgeInsets.only(bottom: 15),
+      decoration: const BoxDecoration(
+        color: Colors.white,
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black26,
+            blurRadius: 5,
+          ),
+        ],
+      ),
+      padding: const EdgeInsets.all(20),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          const Text(
+            'Huella de carbono',
+            style: TextStyle(fontSize: 20),
+          ),
+          Text(
+            '${publication['huellaCarbono'].toStringAsFixed(2)} kg CO2',
+            style: const TextStyle(
+              fontSize: 26,
+              fontWeight: FontWeight.bold,
+              color: Colors.green,
             ),
           ),
         ],

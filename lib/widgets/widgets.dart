@@ -6,3 +6,4 @@ export 'package:zonzacar/widgets/labels.dart';
 export 'package:zonzacar/widgets/logo.dart';
 export 'package:zonzacar/widgets/mensaje_tile.dart';
 export 'package:zonzacar/widgets/snackbar.dart';
+export 'package:zonzacar/widgets/huella_carbono.dart';

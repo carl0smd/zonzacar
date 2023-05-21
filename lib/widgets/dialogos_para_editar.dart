@@ -83,6 +83,7 @@ Future<void> addVehicleDialog(
   final matriculaController = TextEditingController();
   final modeloController = TextEditingController();
   String color = '';
+  String combustible = '';
   final marcaController = TextEditingController();
 
   return showDialog(
@@ -143,6 +144,31 @@ Future<void> addVehicleDialog(
                         ),
                         const SizedBox(height: 10.0),
                         DropdownButtonFormField(
+                          items: FuelConstants.fuels.map((String value) {
+                            return DropdownMenuItem<String>(
+                              value: value,
+                              child: Text(value),
+                            );
+                          }).toList(),
+                          onChanged: (value) {
+                            combustible = value.toString();
+                          },
+                          decoration: const InputDecoration(
+                            hintText: 'Combustible',
+                            border: OutlineInputBorder(
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(10.0)),
+                            ),
+                          ),
+                          validator: (value) {
+                            if (value == null || value.isEmpty) {
+                              return 'Elije un combustible';
+                            }
+                            return null;
+                          },
+                        ),
+                        const SizedBox(height: 10.0),
+                        DropdownButtonFormField(
                           items: ColorsConstants.colors.map((String value) {
                             return DropdownMenuItem<String>(
                               value: value,
@@ -195,6 +221,7 @@ Future<void> addVehicleDialog(
                     marcaController.text.trim().toUpperCase(),
                     modeloController.text.trim().toUpperCase(),
                     color,
+                    combustible,
                   );
                   Navigator.of(context).pop();
                 }
@@ -257,6 +284,31 @@ Future<void> addVehicleDialog(
                         ),
                         const SizedBox(height: 10.0),
                         DropdownButtonFormField(
+                          items: FuelConstants.fuels.map((String value) {
+                            return DropdownMenuItem<String>(
+                              value: value,
+                              child: Text(value),
+                            );
+                          }).toList(),
+                          onChanged: (value) {
+                            combustible = value.toString();
+                          },
+                          decoration: const InputDecoration(
+                            hintText: 'Combustible',
+                            border: OutlineInputBorder(
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(10.0)),
+                            ),
+                          ),
+                          validator: (value) {
+                            if (value == null || value.isEmpty) {
+                              return 'Elije un combustible';
+                            }
+                            return null;
+                          },
+                        ),
+                        const SizedBox(height: 10.0),
+                        DropdownButtonFormField(
                           items: ColorsConstants.colors.map((String value) {
                             return DropdownMenuItem<String>(
                               value: value,
@@ -309,6 +361,7 @@ Future<void> addVehicleDialog(
                     marcaController.text.trim().toUpperCase(),
                     modeloController.text.trim().toUpperCase(),
                     color,
+                    combustible,
                   );
                   Navigator.of(context).pop();
                 }

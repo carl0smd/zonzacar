@@ -298,19 +298,20 @@ class _MiPublicacionScreenState extends State<MiPublicacionScreen> {
                     );
                   } else if (snapshot.hasData && snapshot.data.isEmpty) {
                     return Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: const [
-                        Icon(
-                          Icons.person,
-                          color: Colors.grey,
-                          size: 30,
-                        ),
-                        SizedBox(width: 10.0),
                         Text(
                           'No hay pasajeros',
                           style: TextStyle(
                             fontSize: 20,
                             fontWeight: FontWeight.bold,
                           ),
+                        ),
+                        SizedBox(width: 10.0),
+                        Icon(
+                          Icons.person,
+                          color: Colors.grey,
+                          size: 40,
                         ),
                       ],
                     );
@@ -447,6 +448,14 @@ class _MiPublicacionScreenState extends State<MiPublicacionScreen> {
                                         widget.publication['uid'],
                                         tripState,
                                       );
+                                      await databaseProvider
+                                          .updateDriverAndPassengerCarbonFootprint(
+                                        widget.publication['huellaCarbono'] /
+                                            (widget.publication['pasajeros']
+                                                    .length +
+                                                1),
+                                        widget.publication['uid'],
+                                      );
                                       if (mounted) Navigator.pop(context);
                                     },
                                     child: const Text('Sí'),
@@ -481,6 +490,35 @@ class _MiPublicacionScreenState extends State<MiPublicacionScreen> {
                   ),
                 ],
               ),
+              const SizedBox(
+                height: 20,
+              ),
+              SizedBox(
+                height: 1,
+                width: double.infinity,
+                child: Container(
+                  color: Colors.black26,
+                ),
+              ),
+              const SizedBox(
+                height: 20,
+              ),
+              const SizedBox(),
+              //CARBON FOOTPRINT
+              HuellaCarbono(
+                huellaCarbono: widget.publication['huellaCarbono'],
+              ),
+              const SizedBox(
+                height: 20,
+              ),
+              SizedBox(
+                height: 1,
+                width: double.infinity,
+                child: Container(
+                  color: Colors.black26,
+                ),
+              ),
+
               const SizedBox(
                 height: 20,
               ),

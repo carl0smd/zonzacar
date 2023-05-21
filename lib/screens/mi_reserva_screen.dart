@@ -26,6 +26,31 @@ class MiReservaScreen extends StatefulWidget {
 class _MiReservaScreenState extends State<MiReservaScreen> {
   final Completer<GoogleMapController> _controller = Completer();
   bool isRatingLoading = false;
+  bool alreadyRated = false;
+
+  void checkIfAlreadyRated() async {
+    try {
+      await DatabaseProvider()
+          .checkIfUserHasAlreadyRatedDriver(widget.publication['uid'])
+          .then(
+        (value) {
+          if (value) {
+            setState(() {
+              alreadyRated = true;
+            });
+          }
+        },
+      );
+    } catch (e) {
+      showSnackbar('Hemos tenido un problema, intenta más tarde', context);
+    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    checkIfAlreadyRated();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -198,7 +223,11 @@ class _MiReservaScreenState extends State<MiReservaScreen> {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text(
-                                  vehicle['marca'] + ' ' + vehicle['modelo'],
+                                  vehicle['marca'] +
+                                      ' ' +
+                                      vehicle['modelo'] +
+                                      ' - ' +
+                                      vehicle['combustible'],
                                   style: const TextStyle(
                                     fontSize: 20,
                                     fontWeight: FontWeight.bold,
@@ -239,123 +268,135 @@ class _MiReservaScreenState extends State<MiReservaScreen> {
                                 mainAxisAlignment: MainAxisAlignment.start,
                                 children: [
                                   ElevatedButton(
-                                    onPressed: () {
-                                      double stars = 0;
+                                    onPressed: alreadyRated
+                                        ? null
+                                        : () {
+                                            double stars = 0;
 
-                                      //show dialog to rate driver with stars
-                                      showDialog(
-                                        context: context,
-                                        builder: (context) {
-                                          return AlertDialog(
-                                            title: const Text(
-                                              'Valorar conductor',
-                                              style: TextStyle(
-                                                fontWeight: FontWeight.bold,
-                                              ),
-                                              textAlign: TextAlign.center,
-                                            ),
-                                            content: Column(
-                                              mainAxisSize: MainAxisSize.min,
-                                              children: [
-                                                const Text(
-                                                  '¿Cómo valorarías a tu conductor?',
-                                                  style: TextStyle(
-                                                    fontSize: 16,
+                                            //show dialog to rate driver with stars
+                                            showDialog(
+                                              context: context,
+                                              builder: (context) {
+                                                return AlertDialog(
+                                                  title: const Text(
+                                                    'Valorar conductor',
+                                                    style: TextStyle(
+                                                      fontWeight:
+                                                          FontWeight.bold,
+                                                    ),
+                                                    textAlign: TextAlign.center,
                                                   ),
-                                                  textAlign: TextAlign.center,
-                                                ),
-                                                const SizedBox(
-                                                  height: 30,
-                                                ),
-                                                RatingBar.builder(
-                                                  initialRating: 0,
-                                                  minRating: 1,
-                                                  direction: Axis.horizontal,
-                                                  allowHalfRating: false,
-                                                  itemCount: 5,
-                                                  itemPadding:
-                                                      const EdgeInsets.only(
-                                                    right: 4.0,
+                                                  content: Column(
+                                                    mainAxisSize:
+                                                        MainAxisSize.min,
+                                                    children: [
+                                                      const Text(
+                                                        '¿Cómo valorarías a tu conductor?',
+                                                        style: TextStyle(
+                                                          fontSize: 16,
+                                                        ),
+                                                        textAlign:
+                                                            TextAlign.center,
+                                                      ),
+                                                      const SizedBox(
+                                                        height: 30,
+                                                      ),
+                                                      RatingBar.builder(
+                                                        initialRating: 0,
+                                                        minRating: 1,
+                                                        direction:
+                                                            Axis.horizontal,
+                                                        allowHalfRating: false,
+                                                        itemCount: 5,
+                                                        itemPadding:
+                                                            const EdgeInsets
+                                                                .only(
+                                                          right: 4.0,
+                                                        ),
+                                                        itemBuilder:
+                                                            (context, _) =>
+                                                                const Icon(
+                                                          Icons.star,
+                                                          color: Colors.amber,
+                                                        ),
+                                                        onRatingUpdate:
+                                                            (rating) {
+                                                          setState(() {
+                                                            stars = rating;
+                                                          });
+                                                        },
+                                                      ),
+                                                    ],
                                                   ),
-                                                  itemBuilder: (context, _) =>
-                                                      const Icon(
-                                                    Icons.star,
-                                                    color: Colors.amber,
-                                                  ),
-                                                  onRatingUpdate: (rating) {
-                                                    setState(() {
-                                                      stars = rating;
-                                                    });
-                                                  },
-                                                ),
-                                              ],
-                                            ),
-                                            actions: [
-                                              TextButton(
-                                                onPressed: () {
-                                                  Navigator.pop(context);
-                                                },
-                                                child: const Text(
-                                                  'Cancelar',
-                                                  style: TextStyle(
-                                                    color: Colors.red,
-                                                    fontSize: 16,
-                                                  ),
-                                                ),
-                                              ),
-                                              TextButton(
-                                                onPressed: () async {
-                                                  if (stars == 0) {
-                                                    showSnackbar(
-                                                      'Debes valorar al conductor',
-                                                      context,
-                                                    );
-                                                    return;
-                                                  }
-                                                  setState(() {
-                                                    isRatingLoading = true;
-                                                  });
-                                                  await databaseProvider
-                                                      .rateDriver(
-                                                    stars,
-                                                    widget.publication['uid'],
-                                                    widget.publication[
-                                                        'conductor'],
-                                                  );
-                                                  if (mounted) {
-                                                    setState(() {
-                                                      isRatingLoading = false;
-                                                    });
-                                                    showSnackbar(
-                                                      'Conductor valorado correctamente',
-                                                      context,
-                                                    );
-                                                    Navigator
-                                                        .pushAndRemoveUntil(
-                                                      context,
-                                                      MaterialPageRoute(
-                                                        builder: (context) =>
-                                                            const MenuScreen(
-                                                          initialIndex: 2,
+                                                  actions: [
+                                                    TextButton(
+                                                      onPressed: () {
+                                                        Navigator.pop(context);
+                                                      },
+                                                      child: const Text(
+                                                        'Cancelar',
+                                                        style: TextStyle(
+                                                          color: Colors.red,
+                                                          fontSize: 16,
                                                         ),
                                                       ),
-                                                      (route) => false,
-                                                    );
-                                                  }
-                                                },
-                                                child: const Text(
-                                                  'Aceptar',
-                                                  style: TextStyle(
-                                                    color: Colors.green,
-                                                    fontSize: 16,
-                                                  ),
-                                                ),
-                                              ),
-                                            ],
-                                          );
-                                        },
-                                      );
-                                    },
+                                                    ),
+                                                    TextButton(
+                                                      onPressed: () async {
+                                                        if (stars == 0) {
+                                                          showSnackbar(
+                                                            'Debes valorar al conductor',
+                                                            context,
+                                                          );
+                                                          return;
+                                                        }
+                                                        setState(() {
+                                                          isRatingLoading =
+                                                              true;
+                                                        });
+                                                        await databaseProvider
+                                                            .rateDriver(
+                                                          stars,
+                                                          widget.publication[
+                                                              'uid'],
+                                                          widget.publication[
+                                                              'conductor'],
+                                                        );
+                                                        if (mounted) {
+                                                          setState(() {
+                                                            isRatingLoading =
+                                                                false;
+                                                          });
+                                                          showSnackbar(
+                                                            'Conductor valorado correctamente',
+                                                            context,
+                                                          );
+                                                          Navigator
+                                                              .pushAndRemoveUntil(
+                                                            context,
+                                                            MaterialPageRoute(
+                                                              builder: (context) =>
+                                                                  const MenuScreen(
+                                                                initialIndex: 2,
+                                                              ),
+                                                            ),
+                                                            (route) => false,
+                                                          );
+                                                        }
+                                                      },
+                                                      child: const Text(
+                                                        'Aceptar',
+                                                        style: TextStyle(
+                                                          color: Colors.green,
+                                                          fontSize: 16,
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  ],
+                                                );
+                                              },
+                                            );
+                                          },
                                     style: ElevatedButton.styleFrom(
                                       backgroundColor: Colors.green,
                                       padding: const EdgeInsets.symmetric(
@@ -404,6 +445,24 @@ class _MiReservaScreenState extends State<MiReservaScreen> {
                 ],
               ),
 
+              //CARBON FOOTPRINT
+              HuellaCarbono(
+                huellaCarbono: widget.publication['huellaCarbono'],
+              ),
+              const SizedBox(
+                height: 20,
+              ),
+              SizedBox(
+                height: 1,
+                width: double.infinity,
+                child: Container(
+                  color: Colors.black26,
+                ),
+              ),
+
+              const SizedBox(
+                height: 10,
+              ),
               Row(
                 children: const [
                   Text(
@@ -412,6 +471,7 @@ class _MiReservaScreenState extends State<MiReservaScreen> {
                   ),
                 ],
               ),
+
               const SizedBox(
                 height: 10,
               ),
