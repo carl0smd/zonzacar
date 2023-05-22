@@ -32,6 +32,7 @@ class _PublicarTrayectoScreenState extends State<PublicarTrayectoScreen> {
 
   DatabaseProvider databaseProvider = DatabaseProvider();
   bool _userHasCar = false;
+  bool isLoading = false;
   String _mapTheme = '';
 
   @override
@@ -48,10 +49,19 @@ class _PublicarTrayectoScreenState extends State<PublicarTrayectoScreen> {
 
   //FUNCTION TO CHECK IF THE USER HAS A CAR
   void _checkIfUserHasCar() async {
+    setState(() {
+      isLoading = true;
+    });
     await databaseProvider.getVehicles().then((value) {
       if (value.isNotEmpty) {
         setState(() {
           _userHasCar = true;
+          isLoading = false;
+        });
+      } else {
+        setState(() {
+          _userHasCar = false;
+          isLoading = false;
         });
       }
     });
@@ -193,72 +203,75 @@ class _PublicarTrayectoScreenState extends State<PublicarTrayectoScreen> {
               ],
             ),
             // IF USER HAS CAR SHOW THE MAP
-            body: _userHasCar
-                ? Column(
-                    children: [
-                      Flexible(
-                        child: GoogleMap(
-                          mapType: MapType.normal,
-                          initialCameraPosition: kGooglePlex,
-                          compassEnabled: true,
-                          scrollGesturesEnabled: true,
-                          markers: {
-                            originMarker,
-                            destinationMarker,
-                          },
-                          polylines: {
-                            Polyline(
-                              polylineId: const PolylineId('poly'),
-                              color: Theme.of(context).primaryColor,
-                              points: result
-                                  .map((e) => LatLng(e.latitude, e.longitude))
-                                  .toList(),
-                              width: 5,
-                            ),
-                          },
-                          onMapCreated: (GoogleMapController controller) {
-                            controller.setMapStyle(_mapTheme);
-                            _controller.complete(controller);
-                          },
-                        ),
-                      ),
-                      Container(
-                        color: Theme.of(context).primaryColor,
-                        padding: const EdgeInsets.all(10.0),
-                        child: Column(
-                          children: const [
-                            Text(
-                              '* Esta ruta es solo orientativa, el conductor podrá tomar otro camino siempre que llegue a su destino',
-                              style: TextStyle(
-                                fontSize: 14.0,
-                                color: Colors.white,
-                              ),
-                              overflow: TextOverflow.clip,
-                              textAlign: TextAlign.center,
-                            ),
-                          ],
-                        ),
-                      ),
-                    ],
-                  )
-                : Container(
-                    child: Center(
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
+            body: isLoading
+                ? const Center(child: CircularProgressIndicator())
+                : _userHasCar
+                    ? Column(
                         children: [
-                          Text(
-                            'Para publicar trayectos debes añadir un vehículo a tu perfil',
-                            style: TextStyle(
-                              fontSize: 20.0,
-                              color: Theme.of(context).primaryColor,
+                          Flexible(
+                            child: GoogleMap(
+                              mapType: MapType.normal,
+                              initialCameraPosition: kGooglePlex,
+                              compassEnabled: true,
+                              scrollGesturesEnabled: true,
+                              markers: {
+                                originMarker,
+                                destinationMarker,
+                              },
+                              polylines: {
+                                Polyline(
+                                  polylineId: const PolylineId('poly'),
+                                  color: Theme.of(context).primaryColor,
+                                  points: result
+                                      .map((e) =>
+                                          LatLng(e.latitude, e.longitude))
+                                      .toList(),
+                                  width: 5,
+                                ),
+                              },
+                              onMapCreated: (GoogleMapController controller) {
+                                controller.setMapStyle(_mapTheme);
+                                _controller.complete(controller);
+                              },
                             ),
-                            overflow: TextOverflow.clip,
-                            textAlign: TextAlign.center,
+                          ),
+                          Container(
+                            color: Theme.of(context).primaryColor,
+                            padding: const EdgeInsets.all(10.0),
+                            child: Column(
+                              children: const [
+                                Text(
+                                  '* Esta ruta es solo orientativa, el conductor podrá tomar otro camino siempre que llegue a su destino',
+                                  style: TextStyle(
+                                    fontSize: 14.0,
+                                    color: Colors.white,
+                                  ),
+                                  overflow: TextOverflow.clip,
+                                  textAlign: TextAlign.center,
+                                ),
+                              ],
+                            ),
                           ),
                         ],
+                      )
+                    : Container(
+                        child: Center(
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Text(
+                                'Para publicar trayectos debes añadir un vehículo a tu perfil',
+                                style: TextStyle(
+                                  fontSize: 20.0,
+                                  color: Theme.of(context).primaryColor,
+                                ),
+                                overflow: TextOverflow.clip,
+                                textAlign: TextAlign.center,
+                              ),
+                            ],
+                          ),
+                        ),
                       ),
-                    ),
-                  ),
           );
           // IF ORIGIN OR DESTINATION IS IN LA GRACIOSA
         } else if (snapshot.hasData && snapshot.data[0] == '') {
